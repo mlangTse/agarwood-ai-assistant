@@ -4,5 +4,4 @@ nohup: ignoring input
   - Network:      http://[::1]:3000
 
  ✓ Starting...
- ✓ Ready in 95ms
-Supabase连接测试失败，切换到本地模式: Could not find the table 'public.knowledge_documents' in the schema cache
+ ✓ Ready in 65ms

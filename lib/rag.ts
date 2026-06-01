@@ -129,55 +129,66 @@ export async function retrieveKnowledge(question: string, matchCount = 5): Promi
 }
 
 export async function listKnowledgeDocuments() {
-  const db = await getDatabase();
+  try {
+    const db = await getDatabase();
+    console.log('[listKnowledgeDocuments] getDatabase result:', db ? 'connected' : 'null');
 
-  if (!db) {
-    const documents = await readLocalKnowledgeDocuments();
-    return {
-      documents: documents.map((document) => ({
-        id: document.id,
-        title: document.title,
-        sourceName: document.sourceName,
-        mimeType: document.mimeType,
-        chunks: document.chunks.length,
-        createdAt: document.createdAt
+    if (!db) {
+      console.log('[listKnowledgeDocuments] Using local mode');
+      const documents = await readLocalKnowledgeDocuments();
+      return {
+        documents: documents.map((document) => ({
+          id: document.id,
+          title: document.title,
+          sourceName: document.sourceName,
+          mimeType: document.mimeType,
+          chunks: document.chunks.length,
+          createdAt: document.createdAt
+        })),
+        mode: "local"
+      };
+    }
+
+    console.log('[listKnowledgeDocuments] Executing PostgreSQL query...');
+    const { rows } = await db.query<{
+      id: string;
+      title: string;
+      source_name: string | null;
+      mime_type: string | null;
+      created_at: string;
+      chunks: string;
+    }>(
+      `select
+        d.id,
+        d.title,
+        d.source_name,
+        d.mime_type,
+        d.created_at,
+        count(e.id)::int as chunks
+       from knowledge_documents d
+       left join embeddings e on e.document_id = d.id
+       group by d.id
+       order by d.created_at desc`
+    );
+    console.log('[listKnowledgeDocuments] Query result rows:', rows.length);
+
+    const result = {
+      documents: rows.map((document) => ({
+        id: document.id as string,
+        title: document.title as string,
+        sourceName: document.source_name as string | undefined,
+        mimeType: document.mime_type as string | undefined,
+        chunks: Number(document.chunks),
+        createdAt: document.created_at as string
       })),
-      mode: "local"
+      mode: "postgresql"
     };
+    console.log('[listKnowledgeDocuments] Returning result:', JSON.stringify(result).slice(0, 200));
+    return result;
+  } catch (error) {
+    console.error('[listKnowledgeDocuments] Error:', error);
+    throw error;
   }
-
-  const { rows } = await db.query<{
-    id: string;
-    title: string;
-    source_name: string | null;
-    mime_type: string | null;
-    created_at: string;
-    chunks: string;
-  }>(
-    `select
-      d.id,
-      d.title,
-      d.source_name,
-      d.mime_type,
-      d.created_at,
-      count(e.id)::int as chunks
-     from knowledge_documents d
-     left join embeddings e on e.document_id = d.id
-     group by d.id
-     order by d.created_at desc`
-  );
-
-  return {
-    documents: rows.map((document) => ({
-      id: document.id as string,
-      title: document.title as string,
-      sourceName: document.source_name as string | undefined,
-      mimeType: document.mime_type as string | undefined,
-      chunks: Number(document.chunks),
-      createdAt: document.created_at as string
-    })),
-    mode: "postgresql"
-  };
 }
 
 function withTimeout<T>(promise: PromiseLike<T>, timeoutMs: number, message: string): Promise<T> {

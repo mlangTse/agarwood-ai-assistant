@@ -2,7 +2,8 @@
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "/agarwood";
 
 const nextConfig = {
-  basePath
+  basePath,
+  trailingSlash: false
 };
 
 export default nextConfig;

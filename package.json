@@ -7,8 +7,8 @@
   },
   "scripts": {
     "dev": "NEXT_TELEMETRY_DISABLED=1 node scripts/dev-server.mjs",
-    "setup:start": "scripts/deploy-tencent.sh --local",
-    "verify:start": "npm run typecheck && npm run build",
+    "setup:start": "scripts/local-supabase-flow.sh",
+    "verify:start": "scripts/local-supabase-flow.sh --smoke",
     "dev:next": "NEXT_TELEMETRY_DISABLED=1 next dev",
     "build": "NEXT_TELEMETRY_DISABLED=1 next build",
     "start": "NEXT_TELEMETRY_DISABLED=1 next start",
@@ -19,11 +19,13 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",
-    "@types/pg": "^8.20.0",
+    "@supabase/ssr": "^0.10.3",
+    "@supabase/supabase-js": "^2.106.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.468.0",
     "next": "14.2.35",
+    "openai": "4.67.3",
     "pdf-parse": "^1.1.1",
     "pg": "^8.21.0",
     "react": "18.3.1",
@@ -37,6 +39,7 @@
   "devDependencies": {
     "@types/node": "^20.17.6",
     "@types/pdf-parse": "^1.1.4",
+    "@types/pg": "^8.20.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "autoprefixer": "^10.4.20",
