@@ -36,8 +36,8 @@ const faqItems = [
 ];
 
 function normalizeModule(value?: string | string[]): ChatModule {
-  const module = Array.isArray(value) ? value[0] : value;
-  return module === "encyclopedia" || module === "shopping" || module === "mentor" ? module : "mentor";
+  const mod = Array.isArray(value) ? value[0] : value;
+  return mod === "encyclopedia" || mod === "shopping" || mod === "mentor" ? mod : "mentor";
 }
 
 export function generateMetadata({
@@ -45,9 +45,9 @@ export function generateMetadata({
 }: {
   searchParams?: { module?: string | string[] };
 }): Metadata {
-  const module = normalizeModule(searchParams?.module);
-  const meta = moduleMeta[module];
-  const canonicalPath = module === "mentor" ? "/chat" : `/chat?module=${module}`;
+  const mod = normalizeModule(searchParams?.module);
+  const meta = moduleMeta[mod];
+  const canonicalPath = mod === "mentor" ? "/chat" : `/chat?module=${mod}`;
 
   return {
     title: meta.title,

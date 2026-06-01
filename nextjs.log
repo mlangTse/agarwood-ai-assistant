@@ -1,10 +1,10 @@
 nohup: ignoring input
 
 > agarwood-ai-assistant@0.1.0 start
-> NEXT_TELEMETRY_DISABLED=1 next start
+> node scripts/run-next-command.mjs next start
 
   ▲ Next.js 14.2.35
   - Local:        http://localhost:3000
 
  ✓ Starting...
- ✓ Ready in 335ms
+ ✓ Ready in 338ms
