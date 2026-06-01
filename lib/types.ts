@@ -32,6 +32,17 @@ export type Product = {
   inventoryStatus: "in_stock" | "limited" | "archived";
 };
 
+export type Region = {
+  id: string;
+  name: string;
+  country: string;
+  aromaCharacter: string;
+  typicalScenes: string[];
+  riskNotes: string[];
+  character?: string;
+  scenes?: string[];
+};
+
 export type Recommendation = {
   product: Product;
   score: number;

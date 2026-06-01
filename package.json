@@ -6,13 +6,13 @@
     "node": ">=20.9.0"
   },
   "scripts": {
-    "dev": "NEXT_TELEMETRY_DISABLED=1 node scripts/dev-server.mjs",
+    "dev": "node scripts/dev-server.mjs",
     "setup:start": "scripts/local-supabase-flow.sh",
     "verify:start": "scripts/local-supabase-flow.sh --smoke",
-    "dev:next": "NEXT_TELEMETRY_DISABLED=1 next dev",
-    "build": "NEXT_TELEMETRY_DISABLED=1 next build",
-    "start": "NEXT_TELEMETRY_DISABLED=1 next start",
-    "lint": "NEXT_TELEMETRY_DISABLED=1 next lint",
+    "dev:next": "node scripts/run-next-command.mjs next dev",
+    "build": "node scripts/run-next-command.mjs next build",
+    "start": "node scripts/run-next-command.mjs next start",
+    "lint": "node scripts/run-next-command.mjs next lint",
     "typecheck": "tsc --noEmit",
     "doctor:mac": "xattr -dr com.apple.provenance node_modules .next 2>/dev/null || true",
     "clean:cache": "rm -rf .next tsconfig.tsbuildinfo"

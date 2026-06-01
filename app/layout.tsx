@@ -1,9 +1,47 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { defaultDescription, defaultKeywords, siteName, siteUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "沉香 AI 助手",
-  description: "面向沉香文博馆与高端品牌的 AI 导览、百科问答与导购转化 MVP"
+  metadataBase: new URL(siteUrl),
+  applicationName: siteName,
+  title: {
+    default: `${siteName} | 沉香闻香、百科与导购 Agent`,
+    template: `%s | ${siteName}`
+  },
+  description: defaultDescription,
+  keywords: defaultKeywords,
+  authors: [{ name: siteName }],
+  creator: siteName,
+  publisher: siteName,
+  alternates: {
+    canonical: siteUrl
+  },
+  openGraph: {
+    type: "website",
+    locale: "zh_CN",
+    siteName,
+    url: siteUrl,
+    title: `${siteName} | 沉香闻香、百科与导购 Agent`,
+    description: defaultDescription
+  },
+  twitter: {
+    card: "summary",
+    title: `${siteName} | 沉香闻香、百科与导购 Agent`,
+    description: defaultDescription
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1
+    }
+  },
+  category: "technology"
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

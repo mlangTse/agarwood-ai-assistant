@@ -122,6 +122,48 @@ export async function createProduct(input: ProductInput): Promise<{ product: Pro
   return { product: mapProductRow(rows[0]), mode: "postgresql" };
 }
 
+export async function updateProduct(
+  id: string,
+  input: ProductInput
+): Promise<{ product: Product; mode: "local" | "postgresql" }> {
+  const payload = validateProductInput(input);
+  const db = await getDatabase();
+
+  if (!db) {
+    const products = await readLocalProducts();
+    const index = products.findIndex((product) => product.id === id);
+    if (index === -1) throw new Error("未找到要修改的商品。");
+    const product: Product = { id, ...payload };
+    const nextProducts = [...products];
+    nextProducts[index] = product;
+    await writeLocalProducts(nextProducts);
+    return { product, mode: "local" };
+  }
+
+  const { rows } = await db.query<ProductRow>(
+    `update products
+     set
+      name = $1,
+      product_type = $2,
+      region = $3,
+      price_cents = $4,
+      budget_level = $5,
+      description = $6,
+      risk_notes = $7,
+      suitable_for = $8,
+      scent_tags = $9,
+      aroma_scores = $10::jsonb,
+      inventory_status = $11,
+      updated_at = now()
+     where id = $12
+     returning *`,
+    [...productSqlValues(payload), id]
+  );
+
+  if (!rows[0]) throw new Error("未找到要修改的商品。");
+  return { product: mapProductRow(rows[0]), mode: "postgresql" };
+}
+
 export async function importProducts(inputs: ProductInput[]): Promise<ProductImportResult> {
   const db = await getDatabase();
   const current = db ? (await listProducts()).products : await readLocalProducts();
@@ -192,7 +234,7 @@ export async function importProducts(inputs: ProductInput[]): Promise<ProductImp
 }
 
 export function parseProductRows(rows: Record<string, unknown>[]): ProductInput[] {
-  return rows.map((row) => normalizeImportRow(row)).filter((row): row is ProductInput => Boolean(row.name));
+  return rows.map((row) => normalizeImportRow(normalizeRowKeys(row))).filter((row): row is ProductInput => Boolean(row.name));
 }
 
 export function parseProductText(content: string): ProductInput[] {
@@ -336,6 +378,10 @@ function readAlias(row: Record<string, unknown>, aliases: string[]) {
     }
   }
   return undefined;
+}
+
+function normalizeRowKeys(row: Record<string, unknown>) {
+  return Object.fromEntries(Object.entries(row).map(([key, value]) => [key.replace(/^\uFEFF/, "").trim(), value]));
 }
 
 function splitList(value: string) {

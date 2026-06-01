@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { BookOpenText, Check, Gem, Loader2, Send, Sparkles, type LucideIcon } from "lucide-react";
@@ -9,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { apiPath } from "@/lib/client-paths";
 import { cn } from "@/lib/utils";
 import type { AssistantModule, Recommendation } from "@/lib/types";
 
@@ -148,7 +150,7 @@ export function ChatClient() {
     setMeta({});
 
     try {
-      const response = await fetch("/agarwood/api/chat", {
+      const response = await fetch(apiPath("/api/chat"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ module, message: buildPrompt(config, selections, otherInput) }),
@@ -198,6 +200,14 @@ export function ChatClient() {
             <p className="mt-3 text-sm leading-7 text-muted-foreground">
               每个 Agent 都按选项理解需求，也可以在“其他补充”里输入没有覆盖到的细节。
             </p>
+            <div className="mt-3 flex flex-wrap gap-3 text-sm">
+              <Link href="/guide" className="text-primary underline-offset-4 hover:underline">
+                先看沉香选香指南
+              </Link>
+              <Link href="/chat?module=encyclopedia" className="text-primary underline-offset-4 hover:underline">
+                用百科解释产区
+              </Link>
+            </div>
           </div>
 
           <Tabs defaultValue={module} value={module} onValueChange={changeModule}>

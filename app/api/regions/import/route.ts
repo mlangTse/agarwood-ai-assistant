@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as XLSX from "xlsx";
-import { importProducts, parseProductRows, parseProductText } from "@/lib/products";
+import { importRegions, parseRegionRows, parseRegionText } from "@/lib/regions";
 
 export const runtime = "nodejs";
 
@@ -13,24 +13,22 @@ export async function POST(request: NextRequest) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    const products = parseImportFile(file, buffer);
-    if (products.length === 0) {
-      return NextResponse.json({ error: "没有识别到可导入的商品。请检查表头或文本字段。" }, { status: 400 });
+    const regions = parseImportFile(file, buffer);
+    if (regions.length === 0) {
+      return NextResponse.json({ error: "没有识别到可导入的产区资料，请检查表头或文本字段。" }, { status: 400 });
     }
 
-    const result = await importProducts(products);
-    if (result.createdCount === 0 && result.skippedCount === 0 && result.errors.length > 0) {
+    const result = await importRegions(regions);
+    if (result.createdCount === 0 && result.updatedCount === 0 && result.skippedCount === 0 && result.errors.length > 0) {
       return NextResponse.json(
-        { ...result, error: `没有商品被导入：${result.errors.slice(0, 3).join("；")}` },
+        { ...result, error: `没有产区资料被导入：${result.errors.slice(0, 3).join("；")}` },
         { status: 400 }
       );
     }
     return NextResponse.json(result);
   } catch (error) {
     return NextResponse.json(
-      {
-        error: error instanceof Error ? `导入失败：${error.message}` : "导入失败：服务器处理商品文件时出错。"
-      },
+      { error: error instanceof Error ? `导入失败：${error.message}` : "导入失败：服务器处理产区文件时出错。" },
       { status: 500 }
     );
   }
@@ -44,16 +42,16 @@ function parseImportFile(file: File, buffer: Buffer) {
     if (!sheetName) return [];
     const sheet = workbook.Sheets[sheetName];
     const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: "" });
-    return parseProductRows(rows);
+    return parseRegionRows(rows);
   }
 
   const text = buffer.toString("utf8");
   if (name.endsWith(".csv") || name.endsWith(".tsv")) {
     const delimiter = name.endsWith(".tsv") ? "\t" : ",";
-    return parseProductRows(parseDelimitedText(text, delimiter));
+    return parseRegionRows(parseDelimitedText(text, delimiter));
   }
 
-  return parseProductText(text);
+  return parseRegionText(text);
 }
 
 function parseDelimitedText(text: string, delimiter: string) {
