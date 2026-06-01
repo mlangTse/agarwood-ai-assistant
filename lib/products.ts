@@ -2,7 +2,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { z } from "zod";
 import { sampleProducts } from "@/lib/sample-data";
-import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { getDatabase } from "@/lib/db";
 import type { AromaScoreKey, AromaScores, BudgetLevel, Product, ProductType } from "@/lib/types";
 
 export type ProductImportResult = {
@@ -10,7 +10,7 @@ export type ProductImportResult = {
   skippedCount: number;
   products: Product[];
   errors: string[];
-  mode: "local" | "supabase";
+  mode: "local" | "postgresql";
 };
 
 const LOCAL_PRODUCTS_PATH = path.join(process.cwd(), "data", "products.json");
@@ -56,7 +56,7 @@ const productSchema = z.object({
 
 type ProductInput = z.input<typeof productSchema>;
 
-type SupabaseProductRow = {
+type ProductRow = {
   id: string;
   name: string;
   product_type: ProductType;
@@ -88,43 +88,43 @@ export function validateProductInput(input: ProductInput): Omit<Product, "id"> {
   };
 }
 
-export async function listProducts(): Promise<{ products: Product[]; mode: "local" | "supabase" }> {
-  const supabase = await getSupabaseAdmin();
-  if (!supabase) return { products: await readLocalProducts(), mode: "local" };
+export async function listProducts(): Promise<{ products: Product[]; mode: "local" | "postgresql" }> {
+  const db = await getDatabase();
+  if (!db) return { products: await readLocalProducts(), mode: "local" };
 
-  const { data, error } = await supabase.from("products").select("*").order("created_at", { ascending: false });
-  if (error) throw error;
+  const { rows } = await db.query<ProductRow>("select * from products order by created_at desc");
 
   return {
-    products: ((data ?? []) as SupabaseProductRow[]).map(mapSupabaseProduct),
-    mode: "supabase"
+    products: rows.map(mapProductRow),
+    mode: "postgresql"
   };
 }
 
-export async function createProduct(input: ProductInput): Promise<{ product: Product; mode: "local" | "supabase" }> {
+export async function createProduct(input: ProductInput): Promise<{ product: Product; mode: "local" | "postgresql" }> {
   const payload = validateProductInput(input);
-  const supabase = await getSupabaseAdmin();
+  const db = await getDatabase();
 
-  if (!supabase) {
+  if (!db) {
     const products = await readLocalProducts();
     const product: Product = { id: crypto.randomUUID(), ...payload };
     await writeLocalProducts([product, ...products]);
     return { product, mode: "local" };
   }
 
-  const { data, error } = await supabase
-    .from("products")
-    .insert(toSupabaseProductInsert(payload))
-    .select("*")
-    .single();
+  const { rows } = await db.query<ProductRow>(
+    `insert into products
+      (name, product_type, region, price_cents, budget_level, description, risk_notes, suitable_for, scent_tags, aroma_scores, inventory_status)
+     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::jsonb, $11)
+     returning *`,
+    productSqlValues(payload)
+  );
 
-  if (error) throw error;
-  return { product: mapSupabaseProduct(data as SupabaseProductRow), mode: "supabase" };
+  return { product: mapProductRow(rows[0]), mode: "postgresql" };
 }
 
 export async function importProducts(inputs: ProductInput[]): Promise<ProductImportResult> {
-  const supabase = await getSupabaseAdmin();
-  const current = supabase ? (await listProducts()).products : await readLocalProducts();
+  const db = await getDatabase();
+  const current = db ? (await listProducts()).products : await readLocalProducts();
   const existingKeys = new Set(current.map(productKey));
   const products: Product[] = [];
   const errors: string[] = [];
@@ -152,11 +152,11 @@ export async function importProducts(inputs: ProductInput[]): Promise<ProductImp
       skippedCount,
       products: [],
       errors,
-      mode: supabase ? "supabase" : "local"
+      mode: db ? "postgresql" : "local"
     };
   }
 
-  if (!supabase) {
+  if (!db) {
     await writeLocalProducts([...products, ...current]);
     return {
       createdCount: products.length,
@@ -167,19 +167,27 @@ export async function importProducts(inputs: ProductInput[]): Promise<ProductImp
     };
   }
 
-  const { data, error } = await supabase
-    .from("products")
-    .insert(products.map(({ id: _id, ...product }) => toSupabaseProductInsert(product)))
-    .select("*");
-
-  if (error) throw error;
+  const savedProducts = await db.transaction(async (client) => {
+    const rows: ProductRow[] = [];
+    for (const { id: _id, ...product } of products) {
+      const result = await client.query<ProductRow>(
+        `insert into products
+          (name, product_type, region, price_cents, budget_level, description, risk_notes, suitable_for, scent_tags, aroma_scores, inventory_status)
+         values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::jsonb, $11)
+         returning *`,
+        productSqlValues(product)
+      );
+      rows.push(result.rows[0]);
+    }
+    return rows;
+  });
 
   return {
     createdCount: products.length,
     skippedCount,
-    products: ((data ?? []) as SupabaseProductRow[]).map(mapSupabaseProduct),
+    products: savedProducts.map(mapProductRow),
     errors,
-    mode: "supabase"
+    mode: "postgresql"
   };
 }
 
@@ -193,7 +201,7 @@ export function parseProductText(content: string): ProductInput[] {
   return parseProductRows(parseFieldBlocks(content));
 }
 
-function mapSupabaseProduct(row: SupabaseProductRow): Product {
+function mapProductRow(row: ProductRow): Product {
   return {
     id: row.id,
     name: row.name,
@@ -210,20 +218,20 @@ function mapSupabaseProduct(row: SupabaseProductRow): Product {
   };
 }
 
-function toSupabaseProductInsert(product: Omit<Product, "id">) {
-  return {
-    name: product.name,
-    product_type: product.type,
-    region: product.region,
-    price_cents: product.priceCents,
-    budget_level: product.budgetLevel,
-    description: product.description,
-    risk_notes: product.riskNotes,
-    suitable_for: product.suitableFor,
-    scent_tags: product.scentTags,
-    aroma_scores: product.aromaScores,
-    inventory_status: product.inventoryStatus
-  };
+function productSqlValues(product: Omit<Product, "id">) {
+  return [
+    product.name,
+    product.type,
+    product.region,
+    product.priceCents,
+    product.budgetLevel,
+    product.description,
+    product.riskNotes,
+    product.suitableFor,
+    product.scentTags,
+    JSON.stringify(product.aromaScores),
+    product.inventoryStatus
+  ];
 }
 
 async function readLocalProducts(): Promise<Product[]> {

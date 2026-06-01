@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
-import { getOpenAI, chatModel } from "@/lib/openai";
+import { readCompatibleModelStream, streamChatCompletion } from "@/lib/model-api";
 import { mentorPrompt, ragUserPrompt, shoppingPrompt, systemPrompt } from "@/lib/prompts/agents";
 import { recommendProducts, inferUserPreference } from "@/lib/recommendation";
 import { listProducts } from "@/lib/products";
@@ -24,27 +24,21 @@ export async function POST(request: NextRequest) {
   const context = await withTimeout(buildContext(body.module, body.message), 15_000, "上下文生成超时").catch(() =>
     buildLocalContext(body.module, body.message)
   );
-  const openai = await getOpenAI();
-
-  if (!openai) {
-    return streamFallback(body.module, body.message, context);
-  }
 
   try {
-    const openaiController = new AbortController();
-    request.signal.addEventListener("abort", () => openaiController.abort(), { once: true });
+    const modelController = new AbortController();
+    request.signal.addEventListener("abort", () => modelController.abort(), { once: true });
 
-    const stream = await openai.chat.completions.create({
-        model: chatModel,
-        stream: true,
-        temperature: body.module === "encyclopedia" ? 0.25 : 0.68,
-        messages: [
-          { role: "system", content: systemPrompt(body.module) },
-          { role: "user", content: context.prompt }
-        ]
-      },
-      { signal: openaiController.signal }
-    );
+    const stream = await streamChatCompletion({
+      temperature: body.module === "encyclopedia" ? 0.25 : 0.68,
+      signal: modelController.signal,
+      messages: [
+        { role: "system", content: systemPrompt(body.module) },
+        { role: "user", content: context.prompt }
+      ]
+    });
+
+    if (!stream) return streamFallback(body.module, body.message, context);
 
     const encoder = new TextEncoder();
     const readable = new ReadableStream({
@@ -68,16 +62,15 @@ export async function POST(request: NextRequest) {
 
         const timeout = setTimeout(() => {
           didTimeout = true;
-          openaiController.abort();
+          modelController.abort();
           enqueue(`event: error\ndata: ${JSON.stringify({ message: "生成超时，请稍后重试。" })}\n\n`);
           close();
         }, CHAT_TIMEOUT_MS);
 
         try {
           enqueue(`event: meta\ndata: ${JSON.stringify(context.meta)}\n\n`);
-          for await (const chunk of stream) {
+          for await (const token of readCompatibleModelStream(stream)) {
             if (request.signal.aborted || isClosed) break;
-            const token = chunk.choices[0]?.delta?.content ?? "";
             if (token) enqueue(`data: ${JSON.stringify({ token })}\n\n`);
           }
           if (!request.signal.aborted && !isClosed) {

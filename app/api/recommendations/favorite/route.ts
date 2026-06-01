@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { getDatabase } from "@/lib/db";
 
 const favoriteSchema = z.object({
   productId: z.string(),
@@ -10,20 +10,21 @@ const favoriteSchema = z.object({
 
 export async function POST(request: NextRequest) {
   const payload = favoriteSchema.parse(await request.json());
-  const supabase = await getSupabaseAdmin();
-  if (!supabase) return NextResponse.json({ ok: true, mode: "demo", favorite: payload });
+  const db = await getDatabase();
+  if (!db) return NextResponse.json({ ok: true, mode: "demo", favorite: payload });
 
-  const { data, error } = await supabase
-    .from("recommendations")
-    .insert({
-      product_id: payload.productId,
-      conversation_id: payload.conversationId,
-      user_note: payload.note,
-      is_favorite: true
-    })
-    .select("*")
-    .single();
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ ok: true, recommendation: data, mode: "supabase" });
+  try {
+    const { rows } = await db.query(
+      `insert into recommendations (product_id, conversation_id, user_note, is_favorite)
+       values ($1, $2, $3, true)
+       returning *`,
+      [payload.productId, payload.conversationId, payload.note]
+    );
+    return NextResponse.json({ ok: true, recommendation: rows[0], mode: "postgresql" });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "保存收藏失败。" },
+      { status: 500 }
+    );
+  }
 }

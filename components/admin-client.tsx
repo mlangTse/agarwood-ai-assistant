@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { apiPath } from "@/lib/client-paths";
 
 const scoreFields = [
   ["sweetness", "甜感"],
@@ -45,7 +46,7 @@ export function AdminClient() {
   }, []);
 
   async function loadKnowledgeDocuments() {
-    const response = await fetch("./api/knowledge/documents", { cache: "no-store" });
+    const response = await fetch(apiPath("/api/knowledge/documents"), { cache: "no-store" });
     const json = await response.json();
     if (response.ok) {
       setKnowledgeDocuments(json.documents ?? []);
@@ -59,7 +60,7 @@ export function AdminClient() {
     const formData = new FormData(form);
     setUploadStatus("正在切片与生成 embedding...");
     
-    const response = await fetch("./api/knowledge/upload", {
+    const response = await fetch(apiPath("/api/knowledge/upload"), {
       method: "POST",
       body: formData,
     });
@@ -104,7 +105,7 @@ export function AdminClient() {
       aromaScores: scores
     };
     setProductStatus("正在保存商品...");
-    const response = await fetch("./api/products", {
+    const response = await fetch(apiPath("/api/products"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -120,7 +121,7 @@ export function AdminClient() {
     const formData = new FormData(form);
     setProductImportStatus("正在解析并导入商品...");
 
-    const response = await fetch("./api/products/import", {
+    const response = await fetch(apiPath("/api/products/import"), {
       method: "POST",
       body: formData
     });
@@ -147,7 +148,7 @@ export function AdminClient() {
           </div>
           <div className="flex gap-2 text-sm text-muted-foreground">
             <Database className="h-4 w-4" />
-            Supabase / RAG / Product Aroma Scores
+            PostgreSQL / RAG / Product Aroma Scores
           </div>
         </div>
 
@@ -171,7 +172,7 @@ export function AdminClient() {
             <Card className="bg-card/82">
               <CardHeader>
                 <CardTitle>知识库上传</CardTitle>
-                <CardDescription>支持 Markdown / TXT / PDF，上传后自动切片并写入当前知识库；未配置 Supabase 时保存到本地文件。</CardDescription>
+                <CardDescription>支持 Markdown / TXT / PDF，上传后自动切片并写入当前知识库；未配置 PostgreSQL 时保存到本地文件。</CardDescription>
               </CardHeader>
               <CardContent>
                 <form className="grid gap-4" onSubmit={uploadKnowledge}>

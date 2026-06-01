@@ -1,5 +1,5 @@
-import { embedText, fallbackEmbedding } from "@/lib/openai";
-import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { getDatabase, vectorLiteral } from "@/lib/db";
+import { embedText, fallbackEmbedding } from "@/lib/model-api";
 import type { KnowledgeChunk } from "@/lib/types";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -48,11 +48,11 @@ export async function ingestKnowledgeDocument(input: {
   mimeType?: string;
   sourceName?: string;
 }) {
-  const supabase = await getSupabaseAdmin();
+  const db = await getDatabase();
   const chunks = chunkText(input.content);
   const embeddings = await Promise.all(chunks.map((content) => embedText(content)));
 
-  if (!supabase) {
+  if (!db) {
     const document = await saveLocalKnowledgeDocument({
       title: input.title,
       sourceName: input.sourceName,
@@ -68,52 +68,57 @@ export async function ingestKnowledgeDocument(input: {
     };
   }
 
-  const { data: doc, error: docError } = await supabase
-    .from("knowledge_documents")
-    .insert({
-      title: input.title,
-      source_name: input.sourceName,
-      mime_type: input.mimeType,
-      content: input.content
-    })
-    .select("id")
-    .single();
+  const documentId = await db.transaction(async (client) => {
+    const document = await client.query<{ id: string }>(
+      `insert into knowledge_documents (title, source_name, mime_type, content)
+       values ($1, $2, $3, $4)
+       returning id`,
+      [input.title, input.sourceName, input.mimeType, input.content]
+    );
 
-  if (docError) throw docError;
+    for (const [index, content] of chunks.entries()) {
+      await client.query(
+        `insert into embeddings (document_id, chunk_index, content, embedding)
+         values ($1, $2, $3, $4::vector)`,
+        [document.rows[0].id, index, content, vectorLiteral(embeddings[index])]
+      );
+    }
 
-  const rows = chunks.map((content, index) => ({
-    document_id: doc.id,
-    chunk_index: index,
-    content,
-    embedding: embeddings[index]
-  }));
+    return document.rows[0].id;
+  });
 
-  const { error: embeddingError } = await supabase.from("embeddings").insert(rows);
-  if (embeddingError) throw embeddingError;
-
-  return { documentId: doc.id as string, chunks: rows.length, mode: "supabase" };
+  return { documentId, chunks: chunks.length, mode: "postgresql" };
 }
 
 export async function retrieveKnowledge(question: string, matchCount = 5): Promise<KnowledgeChunk[]> {
-  const supabase = await getSupabaseAdmin();
+  const db = await getDatabase();
 
-  if (!supabase) {
+  if (!db) {
     return localKnowledgeSearch(question, matchCount);
   }
 
   const queryEmbedding = await embedText(question);
-  const { data, error } = await withTimeout(
-    supabase.rpc("match_knowledge_chunks", {
-      query_embedding: queryEmbedding,
-      match_count: matchCount,
-      similarity_threshold: 0.2
-    }),
+  const { rows } = await withTimeout(
+    db.query<MatchKnowledgeRow>(
+      `select
+        e.id,
+        e.document_id,
+        d.title,
+        e.content,
+        e.metadata,
+        1 - (e.embedding <=> $1::vector) as similarity
+       from embeddings e
+       join knowledge_documents d on d.id = e.document_id
+       where 1 - (e.embedding <=> $1::vector) > $2
+       order by e.embedding <=> $1::vector
+       limit $3`,
+      [vectorLiteral(queryEmbedding), 0.2, matchCount]
+    ),
     RAG_TIMEOUT_MS,
     "知识库检索超时"
   );
 
-  if (error) throw error;
-  return ((data ?? []) as MatchKnowledgeRow[]).map((row) => ({
+  return rows.map((row) => ({
     id: row.id,
     documentId: row.document_id,
     title: row.title ?? "知识片段",
@@ -124,9 +129,9 @@ export async function retrieveKnowledge(question: string, matchCount = 5): Promi
 }
 
 export async function listKnowledgeDocuments() {
-  const supabase = await getSupabaseAdmin();
+  const db = await getDatabase();
 
-  if (!supabase) {
+  if (!db) {
     const documents = await readLocalKnowledgeDocuments();
     return {
       documents: documents.map((document) => ({
@@ -141,23 +146,37 @@ export async function listKnowledgeDocuments() {
     };
   }
 
-  const { data, error } = await supabase
-    .from("knowledge_documents")
-    .select("id,title,source_name,mime_type,created_at,embeddings(id)")
-    .order("created_at", { ascending: false });
-
-  if (error) throw error;
+  const { rows } = await db.query<{
+    id: string;
+    title: string;
+    source_name: string | null;
+    mime_type: string | null;
+    created_at: string;
+    chunks: string;
+  }>(
+    `select
+      d.id,
+      d.title,
+      d.source_name,
+      d.mime_type,
+      d.created_at,
+      count(e.id)::int as chunks
+     from knowledge_documents d
+     left join embeddings e on e.document_id = d.id
+     group by d.id
+     order by d.created_at desc`
+  );
 
   return {
-    documents: (data ?? []).map((document) => ({
+    documents: rows.map((document) => ({
       id: document.id as string,
       title: document.title as string,
       sourceName: document.source_name as string | undefined,
       mimeType: document.mime_type as string | undefined,
-      chunks: Array.isArray(document.embeddings) ? document.embeddings.length : 0,
+      chunks: Number(document.chunks),
       createdAt: document.created_at as string
     })),
-    mode: "supabase"
+    mode: "postgresql"
   };
 }
 

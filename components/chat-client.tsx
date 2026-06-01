@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { apiPath } from "@/lib/client-paths";
 import { cn } from "@/lib/utils";
 import type { AssistantModule, Recommendation } from "@/lib/types";
 
@@ -148,7 +149,7 @@ export function ChatClient() {
     setMeta({});
 
     try {
-      const response = await fetch("./api/chat", {
+      const response = await fetch(apiPath("/api/chat"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ module, message: buildPrompt(config, selections, otherInput) }),
