@@ -1,0 +1,3601 @@
+[
+  {
+    "id": "7567988f-98da-4019-a2ba-d1ce3f609102",
+    "name": "使用建议",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "b84b7605-c57f-498a-819e-facd42b97734",
+    "name": "线香类",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "89936198-cc8b-4a03-b0ce-4b6acf637558",
+    "name": "奇楠方条香（SP00237）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 9800,
+    "budgetLevel": "500",
+    "description": "独立瓶装设计每瓶净重10克，约含小方香20支。\n纯天然奇楠沉香压制，无添加粘粉。出香迅速，香云浓烈。香韵醇厚，带有清凉感，舒缓压力调节气场。\n10g/筒\nSP00237",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "凉韵",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "e26025b1-9308-4097-946a-7f4d900d2d1a",
+    "name": "奇楠虫漏方条香（SP00238）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 16800,
+    "budgetLevel": "500",
+    "description": "独立瓶装设计每瓶净重10克，约含小方香25支。\n纯天然奇楠虫漏沉香压制，无添加粘粉。出香迅速，香云浓烈。香韵醇厚，富含油脂，浓烈带有清凉感，舒缓压力养生安神。\n10g/筒\nSP00238",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "凉韵",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "17e86f0b-3036-4b75-b274-6be5309ecb81",
+    "name": "海南方条香（SP00239）",
+    "type": "incense",
+    "region": "海南",
+    "priceCents": 9800,
+    "budgetLevel": "500",
+    "description": "独立瓶装设计每瓶净重10克，约含小方香20支。\n纯天然海南沉香压制，无添加粘粉。出香迅速，香云浓烈。香韵带有花果香蜜香，清新甘甜。舒缓压力调节神经。\n10g/筒\nSP00239",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "海南",
+      "甜韵",
+      "蜜香",
+      "花香",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "5323e41b-2a06-49a0-bc6c-052187969d30",
+    "name": "海南虫漏方条香（SP00240）",
+    "type": "incense",
+    "region": "海南",
+    "priceCents": 16800,
+    "budgetLevel": "500",
+    "description": "独立瓶装设计每瓶净重10克，约含小方香25支。\n纯天然海南虫漏沉香压制，无添加粘粉。出香迅速，香云浓烈。花果香清新，蜜香甘甜，与油脂木香完美融合。舒缓压力、消除疲劳，养生安神。\n10g/筒\nSP00240",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "海南",
+      "甜韵",
+      "蜜香",
+      "木质",
+      "花香",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "ddc28068-ca8d-48c6-9bb2-cabee018099a",
+    "name": "芽庄方条香（SP00241）",
+    "type": "incense",
+    "region": "芽庄",
+    "priceCents": 9800,
+    "budgetLevel": "500",
+    "description": "独立瓶装设计每瓶净重10克，约含小方香20支。\n纯天然芽庄沉香压制，无添加粘粉。出香迅速，香云浓烈。清新花果香蜜香，浓郁怡人。静心安神、愉悦身心、理气通窍。\n10g/筒\nSP00241",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "蜜香",
+      "花香",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "4ccf1d1e-bd7d-4861-9951-ff6f5fc53bbe",
+    "name": "芽庄虫漏方条香（SP00242）",
+    "type": "incense",
+    "region": "芽庄",
+    "priceCents": 16800,
+    "budgetLevel": "500",
+    "description": "独立瓶装设计每瓶净重10克，约含小方香25支。\n纯天然芽庄虫漏沉香压制，无添加粘粉。出香迅速，香云浓烈。融合花果香蜜香，醇厚甘甜。静心安神、愉悦身心、理气通窍。\n10g/筒\nSP00242",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "甜韵",
+      "蜜香",
+      "花香",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "ad940e41-1008-4aba-bdf8-9efdc38a585d",
+    "name": "奇楠线香【邂逅】（SP00081）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 6800,
+    "budgetLevel": "500",
+    "description": "独立瓶装设计，每瓶净重10克，约含线香22支。\n纯天然奇楠沉香粉压制，无添加粘粉。奇楠线香【邂逅】在燃烧后会释放出让人心旷神怡的香气，让人感受到一种安静祥和的磁场。清心安神，夜晚燃香还能助眠。油脂含量高、香气更为浓醇甘甜，穿透力比普通沉香强。香韵醇厚持久带有清凉感，消除疲劳、舒缓压力，静心安神、助眠养生。较适合俊朗非凡的男士细细品味。\n10g/筒\nSP00081",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "甜韵",
+      "凉韵",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "0c88aaf7-b7ee-44f0-8b4c-c90d79d9be99",
+    "name": "奇楠线香【经典】（SP00085）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 9800,
+    "budgetLevel": "500",
+    "description": "独立瓶装设计，每瓶净重10克，约含线香22支。\n纯天然奇楠沉香粉压制，无添加粘粉。奇楠线香【经典】随着熏烧时间而变化，如同香水一般会产生前、中、尾韵的层次感，初香清甜，本香沁蜜，尾韵馥郁乳香。油脂含量高、香气更为浓醇甘甜，穿透力比普通沉香强。香韵醇厚持久带有清凉感，消除疲劳、舒缓压力，静心安神、助眠养生。较适合俊朗非凡的男士细细品味。\n10g/筒\nSP00085",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "甜韵",
+      "蜜香",
+      "凉韵",
+      "奶韵",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "d8b6831d-c106-41f0-a7e4-e4f2cb29f27a",
+    "name": "奇楠线香【臻品】（SP00086）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 18800,
+    "budgetLevel": "500",
+    "description": "独立瓶装设计，每瓶净重10克，约含线香35支。\n纯天然奇楠沉香粉压制，无添加粘粉。奇楠线香【臻品】的香气浓郁，味道清新。烧起来后，香气扑鼻，让人感到舒适和放松。而且，奇楠线香的香味能够持续很长时间，回味悠长，让人无法忘怀。香气的层次度、丰富度、持久度、变化度俱佳。有效消除疲劳、舒缓压力，静心安神、助眠养生。较适合俊朗非凡的男士细细品味。\n10g/筒\nSP00086",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "e6ba8818-eaf4-4e4a-8bca-fea2473dffbb",
+    "name": "奇楠线香【典藏】（SP00089）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 33800,
+    "budgetLevel": "500",
+    "description": "独立瓶装设计，每瓶净重10克，约含线香48支。\n纯天然奇楠沉香粉压制，无添加粘粉。原料为奇楠线香最高级别佳品。奇楠【典藏】线香的香韵一流，甜、凉、甘、纯等香味特点，香气浓郁，味道清新，有温暖、舒适的感觉，能够缓解身体疲劳和焦虑情绪、消除疲劳、舒缓压力，静心安神、助眠养生。较适合俊朗非凡的男士细细品味。\n10g/筒\nSP00089",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "甜韵",
+      "凉韵",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "aaabc2c0-339e-4fdf-9688-2c8e64d92e81",
+    "name": "奇楠线香【传承】（SP00189）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 59800,
+    "budgetLevel": "500",
+    "description": "独立瓶装设计，每瓶净重10克，约含线香45支。\n纯天然奇楠沉香粉压制，无添加粘粉。原料为奇楠线香最高级别上上品。奇楠线香【传承】的香味变幻万千，烟韵飘逸，芳香弥漫，香味清醇、幽雅、沁人心脾，缓解压力，令人愉悦。较适合俊朗非凡的男士细细品味。\n10g/筒\nSP00189",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "a10ed7a2-c22b-449f-b584-985ab610257d",
+    "name": "海南线香【邂逅】（SP00185）",
+    "type": "incense",
+    "region": "海南",
+    "priceCents": 6800,
+    "budgetLevel": "500",
+    "description": "独立瓶装设计，每瓶净重10克，约含线香42支。\n纯天然海南沉香粉压制，无添加粘粉。花果香蜜香清甜怡人、淡雅舒适，感受来自大自然最淳朴的芳香。鸟语花香、芬芳甘甜，边品香边围炉煮茶，配以悦耳动听的古琴音乐，云淡风轻看透烦恼。海南线香【邂逅】颜色有深有浅，呈土黄色或咖啡色，亚光色，很自然的色彩，留香持久且耐人回味。调养身心，凝神聚气，保证睡眠质量。较适合优雅大方的女士细细品味。\n10g/筒\nSP00185",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "海南",
+      "甜韵",
+      "蜜香",
+      "花香",
+      "茶席",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "a1093dc4-1701-404e-b1ba-dfd5b0f6b451",
+    "name": "海南线香【经典】（SP00186）",
+    "type": "incense",
+    "region": "海南",
+    "priceCents": 9800,
+    "budgetLevel": "500",
+    "description": "独立瓶装设计，每瓶净重10克，约含线香45支。\n纯天然海南沉香粉压制，无添加粘粉。海南线香【经典】祛除异味，改善生活品质，安神、静心、舒缓压力、放松心情，提高睡眠质量。较适合优雅大方的女士细细品味。\n10g/筒\nSP00186",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "海南",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "57f508fe-69a0-401d-814a-5b0cb22deec9",
+    "name": "海南线香【臻品】（SP00187）",
+    "type": "incense",
+    "region": "海南",
+    "priceCents": 18800,
+    "budgetLevel": "500",
+    "description": "独立瓶装设计，每瓶净重10克，约含线香48支。\n纯天然海南沉香粉压制，无添加粘粉。海南线香【臻品】其香味重而不浓，非常有凝聚性，初闻起来香味温和纯正,较为明显, 烧之香气更为芳甜浑厚,久远浓郁，留香持久。纯真质朴，回归自然。\n10g/筒\nSP00187",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "海南",
+      "甜韵",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "114fb575-8de4-4ba1-8a86-8642519ea29d",
+    "name": "海南线香【典藏】（SP00090）",
+    "type": "incense",
+    "region": "海南",
+    "priceCents": 33800,
+    "budgetLevel": "500",
+    "description": "独立瓶装设计，每瓶净重10克，约含线香45支。\n纯天然海南沉香粉压制，无添加粘粉。原料为海南线香最高级别的佳品。海南线香【典藏】香味重而不浓，有凝聚性，香味温和纯正,芳甜浑厚,久远浓郁，留香持久。祥和宽容，修身养性。\n10g/筒\nSP00090",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "海南",
+      "甜韵",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "b2c65e25-85fd-40d9-b668-f2b81ef0f370",
+    "name": "海南线香【传承】（SP00188）",
+    "type": "incense",
+    "region": "海南",
+    "priceCents": 59800,
+    "budgetLevel": "500",
+    "description": "独立瓶装设计，每瓶净重10克，约含线香48支。\n纯天然海南沉香粉压制，无添加粘粉。原料为海南线香最高级别的上上品。海南线香【传承】香味重而不浓，有凝聚性，香味温和纯正,芳甜浑厚,久远浓郁，留香持久。\n10g/筒\nSP00188",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "海南",
+      "甜韵",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "7ff71345-9791-4436-947b-49ceb5fda940",
+    "name": "奇楠小祥云香（SP00231）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 8800,
+    "budgetLevel": "500",
+    "description": "每罐含小祥云香16片，单片燃烧时长约25分钟。单片独立小盒装附赠防火棉，便于收纳携带。\n纯天然沉香粉制成，浓郁醇厚，香韵持久带有清凉感。出香迅速，香云浓烈，穿透力强。舒心养性，健康养生。\n筒\nSP00231",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "凉韵",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "9eb93a2f-8750-49d4-a044-2ba9cc3531cb",
+    "name": "奇楠虫漏小祥云香（SPO0232）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 13800,
+    "budgetLevel": "500",
+    "description": "每罐含小祥云香16片，单片燃烧时长约25分钟。单片独立小盒装附赠防火棉，便于收纳携带。\n纯天然沉香粉制成，浓郁醇厚，香韵持久带有清凉感。油脂丰富，出香迅速，香云浓烈，穿透力强。舒缓压力、稳定情绪，静心安神。\n筒\nSPO0232",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "凉韵",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "e2e5f5ac-79f1-4f60-a195-25998f6c0563",
+    "name": "海南小祥云香（SP00233）",
+    "type": "incense",
+    "region": "海南",
+    "priceCents": 8800,
+    "budgetLevel": "500",
+    "description": "每罐含小祥云香16片，单片燃烧时长约25分钟。单片独立小盒装附赠防火棉，便于收纳携带。\n纯天然沉香粉制成，浓郁醇厚，花果香蜜香沁人心脾。出香迅速，香云浓烈，穿透力强。舒缓压力、稳定情绪，静心安神。\n筒\nSP00233",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "海南",
+      "蜜香",
+      "花香",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "8584a880-ed66-478e-a86c-8958a005ec23",
+    "name": "海南虫漏小祥云香（SP00234）",
+    "type": "incense",
+    "region": "海南",
+    "priceCents": 13800,
+    "budgetLevel": "500",
+    "description": "每罐含小祥云香16片，单片燃烧时长约25分钟。单片独立小盒装附赠防火棉，便于收纳携带。\n纯天然沉香粉制成，浓郁醇厚，花果香蜜香沁人心脾。油脂丰富，出香迅速，香云浓烈，穿透力强。舒缓压力、稳定情绪，静心安神。\n筒\nSP00234",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "海南",
+      "蜜香",
+      "花香",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "a7f7ccfc-3da1-4216-b826-f00a38df2a3a",
+    "name": "芽庄小祥云香（SP00235）",
+    "type": "incense",
+    "region": "芽庄",
+    "priceCents": 8800,
+    "budgetLevel": "500",
+    "description": "每罐含小祥云香16片，单片燃烧时长约25分钟。单片独立小盒装附赠防火棉，便于收纳携带。\n纯天然沉香粉制成，浓郁醇厚，富含花果香、蜜香，清雅香甜。出香迅速，香云浓烈，穿透力强。舒缓压力、稳定情绪，静心安神。\n筒\nSP00235",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "甜韵",
+      "蜜香",
+      "花香",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "44c7e710-fb28-4dd5-b2e2-351aab37a935",
+    "name": "芽庄虫漏小祥云香（SO00236）",
+    "type": "incense",
+    "region": "芽庄",
+    "priceCents": 13800,
+    "budgetLevel": "500",
+    "description": "每罐含小祥云香16片，单片燃烧时长约25分钟。单片独立小盒装附赠防火棉，便于收纳携带。\n纯天然沉香粉制成，浓郁醇厚，富含花果香、蜜香，清雅香甜。油脂丰富，出香迅速，香云浓烈，穿透力强。舒缓压力、稳定情绪，静心安神。\n筒\nSO00236",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "甜韵",
+      "蜜香",
+      "花香",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "6752b8d4-c8e6-4a24-9b1f-764e43b2798c",
+    "name": "奇楠大祥云（SP00080）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 3800,
+    "budgetLevel": "500",
+    "description": "奇楠大祥云由天然种植无粘奇楠沉香粉制成，每筒内有6片，配有阻燃棉。每片可燃40分小时，舒心养性，健康养生。\n纯天然沉香粉制成，浓郁醇厚。出香迅速，香云浓烈，穿透力强。舒缓压力、稳定情绪，静心安神。\n筒\nSP00080",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "5b5225ea-738f-4cf7-be8d-c8513dfdb1b8",
+    "name": "沉香盘香2小时（SP00075）",
+    "type": "incense",
+    "region": "海南",
+    "priceCents": 6000,
+    "budgetLevel": "500",
+    "description": "海南沉香盘香不添加任何化学物质，燃起一盘香，一缕清烟绕境，令人身心愉悦，可持续两小时。为读书、写字、睡觉等场景提供安逸的环境。\n全天然沉香粉压制，纯正无添加。香韵浓烈、气味清凉。适用于礼佛、助眠、净化空气。晚上燃一炉沉香，安抚神经紧张和焦虑，安神助眠。\n盒\nSP00075",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "海南",
+      "凉韵",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "1e73cea6-be42-4a39-a373-6684cf3a24ef",
+    "name": "棋楠盘香2小时（SP00074）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 18000,
+    "budgetLevel": "500",
+    "description": "沉香可通三界为佛教珍品可以除祛晦邪、预防时疫，可静心凝神、缓解失眠症提高睡眠质量。防抑郁，香气清雅、有助于舒缓心结，保持平和心境。\n全天然沉香粉压制，纯正无添加。油脂丰富、香韵浓烈、气味清凉。适用于礼佛、助眠、净化空气。晚上燃一炉沉香，安抚神经紧张和焦虑，安神助眠。\n盒\nSP00074",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "凉韵",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "65eb1c34-4476-4d83-956f-c7aeea498f6c",
+    "name": "富森红土盘香（SP00059）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 22000,
+    "budgetLevel": "500",
+    "description": "富森红土盘香誉为香中舍利。经过漫长的醇化过程使其香气浓郁，奶香甜味中带有淡淡的酸味，清新花果甜蜜感，尾韵带有少许杏仁香气。嗅感丰富饱满，其韵拂过鼻腔，直入百汇苦、酸、微凉、甘渐次变化。犹如夏日花果香，甜风清扬。燃起一盘香，一缕清烟绕境，令人身心愉悦，可持续4小时。\n全天然沉香粉压制，纯正无添加。高端红土“香中至尊”，清甜冰爽，香韵浓烈、气味清凉。适用于礼佛、助眠、净化空气。\n盒\nSP00059",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "甜韵",
+      "蜜香",
+      "凉韵",
+      "奶韵",
+      "花香",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "c0abe5a8-3a1a-424c-b86b-d69468857487",
+    "name": "大盘香 30小时（SP00057）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 18000,
+    "budgetLevel": "500",
+    "description": "沉香大盘香熏有助放松精神，减压以及辟邪镇气；提高呼吸道机能，帮助入睡，解决失眠问题；有助驱蚊灭虫，净化空气。熏香还有防病驱瘟的作用。燃起一盘香，一缕清烟绕境，令人身心愉悦，可持续30小时。\n全天然沉香粉压制，纯正无添加。香韵浓烈、气味清凉。适用于礼佛、助眠、净化空气。晚上燃一炉沉香，安抚神经紧张和焦虑，安神助眠。\n盒\nSP00057",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "凉韵",
+      "助眠静心",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "14260408-25d3-4cb1-8af1-e64dff7a57c9",
+    "name": "竹签香（SP00077）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 3800,
+    "budgetLevel": "500",
+    "description": "全天然沉香粉制成，成分安全无添加。品质上乘、原料天然。香云袅绕、香韵持久醇厚。适用于礼佛、祭祀。\n纯天然沉香竹签香，选用各个产地天然沉香作为原材料的一款香，纯天然且经济实用。适用范围：佛、道、儒；寺庙，居家，静坐时均适用。用香火来敬拜，连接天地。\n包\nSP00077",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "ad7a135b-708a-4086-8ece-2e8f15b0510c",
+    "name": "竹签香（SP00173）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 8800,
+    "budgetLevel": "500",
+    "description": "全天然沉香粉制成，成分安全无添加。\n以古法制香为核心，结合竹签香香品的特点，甄选调制而成油脂丰盛，清幽淡雅，凉香甜韵，堪称一绝。香底干净、香气清雅怡人，甘甜润美，适合阅读、书写、弹琴、品香等时间静香。\n包\nSP00173",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "甜韵",
+      "凉韵",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "22d3030b-4629-446f-9073-6de7e25e4541",
+    "name": "首饰",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "e80179db-c1d6-479c-bc2b-4c3e3d0227fc",
+    "name": "奇楠单颗项链（SP00359）",
+    "type": "bracelet",
+    "region": "未标注产区",
+    "priceCents": 16800,
+    "budgetLevel": "500",
+    "description": "单颗奇楠圆珠吊坠配以编织绳设计，优雅时尚，清雅大方，适合日常佩戴。可做毛衣链、项链，搭配汉服、古典装扮使用，更显气质，淡妆浓抹总相宜。\n待补充\n单珠\nSP00359",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "1e564456-4b53-48aa-b53f-02550936c8c3",
+    "name": "达拉干单圈圆珠沉水（SP00336）",
+    "type": "bracelet",
+    "region": "达拉干",
+    "priceCents": 16800000,
+    "budgetLevel": "collector",
+    "description": "达拉干沉香丰富多样的质感，清澈的奶香味含有清甜的凉爽，夹杂着淡淡的草木香和药香，穿透力强。配戴身上的达拉干沉香，香气的蔓延力更为长久，甚至可以过手留香。\n待补充\n1.8达拉干单圈/重约50克\nSP00336",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "达拉干",
+      "甜韵",
+      "凉韵",
+      "奶韵",
+      "药感",
+      "木质",
+      "沉水"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "7856b216-3641-4f6b-a1f7-5a32b6231b56",
+    "name": "马泥涝单圈圆珠（SP00335）",
+    "type": "bracelet",
+    "region": "达拉干",
+    "priceCents": 1280000,
+    "budgetLevel": "20000",
+    "description": "马泥涝沉香出产于印度尼西亚，与达拉干不分伯仲，气味相似度很高。手串含油丰富、呈现漂亮油脂线、纹理润泽清晰。兼具乳香味和清凉味，前味气息甘凉，然后是奶香醇厚，绵绵不绝。香韵层次丰富，韵味十足。精选稀有老料，无任何人工添加。\n待补充\n1.8马泥涝单圈/重约27克\nSP00335",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "达拉干",
+      "马泥涝",
+      "凉韵",
+      "奶韵"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "27d18a1e-5d0a-42b3-a479-989c34096ee6",
+    "name": "马泥涝单圈圆珠（SP00334）",
+    "type": "bracelet",
+    "region": "未标注产区",
+    "priceCents": 980000,
+    "budgetLevel": "20000",
+    "description": "马泥涝沉香出产于印度尼西亚，手串含油丰富、呈现漂亮油脂线、纹理润泽清晰。兼具乳香味和清凉味，香韵层次丰富，韵味十足。精选稀有老料，无任何人工添加。\n待补充\n1.6马泥涝单圈/重约20克\nSP00334",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "马泥涝",
+      "凉韵",
+      "奶韵"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "c30cb1e6-78e5-4d96-bbe1-aa3498e83fd3",
+    "name": "柬埔寨单圈圆珠（SP00252）",
+    "type": "bracelet",
+    "region": "未标注产区",
+    "priceCents": 968800,
+    "budgetLevel": "20000",
+    "description": "柬埔寨沉香油脂均匀，纹理细腻饱满，香韵层次感强。精选靓料，生结香味十分浓郁，甜中带有一点花香气。生闻蜜甜花香味十足甘凉醇厚，浑然天成富有灵性，来自大自然的完美馈赠。\n待补充\n1.6柬埔寨单圈/重约25克\nSP00252",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "柬埔寨",
+      "甜韵",
+      "蜜香",
+      "凉韵",
+      "花香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "e613dbe6-6613-47ed-876e-579fdd532473",
+    "name": "奇楠单圈圆珠99沉（SP00215）",
+    "type": "bracelet",
+    "region": "未标注产区",
+    "priceCents": 208800,
+    "budgetLevel": "3000",
+    "description": "奇楠沉香油脂丰富，油脂跟木质纤维交织生长在一起，形成漂亮且丰富的纹路，乌黑发亮，润泽的油脂线清晰紧密，流畅细致。油脂积聚软糯有质感、韧性足，戴上手串有明显的黏腻感。香韵层次分明，绵长悠远，穿透力强，醇厚香浓，凉韵贯穿其中。古语有云：“三生有幸得闻奇楠香”之说，可见奇楠之无比珍贵。\n待补充\n1.0奇楠单圈圆珠99沉/重约9克\nSP00215",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "凉韵",
+      "木质"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "e0d391ce-06b8-4159-8981-36758c113a62",
+    "name": "奇楠单圈圆珠9分沉（SP00244 00098）",
+    "type": "bracelet",
+    "region": "未标注产区",
+    "priceCents": 188800,
+    "budgetLevel": "3000",
+    "description": "奇楠沉香油脂丰富，漂亮且丰富的纹路，乌黑发亮，润泽的油脂线清晰紧密，流畅细致。油脂越紧密，沉水度越高，戴上手串有明显的黏腻感。香韵层次分明，绵长悠远，穿透力强，醇厚香浓，凉韵贯穿其中。古语有云：“三生有幸得闻奇楠香”之说，可见奇楠之无比珍贵。\n待补充\n1.0奇楠单圈圆珠9分沉/重约8克\nSP00244 00098",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "凉韵",
+      "沉水"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "ee02969f-ce34-4407-8043-9a347eb81691",
+    "name": "奇楠单圈圆珠9分沉（SP00244 00097）",
+    "type": "bracelet",
+    "region": "未标注产区",
+    "priceCents": 108800,
+    "budgetLevel": "3000",
+    "description": "奇楠沉香油脂丰富，漂亮且丰富的纹路，乌黑发亮，润泽的油脂线清晰紧密，流畅细致。油脂越紧密，沉水度越高，戴上手串有明显的黏腻感。香韵层次分明，绵长悠远，穿透力强，醇厚香浓，凉韵贯穿其中。古语有云：“三生有幸得闻奇楠香”之说，可见奇楠之无比珍贵。\n待补充\n1.0奇楠单圈圆珠9分沉/重约8克\nSP00244 00097",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "凉韵",
+      "沉水"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "6f56eb75-a2e6-4021-9fd5-d173b2ea4136",
+    "name": "奇楠单圈算盘珠（SP00268 00026）",
+    "type": "bracelet",
+    "region": "未标注产区",
+    "priceCents": 76800,
+    "budgetLevel": "500",
+    "description": "纯天然零添加，颗颗高油，纹路清晰。算盘珠造型古朴典雅，男女佩戴均可。油脂饱满，蜜花香凉味浓郁上头，过手留香。\n待补充\n0.7奇楠单圈算盘珠9分沉/重约4.5克\nSP00268 00026",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "蜜香",
+      "凉韵",
+      "花香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "26ab37c5-2e16-44ac-bc5d-d58d363c58cc",
+    "name": "奇楠沉香手串 108颗圆珠（SP00284 00177）",
+    "type": "bracelet",
+    "region": "未标注产区",
+    "priceCents": 128800,
+    "budgetLevel": "3000",
+    "description": "虔诚所愿，事事顺遂。沉水级圆珠，密度细致，油脂量多。香韵由内部油脂挥发而散发味道，在良好保养下香味可达百年之久，经得住时间考验。十斤原料甄选出一串串珠，非遗匠人匠心之作。奇楠软糯质感强韧性足，醇香清凉底蕴丝丝入鼻，层次分明。\n待补充\n0.4奇楠108颗圆珠9分沉/重约5克\nSP00284 00177",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "凉韵",
+      "沉水"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "b90eb420-44f2-4fea-a4c4-6eeea9dcdf73",
+    "name": "奇楠沉香手串 108颗圆珠（SP00292 00179）",
+    "type": "bracelet",
+    "region": "未标注产区",
+    "priceCents": 288800,
+    "budgetLevel": "3000",
+    "description": "晨吉夜安，度日有香。沉水级圆珠，密度细致，油脂量多。真材实料，入水即沉。油脂软糯如膏状，结香久远，香韵浓郁。多规格可选，男女均可佩戴。传世之香，经久不衰。\n待补充\n0.6奇楠108颗圆珠9分沉/重约11克\nSP00292 00179",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "沉水"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "3fda07ca-468f-4657-a1b5-55d82fa31235",
+    "name": "奇楠沉香手串 108颗鼓珠（SP00320 00183）",
+    "type": "bracelet",
+    "region": "未标注产区",
+    "priceCents": 238800,
+    "budgetLevel": "3000",
+    "description": "油脂丰富，韵味浓郁。适合诵经、盘玩。每一颗珠子需要经过8道精细工艺制成，天然纹路清晰可见，沉静气质，简约古典不张扬，香韵甘醇清新。初闻浓厚芳香怡人，可舒缓压力，舒展身心；中闻凉意带甜，神清气爽；尾韵安定情绪，平复烦躁心情，镇静安神、助眠养生。\n待补充\n0.6奇楠108颗鼓珠9分沉/重约11克\nSP00320 00183",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "甜韵",
+      "凉韵",
+      "助眠静心"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "2e8d407d-6bec-4818-b888-0522f246efd8",
+    "name": "奇楠沉香手串 108颗鼓珠（SP00320 00047）",
+    "type": "bracelet",
+    "region": "未标注产区",
+    "priceCents": 238800,
+    "budgetLevel": "3000",
+    "description": "香韵袅袅，持久悠长。沉水级鼓珠，密度细致，油脂量多。真材实料，入水即沉。油脂软糯如膏状，结香久远，香韵浓郁。多规格可选，男女均可佩戴。传世之香，经久不衰。\n待补充\n0.6奇楠108颗鼓珠9分沉/重约11克\nSP00320 00047",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "沉水"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "4ab190b9-7ad8-4310-a855-0d3fbce07977",
+    "name": "奇楠沉香手串 108颗鼓珠（SP00321 00184）",
+    "type": "bracelet",
+    "region": "未标注产区",
+    "priceCents": 398800,
+    "budgetLevel": "3000",
+    "description": "油脂丰富，韵味浓郁。适合诵经、盘玩。每一颗珠子需要经过8道精细工艺制成，天然纹路清晰可见，沉静气质，简约古典不张扬，香韵甘醇清新。初闻浓厚芳香怡人，可舒缓压力，舒展身心；中闻凉意带甜，神清气爽；尾韵安定情绪，平复烦躁心情，镇静安神、助眠养生。\n待补充\n0.6奇楠108颗鼓珠99分沉/重约16克\nSP00321 00184",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "甜韵",
+      "凉韵",
+      "助眠静心"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "936cccb7-faf8-4726-b3eb-5b0624add5a3",
+    "name": "奇楠沉香手串 108颗圆珠（SP00293 00121）",
+    "type": "bracelet",
+    "region": "未标注产区",
+    "priceCents": 568800,
+    "budgetLevel": "20000",
+    "description": "浓浓草药香，悠悠沉香结。99分沉为奇楠沉香传承级别的上等佳品。油脂密集，纹理丝丝紧扣，黏腻感强。馥郁芳香，清凉持久。长久佩戴，随时感受大自然淳朴香韵，沁人心脾。\n待补充\n0.6奇楠108颗圆珠99分沉/重约13克\nSP00293 00121",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "凉韵",
+      "药感"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "5c2f50f4-0123-4585-8c77-bc0f434cb754",
+    "name": "奇楠沉香手串 108颗圆珠（SP00293 00117）",
+    "type": "bracelet",
+    "region": "未标注产区",
+    "priceCents": 568800,
+    "budgetLevel": "20000",
+    "description": "浓浓草药香，悠悠沉香结。99分沉为奇楠沉香传承级别的上等佳品。油脂密集，纹理丝丝紧扣，黏腻感强。馥郁芳香，清凉持久。长期佩戴，随时享受大自然淳朴香韵，沁人心脾。\n待补充\n0.6奇楠108颗圆珠99分沉/重约12克\nSP00293 00117",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "凉韵",
+      "药感"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "e047d6a0-cec6-4cc8-93c4-702182714162",
+    "name": "奇楠沉香手串 108颗圆珠沉水（SP00294 00118）",
+    "type": "bracelet",
+    "region": "未标注产区",
+    "priceCents": 3980000,
+    "budgetLevel": "collector",
+    "description": "香飘十里清凉，一室淡雅留芳。99分沉为奇楠沉香传承级别的顶级佳品。油脂密集，纹理丝丝紧扣，黏腻感强。馥郁芳香，清凉持久。长期佩戴，沁人心脾，调节气场，愉悦身心。\n待补充\n0.6奇楠108颗圆珠沉水/重约18克\nSP00294 00118",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "凉韵",
+      "沉水"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "8503661b-1746-4369-8608-f5ad427b66b4",
+    "name": "达拉干壳仔（SP00126）",
+    "type": "bracelet",
+    "region": "达拉干",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n2000元/克 重约46.72克\nSP00126",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "达拉干"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "8b51974f-2ef2-41b0-9c09-459c21ce844c",
+    "name": "达拉干沉水佛牌（SP00124）",
+    "type": "bracelet",
+    "region": "达拉干",
+    "priceCents": 3800000,
+    "budgetLevel": "collector",
+    "description": "待补充\n待补充\n个\nSP00124",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "达拉干",
+      "沉水"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "af122862-a0d8-40a8-b9b6-be762063b1fb",
+    "name": "沉香奇楠手串报价",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "012beebd-9970-4540-97a2-c41f730f3bf4",
+    "name": "摆件",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "5be31a69-5270-4112-b142-5d0909880185",
+    "name": "38号沉香摆件（SP00213）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n未提供\nSP00213",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "cca68a35-18c0-4020-9a8e-d10dc33a433b",
+    "name": "37号沉香摆件（SP00212）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n未提供\nSP00212",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "2a5294d1-8f0c-4d6e-83a4-d29b792a8cd8",
+    "name": "36号沉香摆件（SP00211）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 2800000,
+    "budgetLevel": "20000",
+    "description": "待补充\n待补充\n未提供\nSP00211",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "cbdc902d-2d2f-4c9e-a2af-7fe100e23f6e",
+    "name": "35号沉香摆件（SP00210）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 280000,
+    "budgetLevel": "3000",
+    "description": "待补充\n待补充\n未提供\nSP00210",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "571c8cac-5c15-4983-8b36-3c418c05c3de",
+    "name": "34号沉香摆件（SP00209）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 580000,
+    "budgetLevel": "20000",
+    "description": "待补充\n待补充\n未提供\nSP00209",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "27d7402d-a72b-4c89-a291-68a39be1b5da",
+    "name": "33号沉香摆件（SP00208）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 498000,
+    "budgetLevel": "3000",
+    "description": "待补充\n待补充\n未提供\nSP00208",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "16330bad-5d8f-4a2b-b286-df02f0db0989",
+    "name": "32号沉香摆件（SP00207）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 398000,
+    "budgetLevel": "3000",
+    "description": "待补充\n待补充\n未提供\nSP00207",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "52769900-7c79-425e-9c16-a77de84930f7",
+    "name": "31号沉香摆件（SP00206）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 398000,
+    "budgetLevel": "3000",
+    "description": "待补充\n待补充\n未提供\nSP00206",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "f9ff6742-0e51-47cb-9010-a2286b762b2e",
+    "name": "30号沉香摆件（SP00205）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 380000,
+    "budgetLevel": "3000",
+    "description": "待补充\n待补充\n未提供\nSP00205",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "591b6544-02fa-41c8-b498-5e052a0c2eb2",
+    "name": "29号沉香摆件（SPO0204）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 480000,
+    "budgetLevel": "3000",
+    "description": "待补充\n待补充\n未提供\nSPO0204",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "bdc62837-36ef-4aa8-b154-4ceed4ec27f8",
+    "name": "28号沉香摆件（SP00203）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 380000,
+    "budgetLevel": "3000",
+    "description": "待补充\n待补充\n未提供\nSP00203",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "a5ffdacb-48e0-4081-82f8-aded45d18075",
+    "name": "27号锯合摆件（SP00202）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 880000,
+    "budgetLevel": "20000",
+    "description": "待补充\n待补充\n未提供\nSP00202",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "78bb2349-9de2-4427-919a-6428fcab2c1a",
+    "name": "27号原木摆件（SP00141）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 980000,
+    "budgetLevel": "20000",
+    "description": "待补充\n待补充\n未提供\nSP00141",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "木质",
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "8e1b32a5-ef55-43d6-88da-8ae46c1e7d82",
+    "name": "26号原木摆件（SO00140）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 680000,
+    "budgetLevel": "20000",
+    "description": "待补充\n待补充\n未提供\nSO00140",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "木质",
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "48dd9c1b-6ec0-4ef7-8857-e80bbff7f255",
+    "name": "25号原木摆件（SP00139）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 680000,
+    "budgetLevel": "20000",
+    "description": "待补充\n待补充\n未提供\nSP00139",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "木质",
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "d42087d0-3a22-4551-9e26-56c501e4f57f",
+    "name": "24号壳仔摆件（SP00138）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 3800000,
+    "budgetLevel": "collector",
+    "description": "待补充\n待补充\n未提供\nSP00138",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "e445b9ea-5368-4896-bea0-e2c1516f4269",
+    "name": "22号海南沉香摆件（SP00134）",
+    "type": "object",
+    "region": "海南",
+    "priceCents": 128000000,
+    "budgetLevel": "collector",
+    "description": "待补充\n待补充\n未提供\nSP00134",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "海南",
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "78ed6c97-f1eb-4af8-a43f-938c2e897994",
+    "name": "20号皮油摆件（SP00132）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 880000,
+    "budgetLevel": "20000",
+    "description": "待补充\n待补充\n未提供\nSP00132",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "23fa71b4-dfcf-4b8e-a174-3697c14bc76f",
+    "name": "19号天然摆件（SP00131）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 16800000,
+    "budgetLevel": "collector",
+    "description": "待补充\n待补充\n未提供\nSP00131",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "ebb83c89-5a42-4a62-ad5b-f646d8ad6b14",
+    "name": "11号摆件包头（SP00023）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 25000,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n364克\nSP00023",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "4f3e3ca8-f359-45e1-b9a0-5f6ef80f7365",
+    "name": "10号摆件（SP00036）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 798000,
+    "budgetLevel": "20000",
+    "description": "待补充\n待补充\n未提供\nSP00036",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "94dd9714-0934-442d-863d-f9d0c8efd9a2",
+    "name": "9号摆件（SP00021）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 688000,
+    "budgetLevel": "20000",
+    "description": "待补充\n待补充\n136克\nSP00021",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "dc6d837e-0514-426b-993e-c2048a5a1a28",
+    "name": "8号摆件板头（SP00020）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 3380000,
+    "budgetLevel": "collector",
+    "description": "待补充\n待补充\n366克\nSP00020",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "6729240c-61d9-49ef-a89c-e48b5c812980",
+    "name": "7号沉香摆件 意雨如云（SP00014）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 980000,
+    "budgetLevel": "20000",
+    "description": "待补充\n待补充\n722克\nSP00014",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "da2172b1-8932-4928-92c4-d6f89da854f3",
+    "name": "6号沉香摆件 江山青峰（SP00013）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 880000,
+    "budgetLevel": "20000",
+    "description": "待补充\n待补充\n626克\nSP00013",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "8a5bc057-e518-49f6-b72b-34f5020bd1c4",
+    "name": "5号摆件 一帆风顺（SP00011）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 2680000,
+    "budgetLevel": "20000",
+    "description": "待补充\n待补充\n523克\nSP00011",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "ae63aba5-b2fa-4668-a596-a46c6030437a",
+    "name": "12号摆件（SP00010）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 880000,
+    "budgetLevel": "20000",
+    "description": "待补充\n待补充\n302克\nSP00010",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "a3e2f684-6aac-4729-99a2-19ea8f2746a4",
+    "name": "4号摆件 川流不息（SP00009）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 3980000,
+    "budgetLevel": "collector",
+    "description": "待补充\n待补充\n未提供\nSP00009",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "ccd5bf23-efe5-4d28-922b-3b05c5f4cc57",
+    "name": "3号摆件 高山流水（SP00008）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 1880000,
+    "budgetLevel": "20000",
+    "description": "待补充\n待补充\n166克\nSP00008",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "3e446554-af6f-4d3c-84b1-342f924d0a32",
+    "name": "1号摆件铁头（SP00001）",
+    "type": "object",
+    "region": "未标注产区",
+    "priceCents": 2380000,
+    "budgetLevel": "20000",
+    "description": "待补充\n待补充\n149克\nSP00001",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "陈设"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "a3f51f1f-2712-4adc-ae50-532ecc1e3fe8",
+    "name": "沉香花茶",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "705e577f-016f-4797-9a4d-d106e161651f",
+    "name": "沉香茶",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 12800,
+    "budgetLevel": "500",
+    "description": "古树沉香茶是用已结香的沉香树叶制成的茶。采用独立小包装设计 超好携带，结过香的沉香茶叶富有人体必须的生命元素，如钙、锌、铁、锰等和维生素，沉香茶色、香、味俱全，通过茶饮就能吸收沉香独特的药性，增强体质，提高免疫力，消除体内多种不利因子。\n待补充\n18泡/盒\n未提供",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "药感",
+      "花香",
+      "茶席",
+      "礼赠"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "9058207e-316b-4ad7-a0fb-2b23180a161b",
+    "name": "沉香茶【古香】（SP00068）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 66000,
+    "budgetLevel": "500",
+    "description": "沉香古香茶，融合红茶工艺手艺制作而成。沉香茶富含抗氧化物质和微量元素，香气古朴含淡淡树香味，入口古香，口感顺滑甘甜自然， 清醇甘爽，茶色略深呈红琥珀色，适合日常办公居家饮用。调和脾胃，消食解脂，健康养生。\n待补充\n斤\nSP00068",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "甜韵",
+      "花香",
+      "茶席"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "c01d8ff4-5226-47c4-beb4-dad3b9599b91",
+    "name": "沉香茶【清香】（SP00069）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 38000,
+    "budgetLevel": "500",
+    "description": "沉香清香茶，融合绿茶工艺手艺制作而成。香气轻飘含淡淡草香味，入口清香，口感微苦随即转清甜，茶色清亮金黄，适合身体劳累时冲泡饮用，安神养心。\n待补充\n斤\nSP00069",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "甜韵",
+      "花香",
+      "助眠静心",
+      "茶席"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "8bfe2cbb-b42b-4e02-add9-2f6dc7cda1e3",
+    "name": "沉香精油",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "30e23fdc-56cb-4ba8-b7a3-fc38fd9df230",
+    "name": "沉香精油（SP00052）",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 5800,
+    "budgetLevel": "500",
+    "description": "待补充\n沉香精油纯天然萃取层次丰富 留香持久，安神、静心、舒缓压力、放松心情、从而达到辅助睡眠，提高睡眠质量。\n1克/1瓶\nSP00052",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "助眠静心",
+      "精油"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "7744a246-3383-4ada-8863-d7b96b52fd9e",
+    "name": "奇楠精油【邂逅】（SP00174）",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 18800,
+    "budgetLevel": "500",
+    "description": "待补充\n奇楠精油【邂逅】纯天然萃取，留香持久，具有消炎杀菌防疫、收敛生肌、益补脏腑、运行气血、调中理气、安定心神、补肾养肝、助眠抗郁、愉悦情绪等诸多功效。\n1克/1瓶\nSP00174",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "助眠静心",
+      "精油"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "277c4557-cd26-42f0-9fc9-30dc125050ab",
+    "name": "奇楠精油【经典】（SP00123）",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 38800,
+    "budgetLevel": "500",
+    "description": "待补充\n奇楠精油【经典】具有留香持久的特点，热力令沉香精油散发，可净化空气，杀菌杀毒，防止病菌传播，促进睡眠，使人身心舒缓，预防哮喘、抗敏平喘，预防感冒、增强免疫力，提神醒脑、降气温中、通达经络的作用。\n2克/瓶\nSP00123",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "助眠静心",
+      "精油"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "2202627f-5f77-47e1-af6e-456903253e08",
+    "name": "奇楠精油【臻品】（SP00175）",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 88800,
+    "budgetLevel": "3000",
+    "description": "待补充\n奇楠精油【臻品】的香味：天神喜、鬼神惧。具有除瘴避秽、隔离非人扰乱的保护作用。舒缓紧张情绪 、提神醒脑、调中理气、增强记忆力、愉悦身心。\n1克/1瓶\nSP00175",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "助眠静心",
+      "精油"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "fb07e998-394d-4dd6-9446-08dee67c5e3e",
+    "name": "原料",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "c4d5ab4e-7ac1-4e43-bcd3-f42257cb490c",
+    "name": "烟丝（SP00176）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 6800,
+    "budgetLevel": "500",
+    "description": "精选沉香原料，以标准化工艺切成细条，制成沉香香烟伴侣，插入烟丝中，改善烟气口感，减少吸烟对身体的伤害。每瓶2克，配烟针润喉清肺，祛除烟味，降低尼古丁。香气入脾，去恶气。清人神，理诸气调中，补五脏。止咳化痰，暖胃温脾，通气定痛。\n待补充\n瓶\nSP00176",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "待补充"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "37415d9d-77a5-406c-9d1b-c000be92c5b3",
+    "name": "奇楠块（SP00016）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 1800,
+    "budgetLevel": "500",
+    "description": "奇楠玦的味道则是丰富多变，极具层次感，初香浓郁，凉气十足，爆发力强，本香甘甜，兰花香持久，尾香为乳香味。\n待补充\n克\nSP00016",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "甜韵",
+      "凉韵",
+      "奶韵",
+      "花香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "abca64cc-28d9-496d-b226-18f0d9a6555d",
+    "name": "奇楠块（SP00017）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 1000,
+    "budgetLevel": "500",
+    "description": "奇楠块结油丰厚，清晰可见。香味浓而不乱，细而不断，穿透力强。\n待补充\n克\nSP00017",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "b6b4468d-de31-4628-b081-18040cd16cb1",
+    "name": "奇楠沉水片（SP00018）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 10000,
+    "budgetLevel": "500",
+    "description": "奇楠沉水片香味干净，有很大的穿透力，生闻香味十分强烈，那种钻心透凉沁人心肺让人难忘。扩散力极强，香味持久。\n待补充\n克\nSP00018",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "凉韵",
+      "沉水"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "9d94de81-2fa1-486b-ad1e-16f20f32213b",
+    "name": "奇楠块沉水（SP00024）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 12000,
+    "budgetLevel": "500",
+    "description": "奇楠块沉水油润油亮，香气扑鼻，甘甜醇厚。扩散力极强，香味持久。\n待补充\n克\nSP00024",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠",
+      "甜韵",
+      "沉水"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "22d7395d-7815-4398-8d1f-f87f9b748250",
+    "name": "奇楠切片（SP00110）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 2800,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n克\nSP00110",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "91f61787-4f8d-4b1b-ad0d-f74ea83e39a7",
+    "name": "奇楠块（SP00113）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 1800,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n克\nSP00113",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "4bd42a4a-edf4-4a76-ad7d-7efb0c8cbf19",
+    "name": "奇楠切丝（SP00114）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 4800,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n克\nSP00114",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "4d090761-ce4f-44e9-8f28-28f8b374d796",
+    "name": "奇楠粉（SP00119）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 1000,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n克\nSP00119",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "28a4b40b-0311-404f-9353-28100bf67bf3",
+    "name": "奇楠粉（SP00120）",
+    "type": "incense",
+    "region": "未标注产区",
+    "priceCents": 2500,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n克\nSP00120",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "奇楠"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "fae4137a-36e9-423f-9009-8edf0b465475",
+    "name": "礼盒包装",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "756d8a7c-a600-4747-8723-72a45a653fca",
+    "name": "茶叶包装系列",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "91e114da-94b9-48c1-b30c-e7fca480a9f0",
+    "name": "茶叶礼盒",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 4000,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n半斤装 2罐\n未提供",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "茶席",
+      "礼赠"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "a0bca071-db04-4213-b398-674c13505040",
+    "name": "沉香熏香炉",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n未提供\n未提供",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "礼赠"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "2c6bc9f7-a055-46f0-84bc-b39213c06c88",
+    "name": "闻山炉",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n未提供\n未提供",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "礼赠"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "44434868-3392-4bcf-933e-96316dcc2515",
+    "name": "荷花蜻蜓熏香炉",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n未提供\n未提供",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "花香",
+      "礼赠"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "283b5c5d-246d-445b-82c2-7b8b07ee03c9",
+    "name": "深蓝色电炉",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n未提供\n未提供",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "礼赠"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "7a46c8b9-8e12-4629-b7a5-63afadade2ab",
+    "name": "九代棱线香炉",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n未提供\n未提供",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "礼赠",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "994d4b7b-cc3d-4ea7-91f8-7bacd7c8da80",
+    "name": "香类包装系列",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "1bc582a3-7c85-4d7f-ba5e-45f87d252029",
+    "name": "线香包装",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 3000,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n5瓶装\n未提供",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "礼赠",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "3db75de9-1d44-4df3-a0e6-3a5277505f69",
+    "name": "方形香包装",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 1600,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n2瓶装\n未提供",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "礼赠"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "f3dccd7c-d375-42e9-8c4e-9ca76334b61a",
+    "name": "盘香包装",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 1500,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n2盘装\n未提供",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "礼赠",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "adba7a49-dc7c-45f1-8057-e7d9644593b9",
+    "name": "祥云香包装",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 1200,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n8片装\n未提供",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "礼赠"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "a28ce26d-fef2-4a01-8dab-12b98dfa82b7",
+    "name": "盘香炉",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 1500,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n未提供\n未提供",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "礼赠",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "a6146ae9-d9b6-4e16-8dc4-90ec9806600f",
+    "name": "大盘香炉",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 1500,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n未提供\n未提供",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "礼赠",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "d0a26b5d-1730-46ea-9b58-75500f70f9a8",
+    "name": "线香盒",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 4000,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n未提供\n未提供",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "礼赠",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "e3e46d5d-152b-4e58-8314-3ba6667fbb74",
+    "name": "盘香盒",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 4000,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n未提供\n未提供",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "礼赠",
+      "线香"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "9bd1faf7-afe0-4f8d-b754-8fc7e08b99f2",
+    "name": "香炉",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 2000,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n未提供\n未提供",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "礼赠"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "574ad283-7978-4b2a-ac6a-6593c92d7488",
+    "name": "葫芦",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 500,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n未提供\n未提供",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "礼赠"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "248ca842-b434-49bb-94aa-59899c3bdbb7",
+    "name": "首饰包装系列",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "162ad31f-6413-452f-bffa-4357736583fb",
+    "name": "精油包装系列",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "a69732a2-a1ec-4d66-8415-7d7076de87d9",
+    "name": "烟丝包装",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 1200,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n5瓶装\n未提供",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "礼赠"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "5bcd7b8c-ba3c-4f01-a770-ac669281a79a",
+    "name": "沉香香刀",
+    "type": "wood",
+    "region": "未标注产区",
+    "priceCents": 0,
+    "budgetLevel": "500",
+    "description": "待补充\n待补充\n未提供\n未提供",
+    "riskNotes": [],
+    "suitableFor": [],
+    "scentTags": [
+      "礼赠"
+    ],
+    "aromaScores": {
+      "sweetness": 60,
+      "coolness": 60,
+      "creaminess": 60,
+      "medicinal": 60,
+      "woody": 60,
+      "penetration": 60,
+      "longevity": 60,
+      "beginnerFriendly": 60,
+      "collectionValue": 60
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "p-hui-an-sweet-wood",
+    "name": "惠安系蜜韵沉香小料",
+    "type": "wood",
+    "region": "越南惠安系",
+    "priceCents": 320000,
+    "budgetLevel": "3000",
+    "description": "甜润、清雅，适合低温细闻与茶席空间。",
+    "riskNotes": [
+      "油脂表现较细腻，新手需避免用高温猛熏",
+      "同产区价差大，需看香气稳定性"
+    ],
+    "suitableFor": [
+      "茶室",
+      "静坐",
+      "偏好甜香的入门进阶用户"
+    ],
+    "scentTags": [
+      "甜韵",
+      "花蜜",
+      "清雅",
+      "茶室"
+    ],
+    "aromaScores": {
+      "sweetness": 86,
+      "coolness": 42,
+      "creaminess": 58,
+      "medicinal": 34,
+      "woody": 62,
+      "penetration": 54,
+      "longevity": 60,
+      "beginnerFriendly": 82,
+      "collectionValue": 48
+    },
+    "inventoryStatus": "limited"
+  },
+  {
+    "id": "p-xingzhou-cool-powder",
+    "name": "星洲凉韵沉香粉",
+    "type": "powder",
+    "region": "星洲系加里曼丹",
+    "priceCents": 68000,
+    "budgetLevel": "500",
+    "description": "凉意明显，木质感清晰，适合电熏体验产区差异。",
+    "riskNotes": [
+      "粉类不适合长期密封潮湿环境",
+      "低价产品需确认无香精添加"
+    ],
+    "suitableFor": [
+      "办公室",
+      "商务空间",
+      "想低门槛试香的新手"
+    ],
+    "scentTags": [
+      "凉韵",
+      "木质",
+      "清醒",
+      "电熏"
+    ],
+    "aromaScores": {
+      "sweetness": 38,
+      "coolness": 82,
+      "creaminess": 24,
+      "medicinal": 52,
+      "woody": 78,
+      "penetration": 72,
+      "longevity": 66,
+      "beginnerFriendly": 88,
+      "collectionValue": 28
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "p-qinan-collector",
+    "name": "奇楠级熟结藏品",
+    "type": "investment",
+    "region": "惠安系高阶藏品",
+    "priceCents": 18800000,
+    "budgetLevel": "collector",
+    "description": "层次变化强，乳韵、凉韵与穿透力兼具，适合资深收藏。",
+    "riskNotes": [
+      "鉴定门槛高，不建议首次购买即重仓",
+      "需完整来源、检测和长期复闻记录"
+    ],
+    "suitableFor": [
+      "资深藏家",
+      "文博馆展陈",
+      "品牌镇店级藏品"
+    ],
+    "scentTags": [
+      "奇楠",
+      "乳韵",
+      "凉韵",
+      "收藏级"
+    ],
+    "aromaScores": {
+      "sweetness": 72,
+      "coolness": 88,
+      "creaminess": 86,
+      "medicinal": 70,
+      "woody": 56,
+      "penetration": 94,
+      "longevity": 92,
+      "beginnerFriendly": 32,
+      "collectionValue": 96
+    },
+    "inventoryStatus": "limited"
+  },
+  {
+    "id": "p-bracelet-daily",
+    "name": "沉水级沉香手串 16mm",
+    "type": "bracelet",
+    "region": "达拉干",
+    "priceCents": 2200000,
+    "budgetLevel": "20000",
+    "description": "佩戴稳定，甜凉平衡，适合日常雅玩与礼赠。",
+    "riskNotes": [
+      "手串不宜用汗手频繁盘玩",
+      "需说明重量、密度和自然纹理差异"
+    ],
+    "suitableFor": [
+      "商务礼赠",
+      "日常佩戴",
+      "已有基础认知的用户"
+    ],
+    "scentTags": [
+      "手串",
+      "甜凉",
+      "礼赠",
+      "沉水级"
+    ],
+    "aromaScores": {
+      "sweetness": 68,
+      "coolness": 63,
+      "creaminess": 48,
+      "medicinal": 44,
+      "woody": 74,
+      "penetration": 58,
+      "longevity": 78,
+      "beginnerFriendly": 62,
+      "collectionValue": 72
+    },
+    "inventoryStatus": "in_stock"
+  },
+  {
+    "id": "p-sleep-incense",
+    "name": "寝香线香 甜木配方",
+    "type": "incense",
+    "region": "惠安与海南复配",
+    "priceCents": 52000,
+    "budgetLevel": "500",
+    "description": "低烟、甜木调，适合睡前半小时营造安定空间。",
+    "riskNotes": [
+      "睡眠场景注意通风，燃尽后再入睡",
+      "对烟敏感者可改用电熏"
+    ],
+    "suitableFor": [
+      "助眠",
+      "卧室",
+      "初次接触沉香香品的人"
+    ],
+    "scentTags": [
+      "助眠",
+      "甜木",
+      "线香",
+      "低烟"
+    ],
+    "aromaScores": {
+      "sweetness": 74,
+      "coolness": 28,
+      "creaminess": 44,
+      "medicinal": 22,
+      "woody": 58,
+      "penetration": 38,
+      "longevity": 52,
+      "beginnerFriendly": 90,
+      "collectionValue": 18
+    },
+    "inventoryStatus": "in_stock"
+  }
+]
