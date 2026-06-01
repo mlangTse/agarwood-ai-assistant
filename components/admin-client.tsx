@@ -45,7 +45,7 @@ export function AdminClient() {
   }, []);
 
   async function loadKnowledgeDocuments() {
-    const response = await fetch("/api/knowledge/documents", { cache: "no-store" });
+    const response = await fetch("./api/knowledge/documents", { cache: "no-store" });
     const json = await response.json();
     if (response.ok) {
       setKnowledgeDocuments(json.documents ?? []);
@@ -59,7 +59,7 @@ export function AdminClient() {
     const formData = new FormData(form);
     setUploadStatus("正在切片与生成 embedding...");
     
-    const response = await fetch("/api/knowledge/upload", {
+    const response = await fetch("./api/knowledge/upload", {
       method: "POST",
       body: formData,
     });
@@ -104,7 +104,7 @@ export function AdminClient() {
       aromaScores: scores
     };
     setProductStatus("正在保存商品...");
-    const response = await fetch("/api/products", {
+    const response = await fetch("./api/products", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -120,7 +120,7 @@ export function AdminClient() {
     const formData = new FormData(form);
     setProductImportStatus("正在解析并导入商品...");
 
-    const response = await fetch("/api/products/import", {
+    const response = await fetch("./api/products/import", {
       method: "POST",
       body: formData
     });

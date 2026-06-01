@@ -4,9 +4,23 @@ export async function getSupabaseAdmin() {
   if (!isConfiguredSupabaseUrl(url) || !isConfiguredSupabaseServiceKey(serviceKey)) return null;
 
   const { createClient } = await import("@supabase/supabase-js");
-  return createClient(url, serviceKey, {
+  const supabase = createClient(url, serviceKey, {
     auth: { persistSession: false }
   });
+
+  // 测试Supabase连接，如果连接失败则返回null触发本地回退
+  try {
+    const { error } = await supabase.from("knowledge_documents").select("id").limit(1);
+    if (error) {
+      console.warn("Supabase连接测试失败，切换到本地模式:", error.message);
+      return null;
+    }
+  } catch (error) {
+    console.warn("Supabase连接异常，切换到本地模式:", error);
+    return null;
+  }
+
+  return supabase;
 }
 
 function isConfiguredSupabaseUrl(value: string | undefined): value is string {
