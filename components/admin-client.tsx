@@ -110,18 +110,16 @@ export function AdminClient() {
   }, [inventoryFilter, productQuery, productTypeFilter, products]);
 
   async function loadKnowledgeDocuments() {
-    const response = await fetch(apiPath("/api/knowledge/documents"), { cache: "no-store" });
-    const json = await readJson(response);
-    if (response.ok) {
+    const { ok, json } = await fetchJson(apiPath("/api/knowledge/documents"), { cache: "no-store" });
+    if (ok) {
       setKnowledgeDocuments(json.documents ?? []);
       setKnowledgeMode(json.mode ?? "");
     }
   }
 
   async function loadProducts() {
-    const response = await fetch(apiPath("/api/products"), { cache: "no-store" });
-    const json = await readJson(response);
-    if (response.ok) {
+    const { ok, json } = await fetchJson(apiPath("/api/products"), { cache: "no-store" });
+    if (ok) {
       setProducts(json.products ?? []);
       setProductMode(json.mode ?? "");
     } else {
@@ -130,9 +128,8 @@ export function AdminClient() {
   }
 
   async function loadRegions() {
-    const response = await fetch(apiPath("/api/regions"), { cache: "no-store" });
-    const json = await readJson(response);
-    if (response.ok) {
+    const { ok, json } = await fetchJson(apiPath("/api/regions"), { cache: "no-store" });
+    if (ok) {
       setRegions(json.regions ?? []);
       setRegionMode(json.mode ?? "");
     } else {
@@ -144,13 +141,12 @@ export function AdminClient() {
     event.preventDefault();
     const form = event.currentTarget;
     setUploadStatus("正在切片并生成 embedding...");
-    const response = await fetch(apiPath("/api/knowledge/upload"), {
+    const { ok, json } = await fetchJson(apiPath("/api/knowledge/upload"), {
       method: "POST",
       body: new FormData(form)
     });
-    const json = await readJson(response);
-    setUploadStatus(response.ok ? `已入库：${json.chunks} 个知识片段（${json.mode}）` : json.error);
-    if (response.ok) {
+    setUploadStatus(ok ? `已入库：${json.chunks} 个知识片段（${json.mode}）` : json.error);
+    if (ok) {
       form.reset();
       await loadKnowledgeDocuments();
     }
@@ -161,14 +157,13 @@ export function AdminClient() {
     const form = event.currentTarget;
     const payload = productPayloadFromForm(new FormData(form), newScores);
     setProductStatus("正在保存商品...");
-    const response = await fetch(apiPath("/api/products"), {
+    const { ok, json } = await fetchJson(apiPath("/api/products"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
-    const json = await readJson(response);
-    setProductStatus(response.ok ? `已保存：${json.product.name}（${json.mode}）` : json.error);
-    if (response.ok) {
+    setProductStatus(ok ? `已保存：${json.product.name}（${json.mode}）` : json.error);
+    if (ok) {
       form.reset();
       setNewScores(defaultScores);
       await loadProducts();
@@ -180,14 +175,13 @@ export function AdminClient() {
     if (!selectedProduct) return;
     const payload = productPayloadFromForm(new FormData(event.currentTarget), editScores);
     setProductStatus("正在修改商品...");
-    const response = await fetch(apiPath(`/api/products/${selectedProduct.id}`), {
+    const { ok, json } = await fetchJson(apiPath(`/api/products/${selectedProduct.id}`), {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
-    const json = await readJson(response);
-    setProductStatus(response.ok ? `已修改：${json.product.name}（${json.mode}）` : json.error);
-    if (response.ok) {
+    setProductStatus(ok ? `已修改：${json.product.name}（${json.mode}）` : json.error);
+    if (ok) {
       setSelectedProduct(json.product);
       await loadProducts();
     }
@@ -197,19 +191,18 @@ export function AdminClient() {
     event.preventDefault();
     const form = event.currentTarget;
     setProductImportStatus("正在解析并导入商品...");
-    const response = await fetch(apiPath("/api/products/import"), {
+    const { ok, json } = await fetchJson(apiPath("/api/products/import"), {
       method: "POST",
       body: new FormData(form)
     });
-    const json = await readJson(response);
     setProductImportStatus(
-      response.ok
+      ok
         ? `已导入 ${json.createdCount} 个，跳过 ${json.skippedCount} 个重复项（${json.mode}）${
-            json.errors?.length ? `，${json.errors.length} 条未导入` : ""
+            json.errors?.length ? `；${json.errors.length} 条未导入` : ""
           }`
         : json.error
     );
-    if (response.ok) {
+    if (ok) {
       form.reset();
       await loadProducts();
     }
@@ -219,14 +212,13 @@ export function AdminClient() {
     event.preventDefault();
     const form = event.currentTarget;
     setRegionStatus("正在保存产区...");
-    const response = await fetch(apiPath("/api/regions"), {
+    const { ok, json } = await fetchJson(apiPath("/api/regions"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(regionPayloadFromForm(new FormData(form)))
     });
-    const json = await readJson(response);
-    setRegionStatus(response.ok ? `已保存：${json.region.name}（${json.mode}）` : json.error);
-    if (response.ok) {
+    setRegionStatus(ok ? `已保存：${json.region.name}（${json.mode}）` : json.error);
+    if (ok) {
       form.reset();
       await loadRegions();
     }
@@ -236,14 +228,13 @@ export function AdminClient() {
     event.preventDefault();
     if (!selectedRegion) return;
     setRegionStatus("正在修改产区...");
-    const response = await fetch(apiPath(`/api/regions/${selectedRegion.id}`), {
+    const { ok, json } = await fetchJson(apiPath(`/api/regions/${selectedRegion.id}`), {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(regionPayloadFromForm(new FormData(event.currentTarget)))
     });
-    const json = await readJson(response);
-    setRegionStatus(response.ok ? `已修改：${json.region.name}（${json.mode}）` : json.error);
-    if (response.ok) {
+    setRegionStatus(ok ? `已修改：${json.region.name}（${json.mode}）` : json.error);
+    if (ok) {
       setSelectedRegion(json.region);
       await loadRegions();
     }
@@ -253,19 +244,18 @@ export function AdminClient() {
     event.preventDefault();
     const form = event.currentTarget;
     setRegionImportStatus("正在解析并导入产区资料...");
-    const response = await fetch(apiPath("/api/regions/import"), {
+    const { ok, json } = await fetchJson(apiPath("/api/regions/import"), {
       method: "POST",
       body: new FormData(form)
     });
-    const json = await readJson(response);
     setRegionImportStatus(
-      response.ok
+      ok
         ? `新增 ${json.createdCount} 个，更新 ${json.updatedCount} 个，跳过 ${json.skippedCount} 个（${json.mode}）${
-            json.errors?.length ? `，${json.errors.length} 条未导入` : ""
+            json.errors?.length ? `；${json.errors.length} 条未导入` : ""
           }`
         : json.error
     );
-    if (response.ok) {
+    if (ok) {
       form.reset();
       await loadRegions();
     }
@@ -412,14 +402,23 @@ export function AdminClient() {
                     </div>
                   </div>
                   <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>共 {filteredProducts.length} / {products.length} 个商品</span>
+                    <span>
+                      共 {filteredProducts.length} / {products.length} 个商品
+                    </span>
                     {productMode && <Badge>{productMode}</Badge>}
                   </div>
                 </CardContent>
               </Card>
 
               <div className="grid gap-5 lg:grid-cols-2">
-                <ProductForm title="新增商品" description="用于导购 Agent 推荐和风险提示。" scores={newScores} setScores={setNewScores} onSubmit={createProduct} submitLabel="保存商品" />
+                <ProductForm
+                  title="新增商品"
+                  description="用于导购 Agent 推荐和风险提示。"
+                  scores={newScores}
+                  setScores={setNewScores}
+                  onSubmit={createProduct}
+                  submitLabel="保存商品"
+                />
                 {selectedProduct ? (
                   <ProductForm
                     key={productFormKey(selectedProduct)}
@@ -491,7 +490,12 @@ export function AdminClient() {
                 <CardContent>
                   <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                     {regions.map((region) => (
-                      <button key={region.id} type="button" className="rounded-md border bg-background/55 p-4 text-left transition-colors hover:bg-secondary/35" onClick={() => setSelectedRegion(region)}>
+                      <button
+                        key={region.id}
+                        type="button"
+                        className="rounded-md border bg-background/55 p-4 text-left transition-colors hover:bg-secondary/35"
+                        onClick={() => setSelectedRegion(region)}
+                      >
                         <div className="flex items-start justify-between gap-3">
                           <div>
                             <p className="font-medium">{region.name}</p>
@@ -717,29 +721,34 @@ function regionFormKey(region: Region) {
 }
 
 function productPayloadFromForm(data: FormData, scores: AromaScores) {
+  const priceYuan = Number(textValue(data, "priceYuan", "0"));
   return {
-    name: String(data.get("name") ?? ""),
-    type: String(data.get("type") ?? "wood"),
-    region: String(data.get("region") ?? ""),
-    priceCents: Math.round(Number(data.get("priceYuan") ?? 0) * 100),
-    budgetLevel: String(data.get("budgetLevel") ?? "3000"),
-    description: String(data.get("description") ?? ""),
-    riskNotes: splitList(String(data.get("riskNotes") ?? "")),
-    suitableFor: splitList(String(data.get("suitableFor") ?? "")),
-    scentTags: splitList(String(data.get("scentTags") ?? "")),
+    name: textValue(data, "name"),
+    type: textValue(data, "type", "wood"),
+    region: textValue(data, "region"),
+    priceCents: Number.isFinite(priceYuan) ? Math.round(priceYuan * 100) : 0,
+    budgetLevel: textValue(data, "budgetLevel", "3000"),
+    description: textValue(data, "description"),
+    riskNotes: splitList(textValue(data, "riskNotes")),
+    suitableFor: splitList(textValue(data, "suitableFor")),
+    scentTags: splitList(textValue(data, "scentTags")),
     aromaScores: scores,
-    inventoryStatus: String(data.get("inventoryStatus") ?? "in_stock")
+    inventoryStatus: textValue(data, "inventoryStatus", "in_stock")
   };
 }
 
 function regionPayloadFromForm(data: FormData) {
   return {
-    name: String(data.get("name") ?? ""),
-    country: String(data.get("country") ?? ""),
-    aromaCharacter: String(data.get("aromaCharacter") ?? ""),
-    typicalScenes: splitList(String(data.get("typicalScenes") ?? "")),
-    riskNotes: splitList(String(data.get("riskNotes") ?? ""))
+    name: textValue(data, "name"),
+    country: textValue(data, "country"),
+    aromaCharacter: textValue(data, "aromaCharacter"),
+    typicalScenes: splitList(textValue(data, "typicalScenes")),
+    riskNotes: splitList(textValue(data, "riskNotes"))
   };
+}
+
+function textValue(data: FormData, name: string, fallback = "") {
+  return String(data.get(name) ?? fallback).trim();
 }
 
 function splitList(value: string) {
@@ -755,6 +764,23 @@ async function readJson(response: Response) {
     return text ? JSON.parse(text) : {};
   } catch {
     return { error: text || `HTTP ${response.status}` };
+  }
+}
+
+async function fetchJson(input: RequestInfo | URL, init?: RequestInit) {
+  try {
+    const response = await fetch(input, init);
+    return {
+      ok: response.ok,
+      json: await readJson(response)
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      json: {
+        error: error instanceof Error ? `请求失败：${error.message}` : "请求失败，请检查网络或稍后重试。"
+      }
+    };
   }
 }
 
