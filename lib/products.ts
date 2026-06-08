@@ -3,6 +3,7 @@ import path from "node:path";
 import { z } from "zod";
 import { sampleProducts } from "@/lib/sample-data";
 import { getDatabase } from "@/lib/db";
+import { sanitizeStringList, sanitizeTextValue } from "@/lib/sanitize";
 import type { AromaScoreKey, AromaScores, BudgetLevel, Product, ProductType } from "@/lib/types";
 
 export type ProductImportResult = {
@@ -73,16 +74,21 @@ type ProductRow = {
 
 export function validateProductInput(input: ProductInput): Omit<Product, "id"> {
   const product = productSchema.parse(input);
+  const name = sanitizeTextValue(product.name);
+  const region = sanitizeTextValue(product.region);
+  if (!name) throw new Error("Product name is required.");
+  if (!region) throw new Error("Product region is required.");
+
   return {
-    name: product.name,
+    name,
     type: product.type,
-    region: product.region,
+    region,
     priceCents: product.priceCents,
     budgetLevel: product.budgetLevel,
-    description: product.description,
-    riskNotes: product.riskNotes,
-    suitableFor: product.suitableFor,
-    scentTags: product.scentTags,
+    description: sanitizeTextValue(product.description),
+    riskNotes: sanitizeStringList(product.riskNotes),
+    suitableFor: sanitizeStringList(product.suitableFor),
+    scentTags: sanitizeStringList(product.scentTags),
     aromaScores: product.aromaScores,
     inventoryStatus: product.inventoryStatus
   };
@@ -234,7 +240,9 @@ export async function importProducts(inputs: ProductInput[]): Promise<ProductImp
 }
 
 export function parseProductRows(rows: Record<string, unknown>[]): ProductInput[] {
-  return rows.map((row) => normalizeImportRow(normalizeRowKeys(row))).filter((row): row is ProductInput => Boolean(row.name));
+  return rows
+    .map((row) => normalizeImportRow(normalizeRowKeys(row)))
+    .filter((row): row is ProductInput => Boolean(sanitizeTextValue(row.name)));
 }
 
 export function parseProductText(content: string): ProductInput[] {
@@ -281,7 +289,13 @@ async function readLocalProducts(): Promise<Product[]> {
     const content = await readFile(LOCAL_PRODUCTS_PATH, "utf8");
     const parsed = JSON.parse(content);
     if (!Array.isArray(parsed)) return [...sampleProducts];
-    return parsed.map((item) => ({ id: item.id ?? crypto.randomUUID(), ...validateProductInput(item) }));
+    return parsed.flatMap((item) => {
+      try {
+        return [{ id: item.id ?? crypto.randomUUID(), ...validateProductInput(item) }];
+      } catch {
+        return [];
+      }
+    });
   } catch (error) {
     if (error && typeof error === "object" && "code" in error && error.code === "ENOENT") {
       await writeLocalProducts(sampleProducts);
@@ -297,7 +311,7 @@ async function writeLocalProducts(products: Product[]) {
 }
 
 function normalizeImportRow(row: Record<string, unknown>): ProductInput {
-  const value = (aliases: string[], fallback = "") => String(readAlias(row, aliases) ?? fallback).trim();
+  const value = (aliases: string[], fallback = "") => sanitizeTextValue(readAlias(row, aliases) ?? fallback);
   const name = value(["name", "商品名称", "名称", "产品名称", "标题", "title"]);
   const tags = splitList(value(["scentTags", "香韵标签", "香韵/场景标签", "标签", "场景标签"]));
   const descriptionParts = [
@@ -385,10 +399,7 @@ function normalizeRowKeys(row: Record<string, unknown>) {
 }
 
 function splitList(value: string) {
-  return value
-    .split(/[,，、;\n]/)
-    .map((item) => item.trim())
-    .filter(Boolean);
+  return sanitizeStringList(value.split(/[,，、;\n]/).map((item) => item.trim()));
 }
 
 function normalizeProductType(value: string): ProductType {
@@ -410,7 +421,14 @@ function inferRegion(value: string) {
   if (value.includes("星洲") || value.includes("加里曼丹")) return "星洲系";
   if (value.includes("芽庄")) return "芽庄";
   if (value.includes("达拉干")) return "达拉干";
-  return "未标注产区";
+  if (value.includes("柬埔寨")) return "柬埔寨";
+  if (value.includes("马泥涝")) return "马泥涝";
+  if (value.includes("奇楠")) return "奇楠";
+  if (["包装", "香炉", "炉", "香盒", "盒", "葫芦", "香刀"].some((item) => value.includes(item))) {
+    return "配套用品";
+  }
+  if (["茶", "精油", "烟丝"].some((item) => value.includes(item))) return "沉香制品";
+  return "";
 }
 
 function normalizePrice(priceCents: unknown, priceYuan: string) {

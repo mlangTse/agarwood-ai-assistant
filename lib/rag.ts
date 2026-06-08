@@ -1,5 +1,6 @@
 import { getDatabase, vectorLiteral } from "@/lib/db";
 import { embedText, fallbackEmbedding } from "@/lib/model-api";
+import { sanitizeKnowledgeText } from "@/lib/sanitize";
 import type { KnowledgeChunk } from "@/lib/types";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -49,7 +50,8 @@ export async function ingestKnowledgeDocument(input: {
   sourceName?: string;
 }) {
   const db = await getDatabase();
-  const chunks = chunkText(input.content);
+  const content = sanitizeKnowledgeText(input.content);
+  const chunks = chunkText(content);
   const embeddings = await Promise.all(chunks.map((content) => embedText(content)));
 
   if (!db) {
@@ -57,7 +59,7 @@ export async function ingestKnowledgeDocument(input: {
       title: input.title,
       sourceName: input.sourceName,
       mimeType: input.mimeType,
-      content: input.content,
+      content,
       chunks
     });
 
@@ -73,7 +75,7 @@ export async function ingestKnowledgeDocument(input: {
       `insert into knowledge_documents (title, source_name, mime_type, content)
        values ($1, $2, $3, $4)
        returning id`,
-      [input.title, input.sourceName, input.mimeType, input.content]
+      [input.title, input.sourceName, input.mimeType, content]
     );
 
     for (const [index, content] of chunks.entries()) {
