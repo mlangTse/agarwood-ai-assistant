@@ -129,66 +129,55 @@ export async function retrieveKnowledge(question: string, matchCount = 5): Promi
 }
 
 export async function listKnowledgeDocuments() {
-  try {
-    const db = await getDatabase();
-    console.log('[listKnowledgeDocuments] getDatabase result:', db ? 'connected' : 'null');
+  const db = await getDatabase();
 
-    if (!db) {
-      console.log('[listKnowledgeDocuments] Using local mode');
-      const documents = await readLocalKnowledgeDocuments();
-      return {
-        documents: documents.map((document) => ({
-          id: document.id,
-          title: document.title,
-          sourceName: document.sourceName,
-          mimeType: document.mimeType,
-          chunks: document.chunks.length,
-          createdAt: document.createdAt
-        })),
-        mode: "local"
-      };
-    }
-
-    console.log('[listKnowledgeDocuments] Executing PostgreSQL query...');
-    const { rows } = await db.query<{
-      id: string;
-      title: string;
-      source_name: string | null;
-      mime_type: string | null;
-      created_at: string;
-      chunks: string;
-    }>(
-      `select
-        d.id,
-        d.title,
-        d.source_name,
-        d.mime_type,
-        d.created_at,
-        count(e.id)::int as chunks
-       from knowledge_documents d
-       left join embeddings e on e.document_id = d.id
-       group by d.id
-       order by d.created_at desc`
-    );
-    console.log('[listKnowledgeDocuments] Query result rows:', rows.length);
-
-    const result = {
-      documents: rows.map((document) => ({
-        id: document.id as string,
-        title: document.title as string,
-        sourceName: document.source_name as string | undefined,
-        mimeType: document.mime_type as string | undefined,
-        chunks: Number(document.chunks),
-        createdAt: document.created_at as string
+  if (!db) {
+    const documents = await readLocalKnowledgeDocuments();
+    return {
+      documents: documents.map((document) => ({
+        id: document.id,
+        title: document.title,
+        sourceName: document.sourceName,
+        mimeType: document.mimeType,
+        chunks: document.chunks.length,
+        createdAt: document.createdAt
       })),
-      mode: "postgresql"
+      mode: "local"
     };
-    console.log('[listKnowledgeDocuments] Returning result:', JSON.stringify(result).slice(0, 200));
-    return result;
-  } catch (error) {
-    console.error('[listKnowledgeDocuments] Error:', error);
-    throw error;
   }
+
+  const { rows } = await db.query<{
+    id: string;
+    title: string;
+    source_name: string | null;
+    mime_type: string | null;
+    created_at: string;
+    chunks: string;
+  }>(
+    `select
+      d.id,
+      d.title,
+      d.source_name,
+      d.mime_type,
+      d.created_at,
+      count(e.id)::int as chunks
+     from knowledge_documents d
+     left join embeddings e on e.document_id = d.id
+     group by d.id
+     order by d.created_at desc`
+  );
+
+  return {
+    documents: rows.map((document) => ({
+      id: document.id,
+      title: document.title,
+      sourceName: document.source_name ?? undefined,
+      mimeType: document.mime_type ?? undefined,
+      chunks: Number(document.chunks),
+      createdAt: document.created_at
+    })),
+    mode: "postgresql"
+  };
 }
 
 function withTimeout<T>(promise: PromiseLike<T>, timeoutMs: number, message: string): Promise<T> {
@@ -215,6 +204,7 @@ async function localKnowledgeSearch(question: string, limit: number): Promise<Kn
       title: document.title,
       documentId: document.id,
       metadata: {
+        ...chunk.metadata,
         sourceName: document.sourceName,
         createdAt: document.createdAt
       }
@@ -223,24 +213,24 @@ async function localKnowledgeSearch(question: string, limit: number): Promise<Kn
 
   const seed: KnowledgeChunk[] = [
     {
-      title: "星洲与惠安基础差异",
+      title: "星洲系与惠安系基础差异",
       content:
         "星洲系常以木质、凉感、穿透力和空间扩散见长；惠安系常以甜润、蜜韵、花香和细腻层次被讨论。具体仍需结合实物、结香状态和熏闻温度判断。"
     },
     {
       title: "奇楠说明",
       content:
-        "奇楠通常指香气变化强、穿透力高、常带凉韵乳韵且质地特殊的一类高阶沉香。市场使用该词较复杂，必须结合来源、实物复闻与专业鉴别。"
+        "奇楠通常指香气变化强、穿透力高、常带凉韵或乳韵且质地特殊的一类高阶沉香。市场使用该词较复杂，必须结合来源、实物复闻与专业鉴别。"
     },
     {
-      title: "沉水价格",
+      title: "沉水与价格",
       content:
         "沉水代表密度达到可沉入水中的状态，常与油脂含量相关，但沉水不是价值的唯一条件。香气品质、产区、结香方式、稀缺性和来源记录都会影响价格。"
     },
     {
       title: "电熏与炭熏",
       content:
-        "电熏控温稳定，适合新手和产区对比；炭熏仪式感强、变化丰富，但温度控制难，容易把甜韵烤焦或放大香材缺点。"
+        "电熏控温稳定，适合新手和产区对比；炭熏仪式感强、变化丰富，但温度控制更难，容易把甜韵烤焦或放大香材缺点。"
     }
   ];
 

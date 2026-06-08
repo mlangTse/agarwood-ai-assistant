@@ -188,9 +188,7 @@ function streamFallback(
 
   const readable = new ReadableStream({
     async start(controller) {
-      controller.enqueue(
-        encoder.encode(`event: meta\ndata: ${JSON.stringify(context.meta)}\n\n`)
-      );
+      controller.enqueue(encoder.encode(`event: meta\ndata: ${JSON.stringify(context.meta)}\n\n`));
       for (const token of text.match(/.{1,12}/g) ?? []) {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify({ token })}\n\n`));
         await new Promise((resolve) => setTimeout(resolve, 18));
@@ -211,7 +209,7 @@ function streamFallback(
 
 function buildKnowledgeFallbackText(message: string, chunks: { title: string; content: string }[]) {
   if (chunks.length === 0) {
-    return `我没有在当前知识库里找到足够贴合“${message}”的资料。请先在后台上传相关 Markdown、TXT 或 PDF，上传后我会按知识库片段来回答，并在右侧显示引用来源。`;
+    return `我没有在当前知识库里找到足够贴合“${message}”的资料。建议先补充产区来源、树种、结香方式、检测或合法来源证明等材料；补充后我会按知识库片段回答，并在侧栏展示引用来源。`;
   }
 
   const notes = chunks
@@ -219,25 +217,32 @@ function buildKnowledgeFallbackText(message: string, chunks: { title: string; co
     .map((chunk, index) => `${index + 1}. ${chunk.title}：${chunk.content.replace(/\s+/g, " ").slice(0, 180)}`)
     .join("\n");
 
-  return `我按已上传知识库回答“${message}”：\n${notes}\n\n以上是知识库中最相关的片段整理。若用于鉴定或购买，还需要结合实物复闻、来源记录和检测资料。`;
+  return `我按已上传知识库回答“${message}”：\n${notes}\n\n以上是知识库中最相关的片段整理。若用于购买、鉴定或对外宣传，还需要结合实物复闻、来源记录和检测资料。`;
 }
 
 function buildFallbackText(module: AssistantModule, message: string, recommendations: Recommendation[]) {
   if (module === "encyclopedia") {
-    return `我会先按知识库口径回答。“${message}”这个问题需要结合产区、结香状态与实物香气判断。当前本地演示知识库可以说明基础概念，但若要做购买或鉴定决策，还需要补充来源记录、检测资料和复闻样本。`;
+    return `我会先按知识库口径回答。“${message}”这个问题需要结合产区、树种、结香方式、来源记录和实物香气判断。当前兜底回答只能说明基础概念；若要用于购买或鉴定决策，还应补充来源证明、检测资料和复闻样本。`;
   }
 
   if (module === "mentor") {
-    return `以你的描述“${message}”来看，香席不宜一开始就追求强烈。可先选惠安系或甜凉平衡的星洲系，用电熏从 80-110 摄氏度缓慢升温。若用于茶室，取甜韵、木质感清楚的小料；若用于商务空间，可稍取凉感和穿透力。香材搭配宜少，先单品复闻，再考虑与海南甜木或低烟线香做空间铺底。`;
+    return `从你的描述“${message}”来看，建议先从低风险的单品闻香开始，不急着追求强烈或高价。可以用电熏从 80-110 摄氏度缓慢升温，观察甜韵、凉感、木质感和烟感的变化。如果是茶席或日常空间，先选清甜、温润、烟感低的香材；如果是展厅或商务空间，再考虑扩散感更强的口径。`;
+  }
+
+  if (recommendations.length === 0) {
+    return `我还没有足够的商品候选来做精准推荐。你可以先告诉我预算、用途、喜欢甜韵还是凉韵、想要线香/香粉/手串/香材哪一类，我会按风险更低的顺序给你建议。`;
   }
 
   const lines = recommendations
     .map(
       (item, index) =>
-        `${index + 1}. ${item.product.name}：${item.why} 适合 ${item.suitableFor}。风险点是 ${item.risk}。${item.beginnerFriendly ? "新手可以买，但要小量试香。" : "不建议新手直接重仓。"}${item.upgradeAdvice}`
+        `${index + 1}. ${item.product.name}：${item.why} 适合 ${item.suitableFor}。风险点是 ${item.risk}。${
+          item.beginnerFriendly ? "新手可以少量试香。" : "不建议新手直接重仓。"
+        }${item.upgradeAdvice}`
     )
     .join("\n");
-  return `我不会建议你为了预算而硬买贵货。按“${message}”来看，可以先这样判断：\n${lines}`;
+
+  return `我不会建议你为了预算压力硬买贵货。按“${message}”来看，可以这样判断：\n${lines}`;
 }
 
 function withTimeout<T>(promise: Promise<T>, timeoutMs: number, message: string): Promise<T> {
