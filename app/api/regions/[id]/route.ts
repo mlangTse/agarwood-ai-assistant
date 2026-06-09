@@ -6,9 +6,10 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     const result = await updateRegion(params.id, await request.json());
     return NextResponse.json(result);
   } catch (error) {
+    const message = error instanceof Error ? error.message : "修改产区失败。";
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "修改产区失败。" },
-      { status: error instanceof Error && error.message.includes("未找到") ? 404 : 400 }
+      { error: message },
+      { status: message.includes("未找到") ? 404 : 400 }
     );
   }
 }

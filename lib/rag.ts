@@ -254,6 +254,31 @@ export async function listKnowledgeDocuments() {
   };
 }
 
+export async function deleteKnowledgeDocument(id: string) {
+  const db = await getDatabase();
+
+  if (!db) {
+    const documents = await readLocalKnowledgeDocuments();
+    const nextDocuments = documents.filter((document) => document.id !== id);
+    if (nextDocuments.length === documents.length) {
+      throw new Error("未找到要删除的知识库资料。");
+    }
+    await writeLocalKnowledgeDocuments(nextDocuments);
+    return { deletedId: id, mode: "local" as const };
+  }
+
+  const { rows } = await db.query<{ id: string }>(
+    "delete from knowledge_documents where id = $1 returning id",
+    [id]
+  );
+
+  if (!rows[0]) {
+    throw new Error("未找到要删除的知识库资料。");
+  }
+
+  return { deletedId: rows[0].id, mode: "postgresql" as const };
+}
+
 function withTimeout<T>(promise: PromiseLike<T>, timeoutMs: number, message: string): Promise<T> {
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => reject(new Error(message)), timeoutMs);
@@ -330,14 +355,17 @@ async function saveLocalKnowledgeDocument(input: {
   chunks: string[];
 }) {
   const documents = await readLocalKnowledgeDocuments();
-  const id = crypto.randomUUID();
+  const existing = documents.find(
+    (item) => item.title === input.title || (input.sourceName && item.sourceName === input.sourceName)
+  );
+  const id = existing?.id ?? crypto.randomUUID();
   const document: KnowledgeDocumentRecord = {
     id,
     title: input.title,
     sourceName: input.sourceName,
     mimeType: input.mimeType,
     content: input.content,
-    createdAt: new Date().toISOString(),
+    createdAt: existing?.createdAt ?? new Date().toISOString(),
     chunks: input.chunks.map((content, index) => ({
       id: `${id}-${index}`,
       documentId: id,

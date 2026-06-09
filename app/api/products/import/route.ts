@@ -7,25 +7,29 @@ export const runtime = "nodejs";
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const file = formData.get("file");
-    if (!(file instanceof File)) {
+    const files = formData.getAll("file").filter((file): file is File => file instanceof File);
+    if (files.length === 0) {
       return NextResponse.json({ error: "请上传 Excel / Markdown / TXT 文件。" }, { status: 400 });
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const products = parseImportFile(file, buffer);
+    const products = [];
+    for (const file of files) {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      products.push(...parseImportFile(file, buffer));
+    }
+
     if (products.length === 0) {
       return NextResponse.json({ error: "没有识别到可导入的商品。请检查表头或文本字段。" }, { status: 400 });
     }
 
     const result = await importProducts(products);
-    if (result.createdCount === 0 && result.skippedCount === 0 && result.errors.length > 0) {
+    if (result.createdCount === 0 && result.updatedCount === 0 && result.skippedCount === 0 && result.errors.length > 0) {
       return NextResponse.json(
         { ...result, error: `没有商品被导入：${result.errors.slice(0, 3).join("；")}` },
         { status: 400 }
       );
     }
-    return NextResponse.json(result);
+    return NextResponse.json({ ...result, files: files.length });
   } catch (error) {
     return NextResponse.json(
       {
@@ -40,11 +44,11 @@ function parseImportFile(file: File, buffer: Buffer) {
   const name = file.name.toLowerCase();
   if (name.endsWith(".xlsx") || name.endsWith(".xls")) {
     const workbook = XLSX.read(buffer, { type: "buffer" });
-    const sheetName = workbook.SheetNames[0];
-    if (!sheetName) return [];
-    const sheet = workbook.Sheets[sheetName];
-    const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: "" });
-    return parseProductRows(rows);
+    return workbook.SheetNames.flatMap((sheetName) => {
+      const sheet = workbook.Sheets[sheetName];
+      const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: "" });
+      return parseProductRows(rows);
+    });
   }
 
   const text = buffer.toString("utf8");

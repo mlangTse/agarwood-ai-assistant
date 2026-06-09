@@ -1,51 +1,25 @@
 "use client";
 
 import * as React from "react";
-import {
-  Database,
-  FileText,
-  FileUp,
-  MapPinned,
-  PackagePlus,
-  Pencil,
-  RefreshCw,
-  Save,
-  Search,
-  SlidersHorizontal
-} from "lucide-react";
+import { Database, FileText, FileUp, MapPinned, PackagePlus, RefreshCw, Search, Trash2 } from "lucide-react";
 import { Nav } from "@/components/nav";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
 import { apiPath } from "@/lib/client-paths";
-import type { AromaScores, Product, ProductType, Region } from "@/lib/types";
+import type { Product, ProductType, Region } from "@/lib/types";
 
-const scoreFields = [
-  ["sweetness", "甜感"],
-  ["coolness", "凉感"],
-  ["creaminess", "奶韵"],
-  ["medicinal", "药感"],
-  ["woody", "木质感"],
-  ["penetration", "穿透力"],
-  ["longevity", "留香"],
-  ["beginnerFriendly", "新手友好度"],
-  ["collectionValue", "收藏价值"]
-] as const;
-
-const defaultScores: AromaScores = {
-  sweetness: 60,
-  coolness: 60,
-  creaminess: 60,
-  medicinal: 60,
-  woody: 60,
-  penetration: 60,
-  longevity: 60,
-  beginnerFriendly: 60,
-  collectionValue: 40
+type KnowledgeDocument = {
+  id: string;
+  title: string;
+  sourceName?: string;
+  chunks: number;
+  createdAt: string;
 };
+
+type JsonRecord = Record<string, any>;
 
 const productTypeLabels: Record<ProductType, string> = {
   wood: "香材",
@@ -56,19 +30,9 @@ const productTypeLabels: Record<ProductType, string> = {
   investment: "收藏级"
 };
 
-type KnowledgeDocument = {
-  id: string;
-  title: string;
-  sourceName?: string;
-  chunks: number;
-  createdAt: string;
-};
-
 export function AdminClient() {
   const [uploadStatus, setUploadStatus] = React.useState("");
-  const [productStatus, setProductStatus] = React.useState("");
   const [productImportStatus, setProductImportStatus] = React.useState("");
-  const [regionStatus, setRegionStatus] = React.useState("");
   const [regionImportStatus, setRegionImportStatus] = React.useState("");
   const [knowledgeMode, setKnowledgeMode] = React.useState("");
   const [productMode, setProductMode] = React.useState("");
@@ -76,13 +40,7 @@ export function AdminClient() {
   const [knowledgeDocuments, setKnowledgeDocuments] = React.useState<KnowledgeDocument[]>([]);
   const [products, setProducts] = React.useState<Product[]>([]);
   const [regions, setRegions] = React.useState<Region[]>([]);
-  const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null);
-  const [selectedRegion, setSelectedRegion] = React.useState<Region | null>(null);
-  const [newScores, setNewScores] = React.useState<AromaScores>(defaultScores);
-  const [editScores, setEditScores] = React.useState<AromaScores>(defaultScores);
   const [productQuery, setProductQuery] = React.useState("");
-  const [productTypeFilter, setProductTypeFilter] = React.useState("all");
-  const [inventoryFilter, setInventoryFilter] = React.useState("all");
 
   React.useEffect(() => {
     void loadKnowledgeDocuments();
@@ -90,30 +48,24 @@ export function AdminClient() {
     void loadRegions();
   }, []);
 
-  React.useEffect(() => {
-    setEditScores(selectedProduct?.aromaScores ?? defaultScores);
-  }, [selectedProduct]);
-
   const filteredProducts = React.useMemo(() => {
     const query = productQuery.trim().toLowerCase();
-    return products.filter((product) => {
-      const matchesQuery =
-        !query ||
-        [product.name, product.region, product.description, product.scentTags.join(" ")]
-          .join(" ")
-          .toLowerCase()
-          .includes(query);
-      const matchesType = productTypeFilter === "all" || product.type === productTypeFilter;
-      const matchesInventory = inventoryFilter === "all" || product.inventoryStatus === inventoryFilter;
-      return matchesQuery && matchesType && matchesInventory;
-    });
-  }, [inventoryFilter, productQuery, productTypeFilter, products]);
+    if (!query) return products;
+    return products.filter((product) =>
+      [product.name, product.region, product.description, product.scentTags.join(" ")]
+        .join(" ")
+        .toLowerCase()
+        .includes(query)
+    );
+  }, [productQuery, products]);
 
   async function loadKnowledgeDocuments() {
     const { ok, json } = await fetchJson(apiPath("/api/knowledge/documents"), { cache: "no-store" });
     if (ok) {
       setKnowledgeDocuments(json.documents ?? []);
       setKnowledgeMode(json.mode ?? "");
+    } else {
+      setUploadStatus(json.error ?? "读取知识库失败。");
     }
   }
 
@@ -123,7 +75,7 @@ export function AdminClient() {
       setProducts(json.products ?? []);
       setProductMode(json.mode ?? "");
     } else {
-      setProductStatus(json.error ?? "读取商品失败。");
+      setProductImportStatus(json.error ?? "读取商品失败。");
     }
   }
 
@@ -133,7 +85,7 @@ export function AdminClient() {
       setRegions(json.regions ?? []);
       setRegionMode(json.mode ?? "");
     } else {
-      setRegionStatus(json.error ?? "读取产区失败。");
+      setRegionImportStatus(json.error ?? "读取产区失败。");
     }
   }
 
@@ -145,46 +97,23 @@ export function AdminClient() {
       method: "POST",
       body: new FormData(form)
     });
-    setUploadStatus(ok ? `已入库：${json.chunks} 个知识片段（${json.mode}）` : json.error);
+    setUploadStatus(ok ? knowledgeUploadMessage(json) : json.error ?? "上传失败。");
     if (ok) {
       form.reset();
       await loadKnowledgeDocuments();
     }
   }
 
-  async function createProduct(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const payload = productPayloadFromForm(new FormData(form), newScores);
-    setProductStatus("正在保存商品...");
-    const { ok, json } = await fetchJson(apiPath("/api/products"), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    setProductStatus(ok ? `已保存：${json.product.name}（${json.mode}）` : json.error);
-    if (ok) {
-      form.reset();
-      setNewScores(defaultScores);
-      await loadProducts();
-    }
-  }
+  async function deleteKnowledgeDocument(document: KnowledgeDocument) {
+    const confirmed = window.confirm(`确定移除「${document.title}」吗？删除后对应知识片段也会移除。`);
+    if (!confirmed) return;
 
-  async function updateSelectedProduct(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (!selectedProduct) return;
-    const payload = productPayloadFromForm(new FormData(event.currentTarget), editScores);
-    setProductStatus("正在修改商品...");
-    const { ok, json } = await fetchJson(apiPath(`/api/products/${selectedProduct.id}`), {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+    setUploadStatus(`正在删除：${document.title}...`);
+    const { ok, json } = await fetchJson(apiPath(`/api/knowledge/documents/${document.id}`), {
+      method: "DELETE"
     });
-    setProductStatus(ok ? `已修改：${json.product.name}（${json.mode}）` : json.error);
-    if (ok) {
-      setSelectedProduct(json.product);
-      await loadProducts();
-    }
+    setUploadStatus(ok ? `已删除：${document.title}（${json.mode}）` : json.error ?? "删除失败。");
+    if (ok) await loadKnowledgeDocuments();
   }
 
   async function importProducts(event: React.FormEvent<HTMLFormElement>) {
@@ -195,48 +124,10 @@ export function AdminClient() {
       method: "POST",
       body: new FormData(form)
     });
-    setProductImportStatus(
-      ok
-        ? `已导入 ${json.createdCount} 个，跳过 ${json.skippedCount} 个重复项（${json.mode}）${
-            json.errors?.length ? `；${json.errors.length} 条未导入` : ""
-          }`
-        : json.error
-    );
+    setProductImportStatus(ok ? importMessage(json, "商品") : json.error ?? "导入失败。");
     if (ok) {
       form.reset();
       await loadProducts();
-    }
-  }
-
-  async function createRegion(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = event.currentTarget;
-    setRegionStatus("正在保存产区...");
-    const { ok, json } = await fetchJson(apiPath("/api/regions"), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(regionPayloadFromForm(new FormData(form)))
-    });
-    setRegionStatus(ok ? `已保存：${json.region.name}（${json.mode}）` : json.error);
-    if (ok) {
-      form.reset();
-      await loadRegions();
-    }
-  }
-
-  async function updateSelectedRegion(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (!selectedRegion) return;
-    setRegionStatus("正在修改产区...");
-    const { ok, json } = await fetchJson(apiPath(`/api/regions/${selectedRegion.id}`), {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(regionPayloadFromForm(new FormData(event.currentTarget)))
-    });
-    setRegionStatus(ok ? `已修改：${json.region.name}（${json.mode}）` : json.error);
-    if (ok) {
-      setSelectedRegion(json.region);
-      await loadRegions();
     }
   }
 
@@ -248,13 +139,7 @@ export function AdminClient() {
       method: "POST",
       body: new FormData(form)
     });
-    setRegionImportStatus(
-      ok
-        ? `新增 ${json.createdCount} 个，更新 ${json.updatedCount} 个，跳过 ${json.skippedCount} 个（${json.mode}）${
-            json.errors?.length ? `；${json.errors.length} 条未导入` : ""
-          }`
-        : json.error
-    );
+    setRegionImportStatus(ok ? importMessage(json, "产区") : json.error ?? "导入失败。");
     if (ok) {
       form.reset();
       await loadRegions();
@@ -262,539 +147,254 @@ export function AdminClient() {
   }
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-background text-foreground">
       <Nav />
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <Badge>Admin Console</Badge>
-            <h1 className="mt-3 font-serif text-4xl font-semibold">沉香知识与商品中台</h1>
-          </div>
-          <div className="flex gap-2 text-sm text-muted-foreground">
-            <Database className="h-4 w-4" />
-            PostgreSQL / RAG / Product Aroma Scores
-          </div>
+      <section className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-2">
+          <Badge variant="secondary" className="w-fit">
+            <Database className="mr-1 h-3.5 w-3.5" />
+            管理后台
+          </Badge>
+          <h1 className="text-3xl font-semibold tracking-normal">资料与知识库管理</h1>
+          <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
+            批量上传知识库、商品和产区资料。重复资料会优先更新已有记录，避免同一批材料反复追加成多份。
+          </p>
         </div>
 
-        <Tabs defaultValue="knowledge">
-          <TabsList className="flex flex-wrap">
-            <TabsTrigger value="knowledge">
-              <FileUp className="mr-2 h-4 w-4" />
-              知识库上传
-            </TabsTrigger>
-            <TabsTrigger value="products">
-              <PackagePlus className="mr-2 h-4 w-4" />
-              商品管理
-            </TabsTrigger>
-            <TabsTrigger value="regions">
-              <MapPinned className="mr-2 h-4 w-4" />
-              产区资料
-            </TabsTrigger>
+        <Tabs defaultValue="knowledge" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="knowledge">知识库</TabsTrigger>
+            <TabsTrigger value="products">商品</TabsTrigger>
+            <TabsTrigger value="regions">产区</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="knowledge">
-            <Card className="bg-card/82">
-              <CardHeader>
-                <CardTitle>知识库上传</CardTitle>
-                <CardDescription>支持 Markdown / TXT / PDF，上传后自动切片并写入当前知识库。</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form className="grid gap-4" onSubmit={uploadKnowledge}>
-                  <Input name="file" type="file" accept=".md,.txt,.pdf,text/markdown,text/plain,application/pdf" required />
-                  <Button className="w-fit" type="submit">
-                    <FileUp className="h-4 w-4" />
-                    上传并入库
-                  </Button>
-                </form>
-                {uploadStatus && <p className="mt-4 text-sm text-muted-foreground">{uploadStatus}</p>}
-                <div className="mt-6 rounded-md border bg-background/45">
-                  <div className="flex items-center justify-between gap-3 border-b px-4 py-3">
-                    <div className="flex items-center gap-2 text-sm font-medium">
-                      <FileText className="h-4 w-4" />
-                      已入库资料
-                    </div>
-                    {knowledgeMode && <Badge>{knowledgeMode}</Badge>}
-                  </div>
-                  <div className="divide-y">
-                    {knowledgeDocuments.length > 0 ? (
-                      knowledgeDocuments.map((document) => (
-                        <div key={document.id} className="grid gap-1 px-4 py-3 text-sm sm:grid-cols-[1fr_auto] sm:items-center">
-                          <div>
-                            <p className="font-medium">{document.title}</p>
-                            <p className="text-xs text-muted-foreground">{document.sourceName ?? "后台上传资料"}</p>
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            {document.chunks} 个片段 · {formatDate(document.createdAt)}
-                          </p>
-                        </div>
-                      ))
-                    ) : (
-                      <p className="px-4 py-5 text-sm text-muted-foreground">还没有可检索的知识库记录。</p>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="products">
-            <div className="grid gap-5">
-              <Card className="bg-card/82">
+          <TabsContent value="knowledge" className="mt-6">
+            <div className="grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+              <Card>
                 <CardHeader>
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <CardTitle>已有商品</CardTitle>
-                      <CardDescription>查看、筛选并选择商品进行修改。</CardDescription>
-                    </div>
-                    <Button variant="outline" size="sm" onClick={() => void loadProducts()}>
-                      <RefreshCw className="h-4 w-4" />
-                      刷新
-                    </Button>
-                  </div>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <FileUp className="h-5 w-5" />
+                    批量上传资料
+                  </CardTitle>
+                  <CardDescription>支持 Markdown、TXT、PDF。文件名相同或标题相同会更新原资料。</CardDescription>
                 </CardHeader>
-                <CardContent className="grid gap-4">
-                  <div className="grid gap-3 lg:grid-cols-[1fr_180px_180px]">
-                    <label className="relative">
-                      <Search className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input className="pl-9" value={productQuery} onChange={(event) => setProductQuery(event.target.value)} placeholder="搜索名称、产区、标签" />
-                    </label>
-                    <Select value={productTypeFilter} onChange={(event) => setProductTypeFilter(event.target.value)}>
-                      <option value="all">全部类型</option>
-                      {Object.entries(productTypeLabels).map(([value, label]) => (
-                        <option key={value} value={value}>
-                          {label}
-                        </option>
-                      ))}
-                    </Select>
-                    <Select value={inventoryFilter} onChange={(event) => setInventoryFilter(event.target.value)}>
-                      <option value="all">全部库存</option>
-                      <option value="in_stock">在售</option>
-                      <option value="limited">少量</option>
-                      <option value="archived">下架</option>
-                    </Select>
-                  </div>
-                  <div className="overflow-x-auto rounded-md border">
-                    <div className="min-w-[760px]">
-                      <div className="grid grid-cols-[minmax(220px,1.4fr)_minmax(160px,1fr)_96px_112px_88px] gap-3 border-b bg-secondary/45 px-4 py-2 text-xs font-medium text-muted-foreground">
-                        <span>商品</span>
-                        <span>产区</span>
-                        <span>类型</span>
-                        <span>价格</span>
-                        <span>状态</span>
-                      </div>
-                      <div className="max-h-[420px] divide-y overflow-y-auto">
-                        {filteredProducts.map((product) => (
-                          <button
-                            key={product.id}
-                            type="button"
-                            className="grid w-full grid-cols-[minmax(220px,1.4fr)_minmax(160px,1fr)_96px_112px_88px] gap-3 px-4 py-3 text-left text-sm transition-colors hover:bg-secondary/35"
-                            onClick={() => setSelectedProduct(product)}
-                          >
-                            <span className="truncate font-medium">{product.name}</span>
-                            <span className="truncate text-muted-foreground">{product.region}</span>
-                            <span>{productTypeLabels[product.type]}</span>
-                            <span>{formatPrice(product.priceCents)}</span>
-                            <InventoryBadge status={product.inventoryStatus} />
-                          </button>
-                        ))}
-                        {filteredProducts.length === 0 && <p className="px-4 py-6 text-sm text-muted-foreground">没有匹配的商品。</p>}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>
-                      共 {filteredProducts.length} / {products.length} 个商品
-                    </span>
-                    {productMode && <Badge>{productMode}</Badge>}
-                  </div>
+                <CardContent>
+                  <form className="grid gap-4" onSubmit={uploadKnowledge}>
+                    <Input name="file" type="file" accept=".md,.markdown,.txt,.pdf" multiple required />
+                    <Button type="submit">
+                      <FileUp className="mr-2 h-4 w-4" />
+                      上传到 RAG
+                    </Button>
+                  </form>
+                  <StatusText>{uploadStatus}</StatusText>
                 </CardContent>
               </Card>
 
-              <div className="grid gap-5 lg:grid-cols-2">
-                <ProductForm
-                  title="新增商品"
-                  description="用于导购 Agent 推荐和风险提示。"
-                  scores={newScores}
-                  setScores={setNewScores}
-                  onSubmit={createProduct}
-                  submitLabel="保存商品"
-                />
-                {selectedProduct ? (
-                  <ProductForm
-                    key={productFormKey(selectedProduct)}
-                    title="修改商品"
-                    description={selectedProduct.name}
-                    product={selectedProduct}
-                    scores={editScores}
-                    setScores={setEditScores}
-                    onSubmit={updateSelectedProduct}
-                    submitLabel="保存修改"
-                  />
-                ) : (
-                  <Card className="bg-card/82">
-                    <CardHeader>
-                      <CardTitle>修改商品</CardTitle>
-                      <CardDescription>从上方商品列表中选择一项后编辑。</CardDescription>
-                    </CardHeader>
-                  </Card>
-                )}
-              </div>
-
-              <Card className="bg-card/82">
-                <CardHeader>
-                  <CardTitle>批量导入商品</CardTitle>
-                  <CardDescription>支持 Excel / CSV / Markdown / TXT。</CardDescription>
+              <Card>
+                <CardHeader className="flex flex-row items-start justify-between gap-3">
+                  <div>
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <FileText className="h-5 w-5" />
+                      已入库资料
+                    </CardTitle>
+                    <CardDescription>
+                      {knowledgeDocuments.length} 份资料，当前模式：{knowledgeMode || "读取中"}
+                    </CardDescription>
+                  </div>
+                  <Button variant="outline" size="icon" onClick={() => void loadKnowledgeDocuments()} aria-label="刷新资料">
+                    <RefreshCw className="h-4 w-4" />
+                  </Button>
                 </CardHeader>
                 <CardContent>
-                  <form className="grid gap-4" onSubmit={importProducts}>
-                    <Input
-                      name="file"
-                      type="file"
-                      accept=".xlsx,.xls,.csv,.tsv,.md,.txt,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv,text/tab-separated-values,text/markdown,text/plain"
-                      required
-                    />
-                    <Button className="w-fit" type="submit">
-                      <FileUp className="h-4 w-4" />
-                      导入商品
-                    </Button>
-                  </form>
-                  {(productStatus || productImportStatus) && (
-                    <div className="mt-4 grid gap-1 text-sm text-muted-foreground">
-                      {productStatus && <p>{productStatus}</p>}
-                      {productImportStatus && <p>{productImportStatus}</p>}
-                    </div>
-                  )}
+                  <div className="grid max-h-[520px] gap-3 overflow-auto pr-1">
+                    {knowledgeDocuments.length === 0 ? (
+                      <EmptyState text="暂无已入库资料。" />
+                    ) : (
+                      knowledgeDocuments.map((document) => (
+                        <div key={document.id} className="rounded-lg border bg-card p-3">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="min-w-0">
+                              <p className="truncate font-medium">{document.title}</p>
+                              <p className="mt-1 text-xs text-muted-foreground">
+                                {document.sourceName || "未记录来源文件"} · {document.chunks} 个片段 ·{" "}
+                                {formatDate(document.createdAt)}
+                              </p>
+                            </div>
+                            <Button variant="outline" size="icon" onClick={() => void deleteKnowledgeDocument(document)} aria-label="删除资料">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </div>
           </TabsContent>
 
-          <TabsContent value="regions">
-            <div className="grid gap-5">
-              <Card className="bg-card/82">
+          <TabsContent value="products" className="mt-6">
+            <div className="grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+              <Card>
                 <CardHeader>
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <CardTitle>产区资料</CardTitle>
-                      <CardDescription>维护结构化产区档案，供后台和前台读取。</CardDescription>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {regionMode && <Badge>{regionMode}</Badge>}
-                      <Button variant="outline" size="sm" onClick={() => void loadRegions()}>
-                        <RefreshCw className="h-4 w-4" />
-                        刷新
-                      </Button>
-                    </div>
-                  </div>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <PackagePlus className="h-5 w-5" />
+                    批量导入商品
+                  </CardTitle>
+                  <CardDescription>支持 Excel、Markdown、TXT。重复商品按名称、产区和类型更新。</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                    {regions.map((region) => (
-                      <button
-                        key={region.id}
-                        type="button"
-                        className="rounded-md border bg-background/55 p-4 text-left transition-colors hover:bg-secondary/35"
-                        onClick={() => setSelectedRegion(region)}
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <p className="font-medium">{region.name}</p>
-                            <p className="text-xs text-muted-foreground">{region.country || "未标注国家/地区"}</p>
-                          </div>
-                          <Pencil className="h-4 w-4 text-muted-foreground" />
-                        </div>
-                        <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted-foreground">{region.aromaCharacter}</p>
-                      </button>
-                    ))}
-                    {regions.length === 0 && <p className="text-sm text-muted-foreground">还没有产区资料。</p>}
-                  </div>
+                  <form className="grid gap-4" onSubmit={importProducts}>
+                    <Input name="file" type="file" accept=".xlsx,.xls,.md,.markdown,.txt,.csv,.tsv" multiple required />
+                    <Button type="submit">
+                      <FileUp className="mr-2 h-4 w-4" />
+                      导入商品
+                    </Button>
+                  </form>
+                  <StatusText>{productImportStatus}</StatusText>
                 </CardContent>
               </Card>
 
-              <div className="grid gap-5 lg:grid-cols-2">
-                <RegionForm title="添加产区" onSubmit={createRegion} submitLabel="保存产区" />
-                {selectedRegion ? (
-                  <RegionForm key={regionFormKey(selectedRegion)} title="修改产区" region={selectedRegion} onSubmit={updateSelectedRegion} submitLabel="保存修改" />
-                ) : (
-                  <Card className="bg-card/82">
-                    <CardHeader>
-                      <CardTitle>修改产区</CardTitle>
-                      <CardDescription>从上方产区列表中选择一项后编辑。</CardDescription>
-                    </CardHeader>
-                  </Card>
-                )}
-              </div>
+              <Card>
+                <CardHeader className="gap-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <CardTitle className="text-lg">商品列表</CardTitle>
+                      <CardDescription>
+                        {products.length} 个商品，当前模式：{productMode || "读取中"}
+                      </CardDescription>
+                    </div>
+                    <Button variant="outline" size="icon" onClick={() => void loadProducts()} aria-label="刷新商品">
+                      <RefreshCw className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <div className="relative">
+                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      value={productQuery}
+                      onChange={(event) => setProductQuery(event.target.value)}
+                      placeholder="搜索名称、产区、描述或香气标签"
+                      className="pl-9"
+                    />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid max-h-[520px] gap-3 overflow-auto pr-1">
+                    {filteredProducts.length === 0 ? (
+                      <EmptyState text="暂无匹配商品。" />
+                    ) : (
+                      filteredProducts.map((product) => (
+                        <div key={product.id} className="rounded-lg border bg-card p-3">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <p className="font-medium">{product.name}</p>
+                            <Badge variant="outline">{productTypeLabels[product.type]}</Badge>
+                            <Badge variant="secondary">{product.region}</Badge>
+                          </div>
+                          <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{product.description}</p>
+                          <p className="mt-2 text-xs text-muted-foreground">{product.scentTags.join("、") || "暂无香气标签"}</p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
 
-              <Card className="bg-card/82">
+          <TabsContent value="regions" className="mt-6">
+            <div className="grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+              <Card>
                 <CardHeader>
-                  <CardTitle>批量导入产区</CardTitle>
-                  <CardDescription>支持 Excel / CSV / Markdown / TXT，字段包含名称、国家/地区、香韵特点、典型场景、风险提示。</CardDescription>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <MapPinned className="h-5 w-5" />
+                    批量导入产区
+                  </CardTitle>
+                  <CardDescription>支持 Excel、Markdown、TXT。重复产区按名称更新。</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <form className="grid gap-4" onSubmit={importRegions}>
-                    <Input
-                      name="file"
-                      type="file"
-                      accept=".xlsx,.xls,.csv,.tsv,.md,.txt,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv,text/tab-separated-values,text/markdown,text/plain"
-                      required
-                    />
-                    <Button className="w-fit" type="submit">
-                      <FileUp className="h-4 w-4" />
+                    <Input name="file" type="file" accept=".xlsx,.xls,.md,.markdown,.txt,.csv,.tsv" multiple required />
+                    <Button type="submit">
+                      <FileUp className="mr-2 h-4 w-4" />
                       导入产区
                     </Button>
                   </form>
-                  {(regionStatus || regionImportStatus) && (
-                    <div className="mt-4 grid gap-1 text-sm text-muted-foreground">
-                      {regionStatus && <p>{regionStatus}</p>}
-                      {regionImportStatus && <p>{regionImportStatus}</p>}
-                    </div>
-                  )}
+                  <StatusText>{regionImportStatus}</StatusText>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-start justify-between gap-3">
+                  <div>
+                    <CardTitle className="text-lg">产区列表</CardTitle>
+                    <CardDescription>
+                      {regions.length} 个产区，当前模式：{regionMode || "读取中"}
+                    </CardDescription>
+                  </div>
+                  <Button variant="outline" size="icon" onClick={() => void loadRegions()} aria-label="刷新产区">
+                    <RefreshCw className="h-4 w-4" />
+                  </Button>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid max-h-[520px] gap-3 overflow-auto pr-1">
+                    {regions.length === 0 ? (
+                      <EmptyState text="暂无产区资料。" />
+                    ) : (
+                      regions.map((region) => (
+                        <div key={region.id} className="rounded-lg border bg-card p-3">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <p className="font-medium">{region.name}</p>
+                            <Badge variant="secondary">{region.country}</Badge>
+                          </div>
+                          <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{region.aromaCharacter}</p>
+                          <p className="mt-2 text-xs text-muted-foreground">
+                            {(region.typicalScenes ?? region.scenes ?? []).join("、") || "暂无适用场景"}
+                          </p>
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </div>
           </TabsContent>
         </Tabs>
-      </div>
+      </section>
     </main>
   );
 }
 
-function ProductForm({
-  title,
-  description,
-  product,
-  scores,
-  setScores,
-  onSubmit,
-  submitLabel
-}: {
-  title: string;
-  description: string;
-  product?: Product;
-  scores: AromaScores;
-  setScores: React.Dispatch<React.SetStateAction<AromaScores>>;
-  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-  submitLabel: string;
-}) {
-  return (
-    <form className="grid gap-5 lg:grid-cols-[1fr_320px]" onSubmit={onSubmit}>
-      <Card className="bg-card/82">
-        <CardHeader>
-          <CardTitle>{title}</CardTitle>
-          <CardDescription>{description}</CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-4">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Input name="name" placeholder="商品名称" defaultValue={product?.name} required />
-            <Input name="region" placeholder="产区，例如 惠安系 / 达拉干" defaultValue={product?.region} required />
-            <Input name="priceYuan" type="number" step="0.01" placeholder="价格（元）" defaultValue={product ? product.priceCents / 100 : ""} required />
-            <Select name="budgetLevel" defaultValue={product?.budgetLevel ?? "3000"}>
-              <option value="500">500 元</option>
-              <option value="3000">3000 元</option>
-              <option value="20000">2 万元</option>
-              <option value="collector">收藏级</option>
-            </Select>
-            <Select name="type" defaultValue={product?.type ?? "wood"}>
-              {Object.entries(productTypeLabels).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </Select>
-            <Select name="inventoryStatus" defaultValue={product?.inventoryStatus ?? "in_stock"}>
-              <option value="in_stock">在售</option>
-              <option value="limited">少量</option>
-              <option value="archived">下架</option>
-            </Select>
-          </div>
-          <Input name="scentTags" placeholder="香韵标签，逗号分隔" defaultValue={product?.scentTags.join("，")} />
-          <Textarea name="description" placeholder="商品描述" defaultValue={product?.description} />
-          <Textarea name="suitableFor" placeholder="适合人群 / 场景，逗号分隔" defaultValue={product?.suitableFor.join("，")} />
-          <Textarea name="riskNotes" placeholder="风险点，逗号分隔" defaultValue={product?.riskNotes.join("，")} />
-          <Button className="w-fit" type="submit">
-            <Save className="h-4 w-4" />
-            {submitLabel}
-          </Button>
-        </CardContent>
-      </Card>
-
-      <Card className="bg-card/82">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <SlidersHorizontal className="h-5 w-5" />
-            香韵评分
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-4">
-          {scoreFields.map(([key, label]) => (
-            <label key={key} className="grid gap-2 text-sm">
-              <span className="flex justify-between">
-                {label}
-                <strong>{scores[key]}</strong>
-              </span>
-              <input
-                type="range"
-                min={0}
-                max={100}
-                value={scores[key]}
-                onChange={(event) => setScores((prev) => ({ ...prev, [key]: Number(event.target.value) }))}
-              />
-            </label>
-          ))}
-        </CardContent>
-      </Card>
-    </form>
-  );
+function StatusText({ children }: { children: React.ReactNode }) {
+  if (!children) return null;
+  return <p className="mt-3 rounded-md bg-muted px-3 py-2 text-sm text-muted-foreground">{children}</p>;
 }
 
-function RegionForm({
-  title,
-  region,
-  onSubmit,
-  submitLabel
-}: {
-  title: string;
-  region?: Region;
-  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-  submitLabel: string;
-}) {
-  return (
-    <Card className="bg-card/82">
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>结构化维护产区名称、香韵特点和使用提示。</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form className="grid gap-4" onSubmit={onSubmit}>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Input name="name" placeholder="产区名称" defaultValue={region?.name} required />
-            <Input name="country" placeholder="国家/地区" defaultValue={region?.country} />
-          </div>
-          <Textarea name="aromaCharacter" placeholder="香韵特点" defaultValue={region?.aromaCharacter} required />
-          <Textarea name="typicalScenes" placeholder="典型场景，逗号分隔" defaultValue={region?.typicalScenes.join("，")} />
-          <Textarea name="riskNotes" placeholder="风险提示，逗号分隔" defaultValue={region?.riskNotes.join("，")} />
-          <Button className="w-fit" type="submit">
-            <Save className="h-4 w-4" />
-            {submitLabel}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
-  );
+function EmptyState({ text }: { text: string }) {
+  return <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">{text}</div>;
 }
 
-function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
-  return <select className="h-10 rounded-md border bg-background/70 px-3 text-sm" {...props} />;
+function knowledgeUploadMessage(json: JsonRecord) {
+  return `已处理 ${json.files ?? 1} 个文件：成功 ${json.succeeded ?? 1} 个，失败 ${json.failed ?? 0} 个，共 ${
+    json.chunks ?? 0
+  } 个知识片段（${json.mode ?? "unknown"}）`;
 }
 
-function InventoryBadge({ status }: { status: Product["inventoryStatus"] }) {
-  const label = status === "limited" ? "少量" : status === "archived" ? "下架" : "在售";
-  return <Badge>{label}</Badge>;
-}
-
-function productFormKey(product: Product) {
-  return [
-    product.id,
-    product.name,
-    product.type,
-    product.region,
-    product.priceCents,
-    product.budgetLevel,
-    product.inventoryStatus,
-    product.description,
-    product.riskNotes.join("|"),
-    product.suitableFor.join("|"),
-    product.scentTags.join("|"),
-    ...scoreFields.map(([key]) => product.aromaScores[key])
-  ].join("::");
-}
-
-function regionFormKey(region: Region) {
-  return [
-    region.id,
-    region.name,
-    region.country,
-    region.aromaCharacter,
-    region.typicalScenes.join("|"),
-    region.riskNotes.join("|")
-  ].join("::");
-}
-
-function productPayloadFromForm(data: FormData, scores: AromaScores) {
-  const priceYuan = Number(textValue(data, "priceYuan", "0"));
-  return {
-    name: textValue(data, "name"),
-    type: textValue(data, "type", "wood"),
-    region: textValue(data, "region"),
-    priceCents: Number.isFinite(priceYuan) ? Math.round(priceYuan * 100) : 0,
-    budgetLevel: textValue(data, "budgetLevel", "3000"),
-    description: textValue(data, "description"),
-    riskNotes: splitList(textValue(data, "riskNotes")),
-    suitableFor: splitList(textValue(data, "suitableFor")),
-    scentTags: splitList(textValue(data, "scentTags")),
-    aromaScores: scores,
-    inventoryStatus: textValue(data, "inventoryStatus", "in_stock")
-  };
-}
-
-function regionPayloadFromForm(data: FormData) {
-  return {
-    name: textValue(data, "name"),
-    country: textValue(data, "country"),
-    aromaCharacter: textValue(data, "aromaCharacter"),
-    typicalScenes: splitList(textValue(data, "typicalScenes")),
-    riskNotes: splitList(textValue(data, "riskNotes"))
-  };
-}
-
-function textValue(data: FormData, name: string, fallback = "") {
-  return String(data.get(name) ?? fallback).trim();
-}
-
-function splitList(value: string) {
-  return value
-    .split(/[,，、;\n]/)
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
-
-async function readJson(response: Response) {
-  const text = await response.text();
-  try {
-    return text ? JSON.parse(text) : {};
-  } catch {
-    return { error: text || `HTTP ${response.status}` };
-  }
-}
-
-async function fetchJson(input: RequestInfo | URL, init?: RequestInit) {
-  try {
-    const response = await fetch(input, init);
-    return {
-      ok: response.ok,
-      json: await readJson(response)
-    };
-  } catch (error) {
-    return {
-      ok: false,
-      json: {
-        error: error instanceof Error ? `请求失败：${error.message}` : "请求失败，请检查网络或稍后重试。"
-      }
-    };
-  }
-}
-
-function formatPrice(cents: number) {
-  return `¥${(cents / 100).toLocaleString("zh-CN", { maximumFractionDigits: 2 })}`;
+function importMessage(json: JsonRecord, label: string) {
+  const errorTail = Array.isArray(json.errors) && json.errors.length > 0 ? `，${json.errors.length} 条未导入` : "";
+  return `已处理 ${json.files ?? 1} 个文件：新增 ${json.createdCount ?? 0} 个${label}，更新 ${
+    json.updatedCount ?? 0
+  } 个，跳过 ${json.skippedCount ?? 0} 个（${json.mode ?? "unknown"}）${errorTail}`;
 }
 
 function formatDate(value: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleString("zh-CN", {
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
+  return date.toLocaleString("zh-CN", { hour12: false });
+}
+
+async function fetchJson(input: RequestInfo | URL, init?: RequestInit): Promise<{ ok: boolean; json: JsonRecord }> {
+  const response = await fetch(input, init);
+  const text = await response.text();
+  const json = text ? JSON.parse(text) : {};
+  return { ok: response.ok, json };
 }

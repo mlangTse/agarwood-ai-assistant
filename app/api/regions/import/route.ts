@@ -7,13 +7,17 @@ export const runtime = "nodejs";
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const file = formData.get("file");
-    if (!(file instanceof File)) {
+    const files = formData.getAll("file").filter((file): file is File => file instanceof File);
+    if (files.length === 0) {
       return NextResponse.json({ error: "请上传 Excel / Markdown / TXT 文件。" }, { status: 400 });
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const regions = parseImportFile(file, buffer);
+    const regions = [];
+    for (const file of files) {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      regions.push(...parseImportFile(file, buffer));
+    }
+
     if (regions.length === 0) {
       return NextResponse.json({ error: "没有识别到可导入的产区资料，请检查表头或文本字段。" }, { status: 400 });
     }
@@ -25,7 +29,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    return NextResponse.json(result);
+    return NextResponse.json({ ...result, files: files.length });
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? `导入失败：${error.message}` : "导入失败：服务器处理产区文件时出错。" },
@@ -38,11 +42,11 @@ function parseImportFile(file: File, buffer: Buffer) {
   const name = file.name.toLowerCase();
   if (name.endsWith(".xlsx") || name.endsWith(".xls")) {
     const workbook = XLSX.read(buffer, { type: "buffer" });
-    const sheetName = workbook.SheetNames[0];
-    if (!sheetName) return [];
-    const sheet = workbook.Sheets[sheetName];
-    const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: "" });
-    return parseRegionRows(rows);
+    return workbook.SheetNames.flatMap((sheetName) => {
+      const sheet = workbook.Sheets[sheetName];
+      const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: "" });
+      return parseRegionRows(rows);
+    });
   }
 
   const text = buffer.toString("utf8");

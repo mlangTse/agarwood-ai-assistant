@@ -55,16 +55,6 @@ export function validateRegionInput(input: RegionInput): RegionPayload {
   };
 }
 
-function buildRegionUpdateInput(existing: Region, input: RegionPatchInput): RegionInput {
-  return {
-    name: input.name ?? existing.name,
-    country: input.country ?? existing.country,
-    aromaCharacter: input.aromaCharacter ?? existing.aromaCharacter,
-    typicalScenes: input.typicalScenes ?? existing.typicalScenes,
-    riskNotes: input.riskNotes ?? existing.riskNotes
-  };
-}
-
 export async function listRegions(): Promise<{ regions: Region[]; mode: "local" | "postgresql" }> {
   const db = await getDatabase();
   if (!db) return { regions: (await readLocalRegions()).map(withRegionAliases), mode: "local" };
@@ -88,16 +78,13 @@ export async function createRegion(input: RegionInput): Promise<{ region: Region
   }
 
   await assertUniqueRegionName(db, payload.name);
-
   const { rows } = await db.query<RegionRow>(
     `insert into incense_regions (name, country, aroma_character, typical_scenes, risk_notes)
      values ($1, $2, $3, $4, $5)
-     on conflict (name) do nothing
      returning *`,
     regionSqlValues(payload)
   );
 
-  if (!rows[0]) throw new Error("产区名称已存在。");
   return { region: withRegionAliases(mapRegionRow(rows[0])), mode: "postgresql" };
 }
 
@@ -126,7 +113,6 @@ export async function updateRegion(
   if (!current.rows[0]) throw new Error("未找到要修改的产区。");
 
   const payload = validateRegionInput(buildRegionUpdateInput(mapRegionRow(current.rows[0]), input));
-
   await assertUniqueRegionName(db, payload.name, id);
 
   const { rows } = await db.query<RegionRow>(
@@ -145,9 +131,9 @@ export async function importRegions(inputs: RegionInput[]): Promise<RegionImport
   const db = await getDatabase();
   const current = db ? (await listRegions()).regions : await readLocalRegions();
   const byName = new Map(current.map((region) => [normalizeKey(region.name), region]));
-  const errors: string[] = [];
   const currentRegionIds = new Set(current.map((region) => region.id));
   const queuedByName = new Map<string, Region>();
+  const errors: string[] = [];
   let skippedCount = 0;
 
   for (const [index, input] of inputs.entries()) {
@@ -163,7 +149,7 @@ export async function importRegions(inputs: RegionInput[]): Promise<RegionImport
       byName.set(key, region);
       queuedByName.set(key, region);
     } catch (error) {
-      errors.push(`第 ${index + 1} 行：${error instanceof Error ? error.message : "产区格式不正确。"}`);
+      errors.push(`第 ${index + 1} 行：${error instanceof Error ? error.message : "产区格式不正确"}`);
     }
   }
 
@@ -225,6 +211,16 @@ export function parseRegionText(content: string): RegionInput[] {
   const tableRows = parseMarkdownTables(content);
   if (tableRows.length > 0) return parseRegionRows(tableRows);
   return parseRegionRows(parseFieldBlocks(content));
+}
+
+function buildRegionUpdateInput(existing: Region, input: RegionPatchInput): RegionInput {
+  return {
+    name: input.name ?? existing.name,
+    country: input.country ?? existing.country,
+    aromaCharacter: input.aromaCharacter ?? existing.aromaCharacter,
+    typicalScenes: input.typicalScenes ?? existing.typicalScenes,
+    riskNotes: input.riskNotes ?? existing.riskNotes
+  };
 }
 
 function mapRegionRow(row: RegionRow): Region {
@@ -291,7 +287,7 @@ async function writeLocalRegions(regions: Region[]) {
 }
 
 function normalizeImportRow(row: Record<string, unknown>): RegionInput {
-  const value = (aliases: string[], fallback = "") => String(readAlias(row, aliases) ?? fallback).trim();
+  const value = (aliases: string[], fallback = "") => sanitizeTextValue(readAlias(row, aliases) ?? fallback);
   return {
     name: value(["name", "名称", "产区", "产区名称", "region", "title"]),
     country: value(["country", "国家", "国家/地区", "地区", "来源"]),
@@ -362,10 +358,7 @@ function normalizeRowKeys(row: Record<string, unknown>) {
 }
 
 function splitList(value: string) {
-  return value
-    .split(/[,，、;\n]/)
-    .map((item) => item.trim())
-    .filter(Boolean);
+  return sanitizeStringList(value.split(/[,，、\n]/).map((item) => item.trim()));
 }
 
 function normalizeKey(value: string) {

@@ -1,13 +1,14 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { z } from "zod";
-import { sampleProducts } from "@/lib/sample-data";
 import { getDatabase } from "@/lib/db";
+import { sampleProducts } from "@/lib/sample-data";
 import { sanitizeStringList, sanitizeTextValue } from "@/lib/sanitize";
 import type { AromaScoreKey, AromaScores, BudgetLevel, Product, ProductType } from "@/lib/types";
 
 export type ProductImportResult = {
   createdCount: number;
+  updatedCount: number;
   skippedCount: number;
   products: Product[];
   errors: string[];
@@ -51,7 +52,7 @@ const productSchema = z.object({
   riskNotes: z.array(z.string()).default([]),
   suitableFor: z.array(z.string()).default([]),
   scentTags: z.array(z.string()).default([]),
-  aromaScores: z.record(z.number()).transform((scores) => normalizeAromaScores(scores)),
+  aromaScores: z.record(z.number()).default({}).transform((scores) => normalizeAromaScores(scores)),
   inventoryStatus: z.enum(["in_stock", "limited", "archived"]).default("in_stock")
 });
 
@@ -94,23 +95,11 @@ export function validateProductInput(input: ProductInput): Omit<Product, "id"> {
   };
 }
 
-function buildProductUpdateInput(existing: Product, input: ProductPatchInput): ProductInput {
-  return {
-    ...existing,
-    ...input,
-    aromaScores: {
-      ...existing.aromaScores,
-      ...(isRecord(input.aromaScores) ? input.aromaScores : {})
-    }
-  };
-}
-
 export async function listProducts(): Promise<{ products: Product[]; mode: "local" | "postgresql" }> {
   const db = await getDatabase();
   if (!db) return { products: await readLocalProducts(), mode: "local" };
 
   const { rows } = await db.query<ProductRow>("select * from products order by created_at desc");
-
   return {
     products: rows.map(mapProductRow),
     mode: "postgresql"
@@ -161,7 +150,6 @@ export async function updateProduct(
   if (!current.rows[0]) throw new Error("未找到要修改的商品。");
 
   const payload = validateProductInput(buildProductUpdateInput(mapProductRow(current.rows[0]), input));
-
   const { rows } = await db.query<ProductRow>(
     `update products
      set
@@ -189,30 +177,37 @@ export async function updateProduct(
 export async function importProducts(inputs: ProductInput[]): Promise<ProductImportResult> {
   const db = await getDatabase();
   const current = db ? (await listProducts()).products : await readLocalProducts();
-  const existingKeys = new Set(current.map(productKey));
-  const products: Product[] = [];
+  const byKey = new Map(current.map((product) => [productKey(product), product]));
+  const currentProductIds = new Set(current.map((product) => product.id));
+  const queuedByKey = new Map<string, Product>();
   const errors: string[] = [];
   let skippedCount = 0;
 
   for (const [index, input] of inputs.entries()) {
     try {
       const payload = validateProductInput(input);
-      const candidate: Product = { id: crypto.randomUUID(), ...payload };
+      const existing = byKey.get(productKey(payload));
+      const candidate: Product = { id: existing?.id ?? crypto.randomUUID(), ...payload };
       const key = productKey(candidate);
-      if (existingKeys.has(key)) {
+      if (existing && sameProduct(existing, candidate)) {
         skippedCount += 1;
         continue;
       }
-      existingKeys.add(key);
-      products.push(candidate);
+      byKey.set(key, candidate);
+      queuedByKey.set(key, candidate);
     } catch (error) {
       errors.push(`第 ${index + 1} 条：${error instanceof Error ? error.message : "商品格式不正确"}`);
     }
   }
 
+  const products = Array.from(queuedByKey.values());
+  const createdCount = products.filter((product) => !currentProductIds.has(product.id)).length;
+  const updatedCount = products.length - createdCount;
+
   if (products.length === 0) {
     return {
       createdCount: 0,
+      updatedCount: 0,
       skippedCount,
       products: [],
       errors,
@@ -221,33 +216,48 @@ export async function importProducts(inputs: ProductInput[]): Promise<ProductImp
   }
 
   if (!db) {
-    await writeLocalProducts([...products, ...current]);
-    return {
-      createdCount: products.length,
-      skippedCount,
-      products,
-      errors,
-      mode: "local"
-    };
+    await writeLocalProducts(Array.from(byKey.values()));
+    return { createdCount, updatedCount, skippedCount, products, errors, mode: "local" };
   }
 
   const savedProducts = await db.transaction(async (client) => {
     const rows: ProductRow[] = [];
-    for (const { id: _id, ...product } of products) {
-      const result = await client.query<ProductRow>(
-        `insert into products
-          (name, product_type, region, price_cents, budget_level, description, risk_notes, suitable_for, scent_tags, aroma_scores, inventory_status)
-         values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::jsonb, $11)
-         returning *`,
-        productSqlValues(product)
-      );
+    for (const { id, ...product } of products) {
+      const result = currentProductIds.has(id)
+        ? await client.query<ProductRow>(
+            `update products
+             set
+              name = $1,
+              product_type = $2,
+              region = $3,
+              price_cents = $4,
+              budget_level = $5,
+              description = $6,
+              risk_notes = $7,
+              suitable_for = $8,
+              scent_tags = $9,
+              aroma_scores = $10::jsonb,
+              inventory_status = $11,
+              updated_at = now()
+             where id = $12
+             returning *`,
+            [...productSqlValues(product), id]
+          )
+        : await client.query<ProductRow>(
+            `insert into products
+              (name, product_type, region, price_cents, budget_level, description, risk_notes, suitable_for, scent_tags, aroma_scores, inventory_status)
+             values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::jsonb, $11)
+             returning *`,
+            productSqlValues(product)
+          );
       rows.push(result.rows[0]);
     }
     return rows;
   });
 
   return {
-    createdCount: products.length,
+    createdCount,
+    updatedCount,
     skippedCount,
     products: savedProducts.map(mapProductRow),
     errors,
@@ -265,6 +275,17 @@ export function parseProductText(content: string): ProductInput[] {
   const tableRows = parseMarkdownTables(content);
   if (tableRows.length > 0) return parseProductRows(tableRows);
   return parseProductRows(parseFieldBlocks(content));
+}
+
+function buildProductUpdateInput(existing: Product, input: ProductPatchInput): ProductInput {
+  return {
+    ...existing,
+    ...input,
+    aromaScores: {
+      ...existing.aromaScores,
+      ...(isRecord(input.aromaScores) ? input.aromaScores : {})
+    }
+  };
 }
 
 function mapProductRow(row: ProductRow): Product {
@@ -382,7 +403,7 @@ function parseFieldBlocks(content: string) {
       continue;
     }
 
-    const field = rawLine.match(/^\s*[-*]?\s*([^：:]+)[：:]\s*(.+?)\s*$/);
+    const field = rawLine.match(/^\s*[-*]?\s*([^:：]+)[:：]\s*(.+?)\s*$/);
     if (field && current) {
       current[field[1].trim()] = field[2].trim();
     }
@@ -415,15 +436,15 @@ function normalizeRowKeys(row: Record<string, unknown>) {
 }
 
 function splitList(value: string) {
-  return sanitizeStringList(value.split(/[,，、;\n]/).map((item) => item.trim()));
+  return sanitizeStringList(value.split(/[,，、\n]/).map((item) => item.trim()));
 }
 
 function normalizeProductType(value: string): ProductType {
   if (["bracelet", "手串", "首饰"].some((item) => value.includes(item))) return "bracelet";
   if (["powder", "香粉", "粉"].some((item) => value.includes(item))) return "powder";
-  if (["incense", "线香", "方条香", "香"].some((item) => value.includes(item))) return "incense";
+  if (["incense", "线香", "方条香", "盘香", "香"].some((item) => value.includes(item))) return "incense";
   if (["object", "摆件", "器物"].some((item) => value.includes(item))) return "object";
-  if (["investment", "收藏", "奇楠级"].some((item) => value.includes(item))) return "investment";
+  if (["investment", "收藏", "奇楠"].some((item) => value.includes(item))) return "investment";
   return "wood";
 }
 
@@ -433,6 +454,7 @@ function inferTypeFromTags(tags: string[]) {
 
 function inferRegion(value: string) {
   if (value.includes("海南")) return "海南";
+  if (value.includes("电白")) return "电白";
   if (value.includes("惠安")) return "惠安系";
   if (value.includes("星洲") || value.includes("加里曼丹")) return "星洲系";
   if (value.includes("芽庄")) return "芽庄";
@@ -498,4 +520,24 @@ function scoreAliases(key: AromaScoreKey) {
 
 function productKey(product: Pick<Product, "name" | "region" | "type">) {
   return `${product.name.trim().toLowerCase()}|${product.region.trim().toLowerCase()}|${product.type}`;
+}
+
+function sameProduct(left: Product, right: Product) {
+  return JSON.stringify(productComparable(left)) === JSON.stringify(productComparable(right));
+}
+
+function productComparable(product: Product) {
+  return {
+    name: product.name,
+    type: product.type,
+    region: product.region,
+    priceCents: product.priceCents,
+    budgetLevel: product.budgetLevel,
+    description: product.description,
+    riskNotes: product.riskNotes,
+    suitableFor: product.suitableFor,
+    scentTags: product.scentTags,
+    aromaScores: product.aromaScores,
+    inventoryStatus: product.inventoryStatus
+  };
 }
