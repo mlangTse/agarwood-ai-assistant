@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  basePath: '/agarwood',
-  trailingSlash: true,
-}
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "/agarwood";
 
-module.exports = nextConfig
+const nextConfig = {
+  basePath,
+  trailingSlash: false
+};
+
+module.exports = nextConfig;

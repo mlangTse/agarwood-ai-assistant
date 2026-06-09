@@ -44,7 +44,7 @@ const productSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1),
   type: z.enum(["wood", "bracelet", "powder", "incense", "object", "investment"]),
-  region: z.string().min(1),
+  region: z.string().default(""),
   priceCents: z.number().int().nonnegative(),
   budgetLevel: z.enum(["500", "3000", "20000", "collector"]),
   description: z.string().default(""),
@@ -56,6 +56,7 @@ const productSchema = z.object({
 });
 
 type ProductInput = z.input<typeof productSchema>;
+type ProductPatchInput = Partial<ProductInput>;
 
 type ProductRow = {
   id: string;
@@ -75,9 +76,8 @@ type ProductRow = {
 export function validateProductInput(input: ProductInput): Omit<Product, "id"> {
   const product = productSchema.parse(input);
   const name = sanitizeTextValue(product.name);
-  const region = sanitizeTextValue(product.region);
-  if (!name) throw new Error("Product name is required.");
-  if (!region) throw new Error("Product region is required.");
+  const region = sanitizeTextValue(product.region) || "未标注产区";
+  if (!name) throw new Error("商品名称不能为空。");
 
   return {
     name,
@@ -91,6 +91,17 @@ export function validateProductInput(input: ProductInput): Omit<Product, "id"> {
     scentTags: sanitizeStringList(product.scentTags),
     aromaScores: product.aromaScores,
     inventoryStatus: product.inventoryStatus
+  };
+}
+
+function buildProductUpdateInput(existing: Product, input: ProductPatchInput): ProductInput {
+  return {
+    ...existing,
+    ...input,
+    aromaScores: {
+      ...existing.aromaScores,
+      ...(isRecord(input.aromaScores) ? input.aromaScores : {})
+    }
   };
 }
 
@@ -130,21 +141,26 @@ export async function createProduct(input: ProductInput): Promise<{ product: Pro
 
 export async function updateProduct(
   id: string,
-  input: ProductInput
+  input: ProductPatchInput
 ): Promise<{ product: Product; mode: "local" | "postgresql" }> {
-  const payload = validateProductInput(input);
   const db = await getDatabase();
 
   if (!db) {
     const products = await readLocalProducts();
     const index = products.findIndex((product) => product.id === id);
     if (index === -1) throw new Error("未找到要修改的商品。");
+    const payload = validateProductInput(buildProductUpdateInput(products[index], input));
     const product: Product = { id, ...payload };
     const nextProducts = [...products];
     nextProducts[index] = product;
     await writeLocalProducts(nextProducts);
     return { product, mode: "local" };
   }
+
+  const current = await db.query<ProductRow>("select * from products where id = $1 limit 1", [id]);
+  if (!current.rows[0]) throw new Error("未找到要修改的商品。");
+
+  const payload = validateProductInput(buildProductUpdateInput(mapProductRow(current.rows[0]), input));
 
   const { rows } = await db.query<ProductRow>(
     `update products
@@ -459,6 +475,10 @@ function normalizeScore(value: unknown) {
 
 function normalizeAromaScores(scores: Partial<Record<string, unknown>>): AromaScores {
   return Object.fromEntries(aromaScoreKeys.map((key) => [key, normalizeScore(scores[key])])) as AromaScores;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value && typeof value === "object" && !Array.isArray(value));
 }
 
 function scoreAliases(key: AromaScoreKey) {

@@ -3,6 +3,7 @@ import path from "node:path";
 import { z } from "zod";
 import { getDatabase } from "@/lib/db";
 import { regionNotes } from "@/lib/sample-data";
+import { sanitizeStringList, sanitizeTextValue } from "@/lib/sanitize";
 import type { Region } from "@/lib/types";
 
 export type RegionImportResult = {
@@ -26,6 +27,7 @@ const regionSchema = z.object({
 });
 
 type RegionInput = z.input<typeof regionSchema>;
+type RegionPatchInput = Partial<RegionInput>;
 type RegionPayload = Omit<Region, "id" | "character" | "scenes">;
 
 type RegionRow = {
@@ -39,12 +41,27 @@ type RegionRow = {
 
 export function validateRegionInput(input: RegionInput): RegionPayload {
   const region = regionSchema.parse(input);
+  const name = sanitizeTextValue(region.name);
+  const aromaCharacter = sanitizeTextValue(region.aromaCharacter);
+  if (!name) throw new Error("产区名称不能为空。");
+  if (!aromaCharacter) throw new Error("香韵特点不能为空。");
+
   return {
-    name: region.name,
-    country: region.country ?? "",
-    aromaCharacter: region.aromaCharacter,
-    typicalScenes: region.typicalScenes ?? [],
-    riskNotes: region.riskNotes ?? []
+    name,
+    country: sanitizeTextValue(region.country ?? ""),
+    aromaCharacter,
+    typicalScenes: sanitizeStringList(region.typicalScenes ?? []),
+    riskNotes: sanitizeStringList(region.riskNotes ?? [])
+  };
+}
+
+function buildRegionUpdateInput(existing: Region, input: RegionPatchInput): RegionInput {
+  return {
+    name: input.name ?? existing.name,
+    country: input.country ?? existing.country,
+    aromaCharacter: input.aromaCharacter ?? existing.aromaCharacter,
+    typicalScenes: input.typicalScenes ?? existing.typicalScenes,
+    riskNotes: input.riskNotes ?? existing.riskNotes
   };
 }
 
@@ -86,15 +103,15 @@ export async function createRegion(input: RegionInput): Promise<{ region: Region
 
 export async function updateRegion(
   id: string,
-  input: RegionInput
+  input: RegionPatchInput
 ): Promise<{ region: Region; mode: "local" | "postgresql" }> {
-  const payload = validateRegionInput(input);
   const db = await getDatabase();
 
   if (!db) {
     const regions = await readLocalRegions();
     const index = regions.findIndex((region) => region.id === id);
     if (index === -1) throw new Error("未找到要修改的产区。");
+    const payload = validateRegionInput(buildRegionUpdateInput(regions[index], input));
     if (regions.some((region) => region.id !== id && normalizeKey(region.name) === normalizeKey(payload.name))) {
       throw new Error("产区名称已存在。");
     }
@@ -104,6 +121,11 @@ export async function updateRegion(
     await writeLocalRegions(nextRegions);
     return { region: withRegionAliases(region), mode: "local" };
   }
+
+  const current = await db.query<RegionRow>("select * from incense_regions where id = $1 limit 1", [id]);
+  if (!current.rows[0]) throw new Error("未找到要修改的产区。");
+
+  const payload = validateRegionInput(buildRegionUpdateInput(mapRegionRow(current.rows[0]), input));
 
   await assertUniqueRegionName(db, payload.name, id);
 
