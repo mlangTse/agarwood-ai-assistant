@@ -52,7 +52,7 @@ export async function ingestKnowledgeDocument(input: {
   const db = await getDatabase();
   const content = sanitizeKnowledgeText(input.content);
   const chunks = chunkText(content);
-  const embeddings = await Promise.all(chunks.map((content) => embedText(content)));
+  const embeddings = await Promise.all(chunks.map((chunk) => embedText(chunk)));
 
   if (!db) {
     const document = await saveLocalKnowledgeDocument({
@@ -71,22 +71,43 @@ export async function ingestKnowledgeDocument(input: {
   }
 
   const documentId = await db.transaction(async (client) => {
-    const document = await client.query<{ id: string }>(
-      `insert into knowledge_documents (title, source_name, mime_type, content)
-       values ($1, $2, $3, $4)
-       returning id`,
-      [input.title, input.sourceName, input.mimeType, content]
+    const existing = await client.query<{ id: string }>(
+      `select id
+       from knowledge_documents
+       where ($1::text is not null and source_name = $1) or title = $2
+       order by created_at desc
+       limit 1`,
+      [input.sourceName ?? null, input.title]
     );
 
-    for (const [index, content] of chunks.entries()) {
+    let documentId = existing.rows[0]?.id;
+    if (documentId) {
+      await client.query(
+        `update knowledge_documents
+         set title = $1, source_name = $2, mime_type = $3, content = $4
+         where id = $5`,
+        [input.title, input.sourceName, input.mimeType, content, documentId]
+      );
+      await client.query("delete from embeddings where document_id = $1", [documentId]);
+    } else {
+      const inserted = await client.query<{ id: string }>(
+        `insert into knowledge_documents (title, source_name, mime_type, content)
+         values ($1, $2, $3, $4)
+         returning id`,
+        [input.title, input.sourceName, input.mimeType, content]
+      );
+      documentId = inserted.rows[0].id;
+    }
+
+    for (const [index, chunk] of chunks.entries()) {
       await client.query(
         `insert into embeddings (document_id, chunk_index, content, embedding)
          values ($1, $2, $3, $4::vector)`,
-        [document.rows[0].id, index, content, vectorLiteral(embeddings[index])]
+        [documentId, index, chunk, vectorLiteral(embeddings[index])]
       );
     }
 
-    return document.rows[0].id;
+    return documentId;
   });
 
   return { documentId, chunks: chunks.length, mode: "postgresql" };
@@ -100,27 +121,78 @@ export async function retrieveKnowledge(question: string, matchCount = 5): Promi
   }
 
   const queryEmbedding = await embedText(question);
+  const keywordTerms = buildSearchTerms(question);
+  const keywordPatterns = keywordTerms.map((term) => `%${escapeLike(term)}%`);
+
   const { rows } = await withTimeout(
     db.query<MatchKnowledgeRow>(
-      `select
-        e.id,
-        e.document_id,
-        d.title,
-        e.content,
-        e.metadata,
-        1 - (e.embedding <=> $1::vector) as similarity
-       from embeddings e
-       join knowledge_documents d on d.id = e.document_id
-       where 1 - (e.embedding <=> $1::vector) > $2
-       order by e.embedding <=> $1::vector
-       limit $3`,
-      [vectorLiteral(queryEmbedding), 0.2, matchCount]
+      `with vector_matches as (
+        select
+          e.id,
+          e.document_id,
+          d.title,
+          e.content,
+          e.metadata,
+          1 - (e.embedding <=> $1::vector) as similarity,
+          0 as keyword_score
+        from embeddings e
+        join knowledge_documents d on d.id = e.document_id
+        order by e.embedding <=> $1::vector
+        limit $2
+      ),
+      keyword_matches as (
+        select
+          e.id,
+          e.document_id,
+          d.title,
+          e.content,
+          e.metadata,
+          null::double precision as similarity,
+          (
+            select count(*)
+            from unnest($3::text[]) term
+            where e.content ilike term escape '\\' or d.title ilike term escape '\\'
+          ) as keyword_score
+        from embeddings e
+        join knowledge_documents d on d.id = e.document_id
+        where cardinality($3::text[]) > 0
+          and exists (
+            select 1
+            from unnest($3::text[]) term
+            where e.content ilike term escape '\\' or d.title ilike term escape '\\'
+          )
+        order by keyword_score desc, e.created_at desc
+        limit $2
+      )
+      select
+        id,
+        document_id,
+        title,
+        content,
+        metadata,
+        similarity
+      from (
+        select
+          *,
+          row_number() over (partition by id order by rank_score desc) as duplicate_rank
+        from (
+          select *, coalesce(similarity, 0) + keyword_score * 0.08 as rank_score
+          from vector_matches
+          union all
+          select *, coalesce(similarity, 0) + keyword_score * 0.08 as rank_score
+          from keyword_matches
+        ) ranked
+      ) deduped
+      where duplicate_rank = 1
+      order by rank_score desc
+      limit $2`,
+      [vectorLiteral(queryEmbedding), Math.max(matchCount, 8), keywordPatterns]
     ),
     RAG_TIMEOUT_MS,
     "知识库检索超时"
   );
 
-  return rows.map((row) => ({
+  return rows.slice(0, matchCount).map((row) => ({
     id: row.id,
     documentId: row.document_id,
     title: row.title ?? "知识片段",
@@ -278,7 +350,10 @@ async function saveLocalKnowledgeDocument(input: {
     }))
   };
 
-  await writeLocalKnowledgeDocuments([document, ...documents]);
+  const filtered = documents.filter(
+    (item) => item.title !== input.title && (!input.sourceName || item.sourceName !== input.sourceName)
+  );
+  await writeLocalKnowledgeDocuments([document, ...filtered]);
   return document;
 }
 
@@ -298,6 +373,34 @@ async function readLocalKnowledgeDocuments(): Promise<KnowledgeDocumentRecord[]>
 async function writeLocalKnowledgeDocuments(documents: KnowledgeDocumentRecord[]) {
   await mkdir(path.dirname(LOCAL_KNOWLEDGE_PATH), { recursive: true });
   await writeFile(LOCAL_KNOWLEDGE_PATH, `${JSON.stringify(documents, null, 2)}\n`, "utf8");
+}
+
+function buildSearchTerms(text: string) {
+  const expanded = expandQuery(text);
+  return Array.from(tokenize(expanded))
+    .filter((term) => term.length >= 2)
+    .slice(0, 16);
+}
+
+function expandQuery(text: string) {
+  const expansions: string[] = [text];
+  if (/产区|地区|对比|比较|区别/.test(text)) {
+    expansions.push("产区 对比 海南 电白 越南 芽庄 印尼 马来西亚 星洲 惠安 国外 香韵 场景");
+  }
+  if (/种植|野生|人工/.test(text)) {
+    expansions.push("人工种植 野生沉香 诱导结香 来源证明 合规");
+  }
+  if (/奇楠/.test(text)) {
+    expansions.push("奇楠 凉韵 乳韵 蜜韵 高阶沉香");
+  }
+  if (/沉水|半沉|浮水/.test(text)) {
+    expansions.push("沉水 半沉 浮水 油脂 密度 价格");
+  }
+  return expansions.join(" ");
+}
+
+function escapeLike(term: string) {
+  return term.replace(/[\\%_]/g, (match) => `\\${match}`);
 }
 
 function tokenize(text: string) {

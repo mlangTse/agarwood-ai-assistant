@@ -84,7 +84,7 @@ export function shoppingPrompt(input: string, recommendations: Recommendation[])
 推荐 ${index + 1}：
 产品：${item.product.name}
 产区：${item.product.region}
-香韵标签：${item.product.scentTags.join("、")}
+香韵标签：${item.product.scentTags.join("、") || "未标注"}
 匹配分：${item.score}
 算法理由：${item.why}
 适合人群：${item.suitableFor}
