@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ingestKnowledgeDocument } from "@/lib/rag";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,7 +25,11 @@ export async function POST(request: NextRequest) {
       content
     });
 
-    return NextResponse.json(result);
+    return NextResponse.json(result, {
+      headers: {
+        "Cache-Control": "no-store, max-age=0"
+      }
+    });
   } catch (error) {
     console.error("Knowledge upload failed", error);
     return NextResponse.json(
