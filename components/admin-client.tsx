@@ -93,7 +93,7 @@ export function AdminClient() {
   async function uploadKnowledge(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
-    setUploadStatus("正在切片并生成 embedding...");
+    setUploadStatus("正在写入 raw、重建 LLM Wiki，并同步 RAG...");
     const { ok, json } = await fetchJson(apiPath("/api/knowledge/upload"), {
       method: "POST",
       body: new FormData(form)
@@ -158,7 +158,7 @@ export function AdminClient() {
           </Badge>
           <h1 className="text-3xl font-semibold tracking-normal">资料与知识库管理</h1>
           <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
-            批量上传知识库、商品和产区资料。重复资料会优先更新已有记录，避免同一批材料反复追加成多份。
+            批量上传知识库、商品和产区资料。知识库文件会先写入 raw，再重建 LLM Wiki 并同步到 RAG。
           </p>
         </div>
 
@@ -177,14 +177,14 @@ export function AdminClient() {
                     <FileUp className="h-5 w-5" />
                     批量上传资料
                   </CardTitle>
-                  <CardDescription>支持 Markdown、TXT、PDF。文件名相同或标题相同会更新原资料。</CardDescription>
+                    <CardDescription>支持 Markdown、TXT、PDF。文件会写入 raw，并触发 LLM Wiki 重建。</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <form className="grid gap-4" onSubmit={uploadKnowledge}>
                     <Input name="file" type="file" accept=".md,.markdown,.txt,.pdf" multiple required />
                     <Button type="submit">
                       <FileUp className="mr-2 h-4 w-4" />
-                      上传到 RAG
+                      写入 raw 并更新 Wiki
                     </Button>
                   </form>
                   <StatusText>{uploadStatus}</StatusText>
@@ -196,10 +196,10 @@ export function AdminClient() {
                   <div>
                     <CardTitle className="flex items-center gap-2 text-lg">
                       <FileText className="h-5 w-5" />
-                      已入库资料
+                      LLM Wiki 页面
                     </CardTitle>
                     <CardDescription>
-                      {knowledgeDocuments.length} 份资料，当前模式：{knowledgeMode || "读取中"}
+                      {knowledgeDocuments.length} 个页面，当前模式：{knowledgeMode || "读取中"}
                     </CardDescription>
                   </div>
                   <Button variant="outline" size="icon" onClick={() => void loadKnowledgeDocuments()} aria-label="刷新资料">
@@ -209,7 +209,7 @@ export function AdminClient() {
                 <CardContent>
                   <div className="grid max-h-[520px] gap-3 overflow-auto pr-1">
                     {knowledgeDocuments.length === 0 ? (
-                      <EmptyState text="暂无已入库资料。" />
+                      <EmptyState text="暂无 LLM Wiki 页面。" />
                     ) : (
                       knowledgeDocuments.map((document) => (
                         <div key={document.id} className="rounded-lg border bg-card p-3">
@@ -382,9 +382,11 @@ function EmptyState({ text }: { text: string }) {
 }
 
 function knowledgeUploadMessage(json: JsonRecord) {
-  return `已处理 ${json.files ?? 1} 个文件：成功 ${json.succeeded ?? 1} 个，失败 ${json.failed ?? 0} 个，共 ${
-    json.chunks ?? 0
-  } 个知识片段（${json.mode ?? "unknown"}）`;
+  const build = json.wikiBuild?.stdout;
+  const pageCount = typeof build === "object" && build ? build.totalPages : undefined;
+  return `已处理 ${json.files ?? 1} 个文件：成功 ${json.succeeded ?? 1} 个，失败 ${
+    json.failed ?? 0
+  } 个；已重建 LLM Wiki${pageCount ? `，共 ${pageCount} 个页面` : ""}（${json.mode ?? "unknown"}）`;
 }
 
 function importMessage(json: JsonRecord, label: string) {

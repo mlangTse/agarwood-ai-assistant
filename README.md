@@ -122,6 +122,8 @@ scripts/deploy-tencent.sh
 scripts/deploy-tencent.sh --skip-wiki-sync
 ```
 
+后台上传知识库文件时，也会先写入 `knowledge/raw/`，再重建 `knowledge/wiki/` 并同步 RAG；AI 问答只检索 LLM Wiki 页面，不再直接使用旧的上传入库文件。
+
 将 Nginx 配置启用：
 
 ```bash

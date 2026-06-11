@@ -9,10 +9,10 @@ sources: []
 
 ## Sources
 
-- [[沉香-维基百科，自由的百科全书-1]] - 该文件与沉香中文维基资料高度相似，作为备份来源保留；事实整理时优先合并到核心概念页。
 - [[沉香-维基百科，自由的百科全书]] - 中文资料介绍沉香种类、结香机理、鉴别、致香成分、香料、药用与投资骗局风险。
 - [[沉香属-维基百科，自由的百科全书]] - 中文资料介绍沉香属物种和保育状况，可与 Kew、CITES、IUCN 资料互相校验。
 - [[沉香树-维基百科，自由的百科全书]] - 中文资料介绍沉香树用途、类似品种和参考文献，可用于普通用户对树与香材关系的基础解释。
+- [[茂名市-维基百科，自由的百科全书]] - 该原始资料尚未人工细分摘要，已纳入 RAG，可在后续摄入中继续整理为概念页或实体页。
 - [[土沉香-维基百科，自由的百科全书]] - 中文资料介绍土沉香的异名、特征、用途、保护情况和类似品种，是 A. sinensis 中文口径的重要来源。
 - [[Appendices-CITES]] - CITES 附录解释国际濒危物种贸易管理框架，是判断沉香属、拟沉香属材料跨境合规的重要背景。
 - [[Aquilaria-crassna]] - A. crassna 是东南亚沉香来源树种之一，资料强调其濒危状态、树脂心材用途与人工诱导/感染形成沉香的背景。
@@ -20,7 +20,6 @@ sources: []
 - [[Aquilaria-sinensis]] - A. sinensis 是中国语境中的土沉香/白木香，资料涉及香港、药用传统、树脂采集、保护与 CITES 附录 II 管理。
 - [[Aquilaria]] - 沉香属是沉香主要基原类群之一，与拟沉香属共同构成香料级沉香的重要植物来源。
 - [[Checklist-of-CITES-species]] - CITES 物种清单用于核对受管制物种；当前资料较宽泛，使用时应结合 Aquilaria/Gyrinops 专门条目检索。
-- [[Computational-models-and-neural-mechanisms-of-causal-inference-in-multisensory-integration]] - 这是一篇多感觉整合与因果推断论文，和沉香物种/贸易关系较弱；可作为闻香体验研究的外围参考，不作为沉香事实主源。
 - [[Gyrinops]] - 拟沉香属与沉香属同为沉香重要来源类群，资料涉及沉香生产和物种列表。
 - [[History-of-Use-and-Trade-of-Agarwood-Ethnobotany-and-Economic-Botany]] - 资料从民族植物学和经济植物学角度讨论 agarwood 的使用、贸易、历史流通和经济价值。
 - [[Kew-Science-1]] - Kew POWO 的 Gyrinops 检索结果，同时出现 Aquilaria 对照信息，适合核对拟沉香属物种和分类口径。

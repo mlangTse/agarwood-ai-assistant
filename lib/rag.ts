@@ -138,6 +138,7 @@ export async function retrieveKnowledge(question: string, matchCount = 5): Promi
           0 as keyword_score
         from embeddings e
         join knowledge_documents d on d.id = e.document_id
+        where d.source_name like 'knowledge/wiki/%'
         order by e.embedding <=> $1::vector
         limit $2
       ),
@@ -157,6 +158,7 @@ export async function retrieveKnowledge(question: string, matchCount = 5): Promi
         from embeddings e
         join knowledge_documents d on d.id = e.document_id
         where cardinality($3::text[]) > 0
+          and d.source_name like 'knowledge/wiki/%'
           and exists (
             select 1
             from unnest($3::text[]) term
@@ -207,11 +209,9 @@ export async function listKnowledgeDocuments() {
   const db = await getDatabase();
 
   if (!db) {
-    const documents = await readLocalKnowledgeDocuments();
     const wikiDocuments = await readWikiKnowledgeDocuments();
-    const allDocuments = [...wikiDocuments, ...documents];
     return {
-      documents: allDocuments.map((document) => ({
+      documents: wikiDocuments.map((document) => ({
         id: document.id,
         title: document.title,
         sourceName: document.sourceName,
@@ -220,7 +220,7 @@ export async function listKnowledgeDocuments() {
         createdAt: document.createdAt,
         readOnly: document.id.startsWith("wiki:")
       })),
-      mode: wikiDocuments.length > 0 ? "local+wiki" : "local"
+      mode: "local+wiki"
     };
   }
 
@@ -241,6 +241,7 @@ export async function listKnowledgeDocuments() {
       count(e.id)::int as chunks
      from knowledge_documents d
      left join embeddings e on e.document_id = d.id
+     where d.source_name like 'knowledge/wiki/%'
      group by d.id
      order by d.created_at desc`
   );
@@ -308,10 +309,8 @@ function withTimeout<T>(promise: PromiseLike<T>, timeoutMs: number, message: str
 }
 
 async function localKnowledgeSearch(question: string, limit: number): Promise<KnowledgeChunk[]> {
-  const documents = await readLocalKnowledgeDocuments();
   const wikiDocuments = await readWikiKnowledgeDocuments();
-  const allDocuments = [...wikiDocuments, ...documents];
-  const uploadedChunks = allDocuments.flatMap((document) =>
+  const uploadedChunks = wikiDocuments.flatMap((document) =>
     document.chunks.map((chunk) => ({
       ...chunk,
       title: document.title,
