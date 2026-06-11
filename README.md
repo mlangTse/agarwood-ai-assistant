@@ -110,9 +110,17 @@ scripts/deploy-tencent.sh
 
 - `npm ci`
 - 用 `db/schema.sql` 初始化/更新 PostgreSQL
+- 用 `knowledge/raw/` 生成 `knowledge/wiki/` LLM Wiki
+- 将 `knowledge/wiki/**/*.md` 同步到 PostgreSQL RAG 表
 - `npm run build`
 - 生成 `deploy/nginx-agarwood.conf`
 - 使用 pm2 启动或重载 `agarwood-ai`
+
+如果只想构建应用、不刷新知识库，可运行：
+
+```bash
+scripts/deploy-tencent.sh --skip-wiki-sync
+```
 
 将 Nginx 配置启用：
 

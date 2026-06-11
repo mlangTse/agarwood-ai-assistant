@@ -1,0 +1,218 @@
+{
+  "main": {
+    "id": "fd15df0ad9cedb77",
+    "type": "split",
+    "children": [
+      {
+        "id": "e90d7f0c201e835b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "bae7164adbb373be",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "关系图谱"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "083e89a7083019d6",
+    "type": "split",
+    "children": [
+      {
+        "id": "df2ae663fa969726",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3278391436dd37f3",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "300f1312eab57579",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "6faddfdeccaffcc4",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "8dfef6ecdf4e4b5f",
+    "type": "split",
+    "children": [
+      {
+        "id": "dffba92d62e5d2ae",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "55dd08911a008833",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "反向链接"
+            }
+          },
+          {
+            "id": "5c52f9f1c9052fd9",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "出链"
+            }
+          },
+          {
+            "id": "5c6cd8a7e5383735",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "7e2711262e1c7b53",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "添加笔记属性"
+            }
+          },
+          {
+            "id": "bc6efdd7d95e42f3",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "大纲"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:新建数据库": false
+    }
+  },
+  "active": "bae7164adbb373be",
+  "lastOpenFiles": [
+    "raw/沉香 - 维基百科，自由的百科全书.md",
+    "raw/沉香 - 维基百科，自由的百科全书 1.md",
+    "raw/土沉香 - 维基百科，自由的百科全书.md",
+    "raw/土沉香 - 维基百科，自由的百科全书 1.md",
+    "raw/茂名市 - 维基百科，自由的百科全书.md",
+    "raw/Gyrinops.md",
+    "raw/History of Use and Trade of Agarwood - Ethnobotany and Economic Botany.md",
+    "raw/Kew Science 1.md",
+    "raw/Kew Science.md",
+    "wiki/entities/Kew POWO.md",
+    "wiki/entities/IUCN.md",
+    "wiki/entities/Gyrinops.md",
+    "wiki/concepts/CITES.md",
+    "wiki/sources/Computational-models-and-neural-mechanisms-of-causal-inference-in-multisensory-integration.md",
+    "raw/Computational models and neural mechanisms of causal inference in multisensory integration.md",
+    "wiki/entities/Aquilaria sinensis.md",
+    "wiki/entities/Aquilaria malaccensis.md",
+    "wiki/entities/Aquilaria crassna.md",
+    "wiki/entities/Aquilaria.md",
+    "wiki/concepts/资料边界.md",
+    "wiki/concepts/野生沉香.md",
+    "wiki/entities/香港沉香树.md",
+    "wiki/concepts/闻香体验.md",
+    "wiki/entities/土沉香.md",
+    "wiki/concepts/人工种植沉香.md",
+    "wiki/concepts/结香.md",
+    "Clippings",
+    "outputs",
+    "CODEX.md.txt",
+    "CODEX.MD.txt",
+    "新建 文本文档.txt",
+    "output",
+    "新建文件夹",
+    "wiki",
+    "raw",
+    "未命名.base"
+  ]
+}

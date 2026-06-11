@@ -8,11 +8,12 @@ BASE_PATH="${NEXT_PUBLIC_BASE_PATH:-/agarwood}"
 DOMAIN="${DOMAIN:-mlangtse.top}"
 LOCAL_ONLY=0
 SKIP_MIGRATE=0
+SKIP_WIKI_SYNC=0
 SKIP_START=0
 
 usage() {
   cat <<EOF
-Usage: scripts/deploy-tencent.sh [--local] [--skip-migrate] [--skip-start]
+Usage: scripts/deploy-tencent.sh [--local] [--skip-migrate] [--skip-wiki-sync] [--skip-start]
 
 Builds and starts Agarwood AI for Tencent Cloud behind:
   https://${DOMAIN}${BASE_PATH}
@@ -26,6 +27,8 @@ Required for production:
 Options:
   --local         Use .env.local and skip pm2 start; useful on a developer machine.
   --skip-migrate Do not run db/schema.sql.
+  --skip-wiki-sync
+                  Do not rebuild knowledge/wiki or sync it to PostgreSQL RAG tables.
   --skip-start   Build only; do not start/reload the app process.
 EOF
 }
@@ -37,6 +40,9 @@ while [ "$#" -gt 0 ]; do
       ;;
     --skip-migrate)
       SKIP_MIGRATE=1
+      ;;
+    --skip-wiki-sync)
+      SKIP_WIKI_SYNC=1
       ;;
     --skip-start)
       SKIP_START=1
@@ -85,6 +91,17 @@ if [ "$SKIP_MIGRATE" -eq 0 ]; then
     psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/schema.sql
   else
     echo "Skipping schema migration. Install psql and set DATABASE_URL to enable it."
+  fi
+fi
+
+if [ "$SKIP_WIKI_SYNC" -eq 0 ]; then
+  echo "Building LLM Wiki from knowledge/raw..."
+  npm run wiki:build
+  if [ -n "${DATABASE_URL:-}" ]; then
+    echo "Syncing LLM Wiki into PostgreSQL RAG tables..."
+    npm run wiki:sync
+  else
+    echo "DATABASE_URL is not set; LLM Wiki will be used in local fallback mode only."
   fi
 fi
 

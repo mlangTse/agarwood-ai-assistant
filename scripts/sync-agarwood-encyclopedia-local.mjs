@@ -5,7 +5,7 @@ import path from "node:path";
 const root = process.cwd();
 const sourceName = "agarwood-encyclopedia.md";
 const title = "沉香百科知识库";
-const sourcePath = path.join(root, "knowledge", sourceName);
+const sourcePath = path.join(root, "knowledge", "raw", sourceName);
 const knowledgePath = path.join(root, "data", "knowledge-documents.json");
 
 function chunkText(text, chunkSize = 900, overlap = 140) {

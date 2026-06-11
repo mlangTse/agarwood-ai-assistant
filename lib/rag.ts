@@ -2,7 +2,7 @@ import { getDatabase, vectorLiteral } from "@/lib/db";
 import { embedText, fallbackEmbedding } from "@/lib/model-api";
 import { sanitizeKnowledgeText } from "@/lib/sanitize";
 import type { KnowledgeChunk } from "@/lib/types";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 type MatchKnowledgeRow = {
@@ -26,6 +26,7 @@ export type KnowledgeDocumentRecord = {
 
 const RAG_TIMEOUT_MS = Number.parseInt(process.env.RAG_TIMEOUT_MS ?? "12000", 10);
 const LOCAL_KNOWLEDGE_PATH = path.join(process.cwd(), "data", "knowledge-documents.json");
+const LOCAL_WIKI_PATH = path.join(process.cwd(), "knowledge", "wiki");
 
 export function chunkText(text: string, chunkSize = 900, overlap = 140): string[] {
   const normalized = text.replace(/\r\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
@@ -207,16 +208,19 @@ export async function listKnowledgeDocuments() {
 
   if (!db) {
     const documents = await readLocalKnowledgeDocuments();
+    const wikiDocuments = await readWikiKnowledgeDocuments();
+    const allDocuments = [...wikiDocuments, ...documents];
     return {
-      documents: documents.map((document) => ({
+      documents: allDocuments.map((document) => ({
         id: document.id,
         title: document.title,
         sourceName: document.sourceName,
         mimeType: document.mimeType,
         chunks: document.chunks.length,
-        createdAt: document.createdAt
+        createdAt: document.createdAt,
+        readOnly: document.id.startsWith("wiki:")
       })),
-      mode: "local"
+      mode: wikiDocuments.length > 0 ? "local+wiki" : "local"
     };
   }
 
@@ -248,7 +252,8 @@ export async function listKnowledgeDocuments() {
       sourceName: document.source_name ?? undefined,
       mimeType: document.mime_type ?? undefined,
       chunks: Number(document.chunks),
-      createdAt: document.created_at
+      createdAt: document.created_at,
+      readOnly: document.source_name?.startsWith("knowledge/wiki/") ?? false
     })),
     mode: "postgresql"
   };
@@ -258,6 +263,10 @@ export async function deleteKnowledgeDocument(id: string) {
   const db = await getDatabase();
 
   if (!db) {
+    if (id.startsWith("wiki:")) {
+      throw new Error("Wiki 页面由 knowledge/wiki 管理，不能从 RAG 后台删除。");
+    }
+
     const documents = await readLocalKnowledgeDocuments();
     const nextDocuments = documents.filter((document) => document.id !== id);
     if (nextDocuments.length === documents.length) {
@@ -268,12 +277,15 @@ export async function deleteKnowledgeDocument(id: string) {
   }
 
   const { rows } = await db.query<{ id: string }>(
-    "delete from knowledge_documents where id = $1 returning id",
+    `delete from knowledge_documents
+     where id = $1
+       and coalesce(source_name, '') not like 'knowledge/wiki/%'
+     returning id`,
     [id]
   );
 
   if (!rows[0]) {
-    throw new Error("未找到要删除的知识库资料。");
+    throw new Error("未找到可删除的知识库资料，或该资料由 LLM Wiki 自动维护。");
   }
 
   return { deletedId: rows[0].id, mode: "postgresql" as const };
@@ -297,7 +309,9 @@ function withTimeout<T>(promise: PromiseLike<T>, timeoutMs: number, message: str
 
 async function localKnowledgeSearch(question: string, limit: number): Promise<KnowledgeChunk[]> {
   const documents = await readLocalKnowledgeDocuments();
-  const uploadedChunks = documents.flatMap((document) =>
+  const wikiDocuments = await readWikiKnowledgeDocuments();
+  const allDocuments = [...wikiDocuments, ...documents];
+  const uploadedChunks = allDocuments.flatMap((document) =>
     document.chunks.map((chunk) => ({
       ...chunk,
       title: document.title,
@@ -396,6 +410,70 @@ async function readLocalKnowledgeDocuments(): Promise<KnowledgeDocumentRecord[]>
     }
     throw error;
   }
+}
+
+async function readWikiKnowledgeDocuments(): Promise<KnowledgeDocumentRecord[]> {
+  const files = await listMarkdownFiles(LOCAL_WIKI_PATH);
+
+  const documents = await Promise.all(
+    files
+      .filter((file) => path.basename(file).toLowerCase() !== "log.md")
+      .map(async (file) => {
+        const content = await readFile(file, "utf8");
+        const relativePath = path.relative(LOCAL_WIKI_PATH, file).replace(/\\/g, "/");
+        const title = extractMarkdownTitle(content) ?? path.basename(file, path.extname(file));
+        const chunks = chunkText(content);
+        const id = `wiki:${relativePath}`;
+
+        return {
+          id,
+          title,
+          sourceName: `knowledge/wiki/${relativePath}`,
+          mimeType: "text/markdown",
+          content,
+          createdAt: "2026-06-11T00:00:00.000Z",
+          chunks: chunks.map((chunk, index) => ({
+            id: `${id}#${index}`,
+            documentId: id,
+            title,
+            content: chunk,
+            metadata: {
+              sourceName: `knowledge/wiki/${relativePath}`,
+              chunkIndex: index,
+              wikiPath: relativePath
+            }
+          }))
+        } satisfies KnowledgeDocumentRecord;
+      })
+  );
+
+  return documents;
+}
+
+async function listMarkdownFiles(directory: string): Promise<string[]> {
+  try {
+    const entries = await readdir(directory, { withFileTypes: true });
+    const nested = await Promise.all(
+      entries.map(async (entry) => {
+        const fullPath = path.join(directory, entry.name);
+        if (entry.isDirectory()) return listMarkdownFiles(fullPath);
+        if (entry.isFile() && entry.name.toLowerCase().endsWith(".md")) return [fullPath];
+        return [];
+      })
+    );
+    return nested.flat();
+  } catch (error) {
+    if (error && typeof error === "object" && "code" in error && error.code === "ENOENT") {
+      return [];
+    }
+    throw error;
+  }
+}
+
+function extractMarkdownTitle(content: string) {
+  const withoutFrontmatter = content.replace(/^---\n[\s\S]*?\n---\n/, "");
+  const match = withoutFrontmatter.match(/^#\s+(.+)$/m);
+  return match?.[1]?.trim();
 }
 
 async function writeLocalKnowledgeDocuments(documents: KnowledgeDocumentRecord[]) {

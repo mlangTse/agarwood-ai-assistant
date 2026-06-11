@@ -6,7 +6,7 @@ const { Pool } = pg;
 const root = process.cwd();
 const sourceName = "agarwood-regions-research.md";
 const title = "沉香产区、种植与野生资料库";
-const sourcePath = path.join(root, "knowledge", sourceName);
+const sourcePath = path.join(root, "knowledge", "raw", sourceName);
 
 async function loadEnvFile(fileName) {
   try {

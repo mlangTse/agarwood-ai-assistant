@@ -17,6 +17,7 @@ type KnowledgeDocument = {
   sourceName?: string;
   chunks: number;
   createdAt: string;
+  readOnly?: boolean;
 };
 
 type JsonRecord = Record<string, any>;
@@ -220,7 +221,14 @@ export function AdminClient() {
                                 {formatDate(document.createdAt)}
                               </p>
                             </div>
-                            <Button variant="outline" size="icon" onClick={() => void deleteKnowledgeDocument(document)} aria-label="删除资料">
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              onClick={() => void deleteKnowledgeDocument(document)}
+                              aria-label="删除资料"
+                              disabled={document.readOnly}
+                              title={document.readOnly ? "LLM Wiki 自动维护的页面不能在后台删除" : "删除资料"}
+                            >
                               <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
