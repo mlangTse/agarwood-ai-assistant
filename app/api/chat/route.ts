@@ -212,12 +212,103 @@ function buildKnowledgeFallbackText(message: string, chunks: { title: string; co
     return `我没有在当前知识库里找到足够贴合“${message}”的资料。建议先补充产区来源、树种、结香方式、检测或合法来源证明等材料；补充后我会按知识库片段回答，并在侧栏展示引用来源。`;
   }
 
-  const notes = chunks
-    .slice(0, 3)
-    .map((chunk, index) => `${index + 1}. ${chunk.title}：${chunk.content.replace(/\s+/g, " ").slice(0, 180)}`)
-    .join("\n");
+  const cleanedChunks = uniqueKnowledgeChunks(chunks)
+    .map((chunk) => ({
+      title: cleanKnowledgeTitle(chunk.title),
+      content: cleanKnowledgeContent(chunk.content)
+    }))
+    .filter((chunk) => chunk.content.length >= 20)
+    .slice(0, 4);
 
-  return `我按已上传知识库回答“${message}”：\n${notes}\n\n以上是知识库中最相关的片段整理。若用于购买、鉴定或对外宣传，还需要结合实物复闻、来源记录和检测资料。`;
+  if (cleanedChunks.length === 0) {
+    return `我在知识库里找到了相关页面，但片段内容不足以组成可靠回答。建议补充更完整的原文，或换一个更具体的问题，例如产区、树种、香韵、结香方式、保护状态或购买风险。`;
+  }
+
+  if (isScentExplanationQuestion(message)) {
+    return buildScentFallbackAnswer(message, cleanedChunks);
+  }
+
+  const summary = cleanedChunks
+    .map((chunk) => firstSentence(chunk.content))
+    .filter(Boolean)
+    .slice(0, 3);
+  const sourceLine = cleanedChunks.map((chunk) => chunk.title).join("、");
+
+  return [
+    `按当前知识库，“${message}”可以先这样理解：${summary.join("；")}。`,
+    "",
+    `这不是鉴定结论，而是基于已上传资料的整理。真正用于购买、鉴定或对外宣传时，还要结合实物复闻、来源记录、检测资料和合法来源证明。`,
+    "",
+    `参考页面：${sourceLine}。`
+  ].join("\n");
+}
+
+function buildScentFallbackAnswer(message: string, chunks: { title: string; content: string }[]) {
+  const sourceLine = chunks.map((chunk) => chunk.title).join("、");
+  const evidence = chunks
+    .map((chunk) => firstSentence(chunk.content))
+    .filter(Boolean)
+    .slice(0, 2);
+
+  return [
+    `“香韵”不是一个单独的树种或等级，而是对沉香气味表现的归纳。可以把它理解为闻到一款香时留下的综合印象：甜、凉、蜜、奶、花果、木质、药感、烟感，以及前中后段变化。`,
+    "",
+    `按知识库口径，树种、产区和结香方式会影响香气表现，但不能直接等同于品质。比如 Aquilaria 与 Gyrinops 都可能产生沉香；土沉香、沉香属或拟沉香属这些资料更适合说明来源和分类，不能单独证明“香韵好”或“等级高”。`,
+    "",
+    evidence.length > 0 ? `相关资料提示：${evidence.join("；")}。` : `当前检索到的资料更偏树种、来源和保护背景，香韵描述仍需要结合实物复闻。`,
+    "",
+    `如果要把“${message}”写成导购话术，可以说：这款香的香韵需要从甜凉感、木质感、烟感强弱和留香层次来判断，不能只看产区名或树种名。用于购买或宣传时，最好配合实物复闻、来源记录和检测资料。`,
+    "",
+    `参考页面：${sourceLine}。`
+  ].join("\n");
+}
+
+function uniqueKnowledgeChunks(chunks: { title: string; content: string }[]) {
+  const seen = new Set<string>();
+  const unique: { title: string; content: string }[] = [];
+  for (const chunk of chunks) {
+    const key = `${cleanKnowledgeTitle(chunk.title)}\n${cleanKnowledgeContent(chunk.content).slice(0, 120)}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    unique.push(chunk);
+  }
+  return unique;
+}
+
+function isScentExplanationQuestion(message: string) {
+  return /香韵|香氣|香气|气味|味道|闻香|嗅感/.test(message);
+}
+
+function cleanKnowledgeTitle(title: string) {
+  return title
+    .replace(/\.md$/i, "")
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function cleanKnowledgeContent(content: string) {
+  return content
+    .replace(/\r\n/g, "\n")
+    .replace(/^---\n[\s\S]*?\n---\n/, "")
+    .replace(/^tags:\s*[\s\S]*?(?=\n#|\n##|$)/im, "")
+    .replace(/^sources:\s*[\s\S]*?(?=\n#|\n##|$)/im, "")
+    .replace(/^date:\s*.+$/gim, "")
+    .replace(/^#+\s*/gm, "")
+    .replace(/!\[[^\]]*]\([^)]*\)/g, "")
+    .replace(/\[([^\]]+)]\([^)]*\)/g, "$1")
+    .replace(/\[\[([^\]|]+)(?:\|[^\]]+)?]]/g, "$1")
+    .replace(/\[\^[^\]]+]:?.*$/gm, "")
+    .replace(/https?:\/\/\S+/g, "")
+    .replace(/[*_`>#-]+/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function firstSentence(content: string) {
+  const normalized = content.replace(/\s+/g, " ").trim();
+  const sentence = normalized.match(/^.{24,220}?[。！？.!?；;]/)?.[0] ?? normalized.slice(0, 160);
+  return sentence.replace(/[，,;；:：\s]+$/, "");
 }
 
 function buildFallbackText(module: AssistantModule, message: string, recommendations: Recommendation[]) {
