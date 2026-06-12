@@ -87,7 +87,10 @@ echo "App directory: $APP_DIR"
 echo "Base path: ${NEXT_PUBLIC_BASE_PATH}"
 echo "=========================================="
 
-echo "[1/7] Installing dependencies..."
+echo "[1/8] Cleaning old build files and caches..."
+rm -rf .next tsconfig.tsbuildinfo
+
+echo "[2/8] Installing dependencies..."
 if [ -f package-lock.json ]; then
   npm ci
 else
@@ -95,34 +98,34 @@ else
 fi
 
 if [ "$SKIP_MIGRATE" -eq 0 ]; then
-  echo "[2/7] Applying PostgreSQL schema..."
+  echo "[3/8] Applying PostgreSQL schema..."
   if [ -n "${DATABASE_URL:-}" ] && command -v psql >/dev/null 2>&1; then
     psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/schema.sql
   else
     echo "Skipping schema migration. Install psql and set DATABASE_URL to enable it."
   fi
 else
-  echo "[2/7] Skipping PostgreSQL schema migration."
+  echo "[3/8] Skipping PostgreSQL schema migration."
 fi
 
 if [ "$SKIP_WIKI_SYNC" -eq 0 ]; then
-  echo "[3/7] Building LLM Wiki from knowledge/raw..."
+  echo "[4/8] Building LLM Wiki from knowledge/raw..."
   npm run wiki:build
-  echo "[4/7] Checking fixed topic RAG routing..."
+  echo "[5/8] Checking fixed topic RAG routing..."
   npm run wiki:check-routing
   if [ -n "${DATABASE_URL:-}" ]; then
-    echo "[5/7] Syncing LLM Wiki into PostgreSQL RAG tables..."
+    echo "[6/8] Syncing LLM Wiki into PostgreSQL RAG tables..."
     npm run wiki:sync
   else
-    echo "[5/7] DATABASE_URL is not set; LLM Wiki will use local fallback mode only."
+    echo "[6/8] DATABASE_URL is not set; LLM Wiki will use local fallback mode only."
   fi
 else
-  echo "[3/7] Skipping LLM Wiki build and PostgreSQL RAG sync."
-  echo "[4/7] Skipping fixed topic RAG routing check."
-  echo "[5/7] Skipping PostgreSQL RAG sync."
+  echo "[4/8] Skipping LLM Wiki build and PostgreSQL RAG sync."
+  echo "[5/8] Skipping fixed topic RAG routing check."
+  echo "[6/8] Skipping PostgreSQL RAG sync."
 fi
 
-echo "[6/7] Building Next.js app..."
+echo "[7/8] Building Next.js app..."
 npm run build
 
 mkdir -p deploy
@@ -165,7 +168,7 @@ if [ "$SKIP_START" -eq 1 ] || [ "$LOCAL_ONLY" -eq 1 ]; then
   exit 0
 fi
 
-echo "[7/7] Starting app..."
+echo "[8/8] Starting app..."
 if command -v pm2 >/dev/null 2>&1; then
   pm2 start npm --name "$APP_NAME" -- run start --update-env || pm2 reload "$APP_NAME" --update-env
   pm2 save
