@@ -484,7 +484,7 @@ function buildSearchTerms(text: string) {
   const expanded = expandQuery(text);
   return Array.from(tokenize(expanded))
     .filter((term) => term.length >= 2)
-    .slice(0, 16);
+    .slice(0, 32);
 }
 
 function expandQuery(text: string) {
@@ -500,6 +500,24 @@ function expandQuery(text: string) {
   }
   if (/沉水|半沉|浮水/.test(text)) {
     expansions.push("沉水 半沉 浮水 油脂 密度 价格");
+  }
+  if (/香韵|香气|清甜|凉意|奶韵|药感|木质|花蜜|清雅/.test(text)) {
+    expansions.push("香韵解释 闻香体验 清甜 凉意 奶韵 药感 木质 花蜜 清雅 气味强度");
+  }
+  if (/茶室|书房|静坐|助眠|商务空间|送礼|自用|用途|使用场景/.test(text)) {
+    expansions.push("闻香场景 茶室 书房 静坐 助眠 商务空间 送礼 自用 收藏");
+  }
+  if (/电熏|隔火|线香|随身闻香|熏闻|保养|工艺|佩戴|盘玩/.test(text)) {
+    expansions.push("熏闻方式 工艺保养 电熏 隔火 线香 随身闻香 手串 香材 香粉");
+  }
+  if (/真假|鉴别|真伪|检测|来源记录|合法来源|风险边界/.test(text)) {
+    expansions.push("真假鉴别 鉴别风险 检测佐证 来源记录 合法来源 风险边界 合规表达");
+  }
+  if (/价格|等级|预算|500|3000|20000|收藏级|入门|进阶|高阶/.test(text)) {
+    expansions.push("价格等级 预算层级 产品形态 购买偏好 入门试香 进阶预算 高阶预算 收藏级");
+  }
+  if (/香材|手串|香粉|摆件|收藏藏品|产品类型|产品形态/.test(text)) {
+    expansions.push("产品形态 香材 手串 香粉 线香 摆件 收藏藏品");
   }
   return expansions.join(" ");
 }

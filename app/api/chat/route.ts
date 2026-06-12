@@ -116,7 +116,7 @@ async function buildContext(module: AssistantModule, message: string) {
   }
 
   if (module === "encyclopedia") {
-    const chunks = await retrieveKnowledge(message);
+    const chunks = await retrieveKnowledge(message, 8);
     return {
       prompt: ragUserPrompt(message, chunks),
       recommendations: [] as Recommendation[],
@@ -149,7 +149,7 @@ async function buildLocalContext(module: AssistantModule, message: string) {
       recommendations: [] as Recommendation[],
       fallbackText: buildKnowledgeFallbackText(message, []),
       meta: {
-        scentTags: ["本地兜底", "知识库暂不可用", "谨慎回答"],
+        scentTags: ["本地知识库", "知识库未命中", "谨慎回答"],
         sources: []
       }
     };
@@ -224,10 +224,6 @@ function buildKnowledgeFallbackText(message: string, chunks: { title: string; co
     return `我在知识库里找到了相关页面，但片段内容不足以组成可靠回答。建议补充更完整的原文，或换一个更具体的问题，例如产区、树种、香韵、结香方式、保护状态或购买风险。`;
   }
 
-  if (isScentExplanationQuestion(message)) {
-    return buildScentFallbackAnswer(message, cleanedChunks);
-  }
-
   const summary = cleanedChunks
     .map((chunk) => firstSentence(chunk.content))
     .filter(Boolean)
@@ -243,26 +239,6 @@ function buildKnowledgeFallbackText(message: string, chunks: { title: string; co
   ].join("\n");
 }
 
-function buildScentFallbackAnswer(message: string, chunks: { title: string; content: string }[]) {
-  const sourceLine = chunks.map((chunk) => chunk.title).join("、");
-  const evidence = chunks
-    .map((chunk) => firstSentence(chunk.content))
-    .filter(Boolean)
-    .slice(0, 2);
-
-  return [
-    `“香韵”不是一个单独的树种或等级，而是对沉香气味表现的归纳。可以把它理解为闻到一款香时留下的综合印象：甜、凉、蜜、奶、花果、木质、药感、烟感，以及前中后段变化。`,
-    "",
-    `按知识库口径，树种、产区和结香方式会影响香气表现，但不能直接等同于品质。比如 Aquilaria 与 Gyrinops 都可能产生沉香；土沉香、沉香属或拟沉香属这些资料更适合说明来源和分类，不能单独证明“香韵好”或“等级高”。`,
-    "",
-    evidence.length > 0 ? `相关资料提示：${evidence.join("；")}。` : `当前检索到的资料更偏树种、来源和保护背景，香韵描述仍需要结合实物复闻。`,
-    "",
-    `如果要把“${message}”写成导购话术，可以说：这款香的香韵需要从甜凉感、木质感、烟感强弱和留香层次来判断，不能只看产区名或树种名。用于购买或宣传时，最好配合实物复闻、来源记录和检测资料。`,
-    "",
-    `参考页面：${sourceLine}。`
-  ].join("\n");
-}
-
 function uniqueKnowledgeChunks(chunks: { title: string; content: string }[]) {
   const seen = new Set<string>();
   const unique: { title: string; content: string }[] = [];
@@ -273,10 +249,6 @@ function uniqueKnowledgeChunks(chunks: { title: string; content: string }[]) {
     unique.push(chunk);
   }
   return unique;
-}
-
-function isScentExplanationQuestion(message: string) {
-  return /香韵|香氣|香气|气味|味道|闻香|嗅感/.test(message);
 }
 
 function cleanKnowledgeTitle(title: string) {
@@ -313,7 +285,7 @@ function firstSentence(content: string) {
 
 function buildFallbackText(module: AssistantModule, message: string, recommendations: Recommendation[]) {
   if (module === "encyclopedia") {
-    return `我会先按知识库口径回答。“${message}”这个问题需要结合产区、树种、结香方式、来源记录和实物香气判断。当前兜底回答只能说明基础概念；若要用于购买或鉴定决策，还应补充来源证明、检测资料和复闻样本。`;
+    return buildKnowledgeFallbackText(message, []);
   }
 
   if (module === "mentor") {

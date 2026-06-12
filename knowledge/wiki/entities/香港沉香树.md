@@ -7,8 +7,10 @@ sources:
   - "沉香 - 维基百科，自由的百科全书.md"
   - "沉香属 - 维基百科，自由的百科全书.md"
   - "沉香树 - 维基百科，自由的百科全书.md"
+  - "电白区 - 维基百科，自由的百科全书.md"
   - "茂名市 - 维基百科，自由的百科全书.md"
   - "土沉香 - 维基百科，自由的百科全书.md"
+  - "Agarwood.md"
   - "Appendices  CITES.md"
   - "Aquilaria crassna.md"
   - "Aquilaria malaccensis.md"
@@ -19,6 +21,7 @@ sources:
   - "History of Use and Trade of Agarwood - Ethnobotany and Economic Botany.md"
   - "Kew Science 1.md"
   - "Kew Science.md"
+  - "Kōdō.md"
   - "The IUCN Red List of Threatened Species.md"
   - "Trees That Gave Hong Kong Its Name Are Nearing Extinction.md"
 ---
