@@ -212,6 +212,7 @@ function streamFallback(
 }
 
 function buildKnowledgeFallbackText(message: string, chunks: KnowledgeChunk[]) {
+  const answerDepth = selectedAnswerDepth(message);
   if (chunks.length === 0) {
     return `我没有在当前知识库里找到足够贴合“${message}”的资料。建议先补充产区来源、树种、结香方式、检测或合法来源证明等材料；补充后我会按知识库概念页回答，并在侧栏展示引用来源。`;
   }
@@ -246,14 +247,21 @@ function buildKnowledgeFallbackText(message: string, chunks: KnowledgeChunk[]) {
   }
 
   const primary = cleanedChunks[0];
+  const primaryContent = removeRepeatedTitle(primary.content, primary.title);
 
   return [
-    `《${primary.title}》`,
-    "",
-    excerptKnowledgeContent(primary.content),
+    depthAwareKnowledgeContent(primaryContent, primary.title, answerDepth),
     "",
     "用于购买、鉴定或对外宣传时，还要结合实物复闻、来源记录、检测资料和合法来源证明。"
   ].join("\n");
+}
+
+type AnswerDepth = "beginner" | "advanced" | "decision";
+
+function selectedAnswerDepth(message: string): AnswerDepth {
+  if (message.includes("购买决策辅助")) return "decision";
+  if (message.includes("进阶细讲")) return "advanced";
+  return "beginner";
 }
 
 function uniqueKnowledgeChunks(chunks: KnowledgeChunk[]) {
@@ -294,6 +302,7 @@ function cleanKnowledgeContent(content: string) {
     .replace(/^tags:\s*[\s\S]*?(?=\n#|\n##|$)/im, "")
     .replace(/^sources:\s*[\s\S]*?(?=\n#|\n##|$)/im, "")
     .replace(/^date:\s*.+$/gim, "")
+    .replace(/\n##\s*相关[\s\S]*$/m, "")
     .replace(/^#+\s*/gm, "")
     .replace(/!\[[^\]]*]\([^)]*\)/g, "")
     .replace(/\[([^\]]+)]\([^)]*\)/g, "$1")
@@ -305,10 +314,41 @@ function cleanKnowledgeContent(content: string) {
     .trim();
 }
 
-function excerptKnowledgeContent(content: string) {
+function removeRepeatedTitle(content: string, title: string) {
+  const escapedTitle = title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return content.replace(new RegExp(`^${escapedTitle}\\s*`), "").trim();
+}
+
+function depthAwareKnowledgeContent(content: string, title: string, depth: AnswerDepth) {
   const normalized = content.replace(/\s+/g, " ").trim();
-  if (normalized.length <= 520) return normalized;
-  return `${normalized.slice(0, 520).replace(/[，,；;：:\s]+$/, "")}。`;
+
+  if (depth === "advanced") {
+    const excerpt = normalized.length <= 820 ? normalized : `${normalized.slice(0, 820).replace(/[，,；;：:\s]+$/, "")}。`;
+    return [
+      excerpt,
+      "",
+      "进阶看法：先分清这是产区口径、树种线索还是市场命名，再结合香气表现和材料形态判断。"
+    ].join("\n");
+  }
+
+  if (depth === "decision") {
+    const excerpt = normalized.length <= 460 ? normalized : `${normalized.slice(0, 460).replace(/[，,；;：:\s]+$/, "")}。`;
+    return [
+      excerpt,
+      "",
+      "购买决策可以按三步看：",
+      "1. 先确认用途：日常闻香、送礼、空间扩香还是收藏。",
+      "2. 再比较体验：甜、凉、木质、药感、烟感和留香是否符合预期。",
+      "3. 最后核对证据：来源说明、复闻记录、检测材料和价格是否互相匹配。"
+    ].join("\n");
+  }
+
+  const excerpt = normalized.length <= 360 ? normalized : `${normalized.slice(0, 360).replace(/[，,；;：:\s]+$/, "")}。`;
+  return [
+    excerpt,
+    "",
+    `简单说，${title}主要是帮助你先建立方向感，不要一上来就被市场名词带着走。`
+  ].join("\n");
 }
 
 function buildFallbackText(module: AssistantModule, message: string, recommendations: Recommendation[]) {

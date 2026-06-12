@@ -52,6 +52,9 @@ ${context || "无可用上下文"}
 用户问题：
 ${question}
 
+回答深度：
+${answerDepthInstruction(question)}
+
 请用中文回答，并遵守：
 1. 优先使用知识库上下文；不要编造未出现的来源、数字或结论。
 2. 不要复述前端选项说明文本。
@@ -61,6 +64,16 @@ ${question}
 6. 如果上下文不足，直接说明依据不足，并列出需要补充的资料类型。
 7. 如果适合，给出可直接用于文案/导购的表达，但保留合规边界。
 `;
+}
+
+function answerDepthInstruction(question: string) {
+  if (question.includes("购买决策辅助")) {
+    return "购买决策辅助：回答要围绕怎么选、怎么避坑、先看什么证据、适合什么使用场景。可以用 1-3 步决策清单。";
+  }
+  if (question.includes("进阶细讲")) {
+    return "进阶细讲：回答要解释产区口径、树种线索、香气层次、工艺或合规边界之间的关系，信息密度可以更高。";
+  }
+  return "新手易懂：回答要短、清楚、少术语，先用日常语言讲明白，再给一个简单判断方向。";
 }
 
 function cleanRagContent(content: string) {
