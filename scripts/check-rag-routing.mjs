@@ -4,25 +4,26 @@ import path from "node:path";
 const root = process.cwd();
 const wikiRoot = path.join(root, "knowledge", "wiki");
 const ragPath = path.join(root, "lib", "rag.ts");
+const optionPrefix = ["用户通过选项", "表达了以下偏好："].join("");
 
 const fixedTopicCases = [
   {
-    input: "用户通过选项表达了以下偏好：主题：产区对比",
+    input: `${optionPrefix}主题：产区对比`,
     topic: "产区对比",
     wikiPath: "concepts/产区对比.md"
   },
   {
-    input: "用户通过选项表达了以下偏好：主题：香韵解释",
+    input: `${optionPrefix}主题：香韵解释`,
     topic: "香韵解释",
     wikiPath: "concepts/香韵解释.md"
   },
   {
-    input: "用户通过选项表达了以下偏好：主题：真假鉴别",
+    input: `${optionPrefix}主题：真假鉴别`,
     topic: "真假鉴别",
     wikiPath: "concepts/真假鉴别.md"
   },
   {
-    input: "用户通过选项表达了以下偏好：主题：价格等级",
+    input: `${optionPrefix}主题：价格等级`,
     topic: "价格等级",
     wikiPath: "concepts/价格等级.md"
   }

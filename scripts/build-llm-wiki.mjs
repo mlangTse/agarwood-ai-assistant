@@ -638,11 +638,11 @@ function relatedLinksFor(pageFile) {
   return ["沉香", "沉香树种", "资料边界"];
 }
 
-function conceptPages(rawFiles) {
+function conceptPages() {
   return conceptDefinitions.map((page) => ({
     ...page,
     content:
-      frontmatter(page.tags, rawFiles, { page_type: "concept" }) +
+      frontmatter(page.tags, [], { page_type: "concept" }) +
       `${page.body}
 
 ## 相关
@@ -652,13 +652,13 @@ ${linkList(relatedLinksFor(page.file))}
   }));
 }
 
-function entityPages(rawFiles) {
+function entityPages() {
   return entityDefinitions.map(([file, tags, index, body]) => ({
     file,
     tags,
     index,
     content:
-      frontmatter(tags, rawFiles, { page_type: "entity" }) +
+      frontmatter(tags, [], { page_type: "entity" }) +
       `${body}
 
 ## 相关
@@ -731,8 +731,8 @@ async function main() {
   }
   await mkdir(path.join(wikiRoot, "outputs"), { recursive: true });
 
-  const concepts = conceptPages(rawFiles);
-  const entities = entityPages(rawFiles);
+  const concepts = conceptPages();
+  const entities = entityPages();
   for (const page of [...concepts, ...entities]) {
     await writeManagedPage(page.file, page.content);
   }

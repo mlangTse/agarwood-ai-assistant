@@ -410,7 +410,7 @@ function buildPrompt(config: AgentConfig, selections: Record<string, string[]>, 
     .filter(Boolean)
     .join("\n");
 
-  return [`用户通过选项表达了以下偏好：`, selectedText || "未选择固定选项", otherInput.trim() ? `其他补充：${otherInput.trim()}` : ""]
+  return [selectedText || "未选择固定选项", otherInput.trim() ? `其他补充：${otherInput.trim()}` : ""]
     .filter(Boolean)
     .join("\n");
 }

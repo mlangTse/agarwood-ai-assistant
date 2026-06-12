@@ -8,6 +8,7 @@ const toneRules = `
 - 拉丁学名、机构名和法规缩写可以保留原文，例如 Aquilaria sinensis、Gyrinops、CITES、IUCN、Kew。
 - 涉及产区、等级、真伪、价格、野生、奇楠、收藏价值时，必须提醒需要实物复闻、来源记录、检测资料或合法来源证明。
 - 可以描述香气体验、传统使用场景、空间氛围和审美感受；不要承诺医疗疗效、治疗效果、投资收益或绝对鉴定结论。
+- 不要套用知识库页眉、选项说明、引用页尾或鉴定免责声明之类的固定模板句。
 - 表达要像耐心、审慎、有审美的香道顾问：先讲清边界，再给建议。
 `;
 
@@ -40,7 +41,7 @@ export function ragUserPrompt(question: string, chunks: KnowledgeChunk[]) {
   const context = chunks
     .map((chunk, index) => {
       const sourceName = typeof chunk.metadata?.sourceName === "string" ? chunk.metadata.sourceName : "unknown";
-      return `【资料 ${index + 1}｜${chunk.title}｜${sourceName}｜相似度 ${chunk.similarity?.toFixed(3) ?? "N/A"}】\n${chunk.content}`;
+      return `【资料 ${index + 1}｜${chunk.title}｜${sourceName}｜相似度 ${chunk.similarity?.toFixed(3) ?? "N/A"}】\n${cleanRagContent(chunk.content)}`;
     })
     .join("\n\n");
 
@@ -53,11 +54,21 @@ ${question}
 
 请用中文回答，并遵守：
 1. 优先使用知识库上下文；不要编造未出现的来源、数字或结论。
-2. 如果上下文来自 source 摘要页，只能作为旁证；概念解释应优先依赖 concepts 或 entities 页面。
-3. 不要把物种列表、英文碎片或 raw 摘录直接拼成答案。
-4. 如果上下文不足，直接说明依据不足，并列出需要补充的资料类型。
-5. 如果适合，给出可直接用于文案/导购的表达，但保留合规边界。
+2. 不要复述前端选项说明文本。
+3. 不要套用知识库页眉、解释性开场白或引用页尾。
+4. 不要列出 frontmatter、sources、raw 文件名或 Markdown 元数据。
+5. 不要把物种列表、英文碎片或 raw 摘录直接拼成答案。
+6. 如果上下文不足，直接说明依据不足，并列出需要补充的资料类型。
+7. 如果适合，给出可直接用于文案/导购的表达，但保留合规边界。
 `;
+}
+
+function cleanRagContent(content: string) {
+  return content
+    .replace(/^---\n[\s\S]*?\n---\n/, "")
+    .replace(/\[\[([^\]]+)]]/g, "$1")
+    .replace(/^sources:\n(?:\s+- .+\n)*/gm, "")
+    .trim();
 }
 
 export function mentorPrompt(input: string) {
