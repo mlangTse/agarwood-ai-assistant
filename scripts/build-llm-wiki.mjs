@@ -756,6 +756,59 @@ ${linkList(["沉香树种", "CITES", "濒危保护", "资料边界"])}
   }));
 }
 
+const mojibakeCodePoints = [
+  0xfffd,
+  0x93b4,
+  0x942d,
+  0x68e3,
+  0x6b13,
+  0x5a0c,
+  0x951b,
+  0x9286
+];
+
+const mojibakeTokens = mojibakeCodePoints.map((codePoint) => String.fromCodePoint(codePoint));
+
+async function listMarkdownFiles(dir, baseDir = dir) {
+  const entries = await readdir(dir, { withFileTypes: true });
+  const files = [];
+
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...(await listMarkdownFiles(fullPath, baseDir)));
+    } else if (entry.isFile() && entry.name.endsWith(".md")) {
+      files.push(path.relative(baseDir, fullPath));
+    }
+  }
+
+  return files;
+}
+
+async function assertNoMojibakeInWiki() {
+  const files = await listMarkdownFiles(wikiRoot);
+  const hits = [];
+
+  for (const file of files) {
+    const fullPath = path.join(wikiRoot, file);
+    const content = await readFile(fullPath, "utf8");
+    for (const token of mojibakeTokens) {
+      const index = content.indexOf(token);
+      if (index >= 0) {
+        hits.push({
+          file,
+          codePoint: `U+${token.codePointAt(0).toString(16).toUpperCase().padStart(4, "0")}`,
+          offset: index
+        });
+      }
+    }
+  }
+
+  if (hits.length > 0) {
+    throw new Error(`wiki mojibake quality gate failed:\n${hits.map((hit) => `${hit.file} ${hit.codePoint} offset=${hit.offset}`).join("\n")}`);
+  }
+}
+
 async function main() {
   const rawFiles = await listRawFiles();
   await mkdir(wikiRoot, { recursive: true });
@@ -821,6 +874,7 @@ ${entities.map((page) => `- ${page.index}`).join("\n")}
 
   await writeManagedPage("index.md", index);
   await writeManagedPage("log.md", log);
+  await assertNoMojibakeInWiki();
 
   console.log(
     JSON.stringify(

@@ -218,6 +218,11 @@ function buildKnowledgeFallbackText(message: string, chunks: KnowledgeChunk[]) {
 
   const uniqueChunks = uniqueKnowledgeChunks(chunks);
   const topChunk = uniqueChunks[0];
+  if (isMissingFixedTopicChunk(topChunk)) {
+    const topic = typeof topChunk.metadata?.fixedTopic === "string" ? topChunk.metadata.fixedTopic : "未知主题";
+    const wikiPath = typeof topChunk.metadata?.wikiPath === "string" ? topChunk.metadata.wikiPath : `concepts/${topic}.md`;
+    return `知识库缺少主题页：${topic}。请先补充 ${wikiPath}，不要改用其他页面凑答案。`;
+  }
   const primaryChunks = uniqueChunks.filter((chunk) => isPrimaryWikiPage(chunk));
 
   if (!topChunk || !isPrimaryWikiPage(topChunk) || primaryChunks.length === 0) {
@@ -271,6 +276,10 @@ function isPrimaryWikiPage(chunk: KnowledgeChunk) {
   const wikiPath = typeof chunk.metadata?.wikiPath === "string" ? chunk.metadata.wikiPath : "";
   const pathText = `${sourceName}\n${wikiPath}`;
   return /knowledge\/wiki\/(concepts|entities)\//.test(pathText) || /^(concepts|entities)\//.test(pathText);
+}
+
+function isMissingFixedTopicChunk(chunk: KnowledgeChunk | undefined) {
+  return chunk?.metadata?.fixedTopicMissing === true;
 }
 
 function cleanKnowledgeTitle(title: string) {

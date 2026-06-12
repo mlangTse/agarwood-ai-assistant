@@ -27,6 +27,13 @@ export type KnowledgeDocumentRecord = {
 const RAG_TIMEOUT_MS = Number.parseInt(process.env.RAG_TIMEOUT_MS ?? "12000", 10);
 const LOCAL_KNOWLEDGE_PATH = path.join(process.cwd(), "data", "knowledge-documents.json");
 const LOCAL_WIKI_PATH = path.join(process.cwd(), "knowledge", "wiki");
+const FIXED_TOPIC_PAGES: Record<string, string> = {
+  "产区对比": "concepts/产区对比.md",
+  "香韵解释": "concepts/香韵解释.md",
+  "工艺保养": "concepts/工艺保养.md",
+  "真假鉴别": "concepts/真假鉴别.md",
+  "价格等级": "concepts/价格等级.md"
+};
 
 export function chunkText(text: string, chunkSize = 900, overlap = 140): string[] {
   const normalized = text.replace(/\r\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
@@ -117,18 +124,42 @@ export async function ingestKnowledgeDocument(input: {
 export async function retrieveKnowledge(question: string, matchCount = 5): Promise<KnowledgeChunk[]> {
   const db = await getDatabase();
   const normalizedQuestion = normalizeKnowledgeQuestion(question);
+  const fixedTopic = extractFixedTopic(question);
 
   if (!db) {
-    return localKnowledgeSearch(normalizedQuestion, matchCount);
+    const exactChunk = fixedTopic ? await readFixedTopicChunk(fixedTopic) : undefined;
+    if (fixedTopic && !exactChunk) return [missingFixedTopicChunk(fixedTopic)];
+    const searchLimit = exactChunk ? Math.max(matchCount - 1, 0) : matchCount;
+    const searchResults = searchLimit > 0 ? await localKnowledgeSearch(normalizedQuestion, searchLimit, exactChunk?.metadata?.wikiPath) : [];
+    return exactChunk ? [exactChunk, ...searchResults].slice(0, matchCount) : searchResults;
   }
 
   const queryEmbedding = await embedText(normalizedQuestion);
   const keywordTerms = buildSearchTerms(normalizedQuestion);
   const keywordPatterns = keywordTerms.map((term) => `%${escapeLike(term)}%`);
+  const fixedWikiPath = fixedTopic ? FIXED_TOPIC_PAGES[fixedTopic] : null;
 
   const { rows } = await withTimeout(
     db.query<MatchKnowledgeRow>(
-      `with vector_matches as (
+      `with exact_topic as (
+        select
+          e.id,
+          e.document_id,
+          d.title,
+          e.content,
+          e.metadata,
+          1::double precision as similarity,
+          0 as keyword_score,
+          0 as page_score,
+          1000 as rank_score
+        from embeddings e
+        join knowledge_documents d on d.id = e.document_id
+        where $5::text is not null
+          and d.source_name = 'knowledge/wiki/' || $5::text
+        order by e.chunk_index asc
+        limit 1
+      ),
+      vector_matches as (
         select
           e.id,
           e.document_id,
@@ -192,6 +223,9 @@ export async function retrieveKnowledge(question: string, matchCount = 5): Promi
           *,
           row_number() over (partition by id order by rank_score desc) as duplicate_rank
         from (
+          select *
+          from exact_topic
+          union all
           select *, coalesce(similarity, 0) + keyword_score * 0.10 + page_score as rank_score
           from vector_matches
           union all
@@ -202,13 +236,13 @@ export async function retrieveKnowledge(question: string, matchCount = 5): Promi
       where duplicate_rank = 1
       order by rank_score desc
       limit $2`,
-      [vectorLiteral(queryEmbedding), matchCount, keywordPatterns, Math.max(matchCount * 4, 24)]
+      [vectorLiteral(queryEmbedding), matchCount, keywordPatterns, Math.max(matchCount * 4, 24), fixedWikiPath]
     ),
     RAG_TIMEOUT_MS,
     "知识库检索超时"
   );
 
-  return rows.slice(0, matchCount).map((row) => ({
+  const chunks = rows.slice(0, matchCount).map((row) => ({
     id: row.id,
     documentId: row.document_id,
     title: row.title ?? "知识片段",
@@ -216,6 +250,10 @@ export async function retrieveKnowledge(question: string, matchCount = 5): Promi
     similarity: row.similarity ?? undefined,
     metadata: row.metadata ?? undefined
   }));
+  if (fixedTopic && fixedWikiPath && !isFixedTopicChunk(chunks[0], fixedWikiPath)) {
+    return [missingFixedTopicChunk(fixedTopic)];
+  }
+  return chunks;
 }
 
 export async function listKnowledgeDocuments() {
@@ -321,7 +359,7 @@ function withTimeout<T>(promise: PromiseLike<T>, timeoutMs: number, message: str
   });
 }
 
-async function localKnowledgeSearch(question: string, limit: number): Promise<KnowledgeChunk[]> {
+async function localKnowledgeSearch(question: string, limit: number, excludeWikiPath?: unknown): Promise<KnowledgeChunk[]> {
   const wikiDocuments = await readWikiKnowledgeDocuments();
   const uploadedChunks = wikiDocuments.flatMap((document) =>
     document.chunks.map((chunk) => ({
@@ -340,7 +378,9 @@ async function localKnowledgeSearch(question: string, limit: number): Promise<Kn
 
   const queryVector = fallbackEmbedding(question, 256);
   const queryTerms = tokenize(question);
+  const excludedPath = typeof excludeWikiPath === "string" ? excludeWikiPath : undefined;
   return uploadedChunks
+    .filter((chunk) => chunk.metadata?.wikiPath !== excludedPath)
     .map((chunk) => {
       const vector = fallbackEmbedding(chunk.content, 256);
       const keywordScore = keywordSimilarity(queryTerms, tokenize(`${chunk.title}\n${chunk.content}`));
@@ -525,6 +565,66 @@ function normalizeKnowledgeQuestion(text: string) {
   if (selectedPreference) return `${selectedPreference} ${text}`;
 
   return text;
+}
+
+function extractFixedTopic(text: string) {
+  const selectedTopic = text.match(/主题[：:]\s*([^；;\n]+)/)?.[1]?.trim();
+  if (selectedTopic && selectedTopic in FIXED_TOPIC_PAGES) return selectedTopic;
+
+  return Object.keys(FIXED_TOPIC_PAGES).find((topic) => text.includes(topic));
+}
+
+async function readFixedTopicChunk(topic: string): Promise<KnowledgeChunk | undefined> {
+  const wikiPath = FIXED_TOPIC_PAGES[topic];
+  if (!wikiPath) return undefined;
+
+  try {
+    const fullPath = path.join(LOCAL_WIKI_PATH, wikiPath);
+    const content = await readFile(fullPath, "utf8");
+    const title = extractMarkdownTitle(content) ?? topic;
+    return {
+      id: `wiki:${wikiPath}#fixed`,
+      documentId: `wiki:${wikiPath}`,
+      title,
+      content,
+      similarity: 1,
+      metadata: {
+        sourceName: `knowledge/wiki/${wikiPath}`,
+        wikiPath,
+        pageType: "concept",
+        fixedTopic: topic
+      }
+    };
+  } catch (error) {
+    if (error && typeof error === "object" && "code" in error && error.code === "ENOENT") {
+      return undefined;
+    }
+    throw error;
+  }
+}
+
+function isFixedTopicChunk(chunk: KnowledgeChunk | undefined, wikiPath: string) {
+  const sourceName = typeof chunk?.metadata?.sourceName === "string" ? chunk.metadata.sourceName : "";
+  const chunkWikiPath = typeof chunk?.metadata?.wikiPath === "string" ? chunk.metadata.wikiPath : "";
+  return sourceName === `knowledge/wiki/${wikiPath}` || chunkWikiPath === wikiPath;
+}
+
+function missingFixedTopicChunk(topic: string): KnowledgeChunk {
+  const wikiPath = FIXED_TOPIC_PAGES[topic] ?? `concepts/${topic}.md`;
+  return {
+    id: `missing:${wikiPath}`,
+    documentId: `missing:${wikiPath}`,
+    title: `缺少主题页：${topic}`,
+    content: `知识库缺少固定主题页：${topic}。请先补充 ${wikiPath}，不要改用其他页面凑答案。`,
+    similarity: 0,
+    metadata: {
+      sourceName: `knowledge/wiki/${wikiPath}`,
+      wikiPath,
+      pageType: "missing",
+      fixedTopic: topic,
+      fixedTopicMissing: true
+    }
+  };
 }
 
 function wikiPageType(relativePath: string) {
