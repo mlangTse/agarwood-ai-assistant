@@ -1,7 +1,8 @@
 ---
 tags:
   - "source"
-date: 2026-06-11
+date: 2026-06-12
+source_type: "raw-summary"
 sources:
   - "Trees That Gave Hong Kong Its Name Are Nearing Extinction.md"
 ---
@@ -13,8 +14,9 @@ sources:
 ## 资料边界
 
 - 原始文件：`Trees That Gave Hong Kong Its Name Are Nearing Extinction.md`
-- 若源文件为英文，RAG 和 AI Agent 必须用中文解释、转述和回答。
-- 该页是资料摘要，不替代原文；涉及保护等级、贸易规则、药用或法律问题时，应回到原文和最新官方资料核对。
+- 该页是来源摘要，不替代原文。
+- 若源文件为英文，AI Agent 必须用中文解释、转述和回答。
+- 涉及保护等级、贸易规则、药用或法律问题时，应回到原文和最新官方资料核对。
 
 ## 关键关联
 
@@ -22,4 +24,4 @@ sources:
 
 ## 原文摘录
 
-> Ho Pui-han followed a marker left by poachers into the forest behind the Tsz Shan Monastery in Hong Kong. The sign was easy to miss. Just a white circle and arrow painted on a palm-sized stone. Inside the dense woods the signals were more brazen. Pink, yellow and blue plastic ribbons hanging from branches led Ho up muddy banks and over rocky streams. The poachers she tracked don’t trade in tusks or pelts. They hunt incense trees, which are prized for their fragrant resin. Ho has committed her weekends for the past five years to investigating tips from villagers about poacher activity in the lush territories and islands that surround Hong Kong’s dense urban area. She founded an organization to save the trees last year, but by now, she says, almost all of Hong Kong’s oldest and largest incense trees have been felled. As smugglers raze younger trees, she fears the natural stock will be push
+> Ho Pui-han followed a marker left by poachers into the forest behind the Tsz Shan Monastery in Hong Kong. The sign was easy to miss. Just a white circle and arrow painted on a palm-sized stone. Inside the dense woods the signals were more brazen. Pink, yellow and blue plastic ribbons hanging from branches led Ho up muddy banks and over rocky streams. The poachers she tracked don’t trade in tusks or pelts. They hunt incense trees, which are prized for their fragrant resin. Ho has committed her weekends for the past five years to investigating tips from villagers about poacher activity in the lush territories and islands that surround Hong Kong’s dense urban area. She founded an organization t
