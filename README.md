@@ -20,7 +20,7 @@ lib/model-api.ts      国内模型 API 适配层
 lib/rag.ts            知识库切片、embedding、检索
 lib/products.ts       商品库读写与导入
 db/schema.sql         PostgreSQL/pgvector 表结构
-scripts/deploy-tencent.sh
+deploy.sh
 deploy/               部署脚本生成的 Nginx 配置
 ```
 
@@ -103,7 +103,7 @@ sudo npm install -g pm2
 运行：
 
 ```bash
-scripts/deploy-tencent.sh
+./deploy.sh
 ```
 
 脚本会：
@@ -119,7 +119,7 @@ scripts/deploy-tencent.sh
 如果只想构建应用、不刷新知识库，可运行：
 
 ```bash
-scripts/deploy-tencent.sh --skip-wiki-sync
+./deploy.sh --skip-wiki-sync
 ```
 
 后台上传知识库文件时，也会先写入 `knowledge/raw/`，再重建 `knowledge/wiki/` 并同步 RAG；AI 问答只检索 LLM Wiki 页面，不再直接使用旧的上传入库文件。
@@ -165,7 +165,7 @@ location /agarwood/ {
 npm run typecheck
 npm run build
 npm run start
-scripts/deploy-tencent.sh --local --skip-migrate
+./deploy.sh --local --skip-migrate
 ```
 
 ## 生产检查

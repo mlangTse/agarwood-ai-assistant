@@ -1,95 +1,188 @@
-#!/bin/bash
-# 项目重新部署启动脚本
-# 使用方法：./deploy.sh
+#!/usr/bin/env bash
+set -euo pipefail
 
-set -e  # 遇到错误立即退出
+APP_NAME="${APP_NAME:-agarwood-ai}"
+APP_DIR="${APP_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+PORT="${PORT:-3000}"
+BASE_PATH="${NEXT_PUBLIC_BASE_PATH:-/agarwood}"
+DOMAIN="${DOMAIN:-mlangtse.top}"
+LOG_FILE="${LOG_FILE:-$APP_DIR/nextjs.log}"
+PID_FILE="${PID_FILE:-$APP_DIR/.next-server.pid}"
+LOCAL_ONLY=0
+SKIP_MIGRATE=0
+SKIP_WIKI_SYNC=0
+SKIP_START=0
 
-PROJECT_DIR="/opt/agarwood-ai-assistant"
-LOG_FILE="$PROJECT_DIR/nextjs.log"
-PID_FILE="$PROJECT_DIR/.next-server.pid"
+usage() {
+  cat <<EOF
+Usage: ./deploy.sh [--local] [--skip-migrate] [--skip-wiki-sync] [--skip-start]
+
+Builds and starts Agarwood AI.
+
+Environment is read from .env.production first, then .env.local.
+Required for PostgreSQL RAG sync:
+  DATABASE_URL
+
+Options:
+  --local          Use .env.local and skip pm2/nohup start.
+  --skip-migrate  Do not run db/schema.sql.
+  --skip-wiki-sync
+                   Do not rebuild knowledge/wiki or sync it to PostgreSQL RAG tables.
+  --skip-start    Build only; do not start/reload the app process.
+EOF
+}
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --local)
+      LOCAL_ONLY=1
+      ;;
+    --skip-migrate)
+      SKIP_MIGRATE=1
+      ;;
+    --skip-wiki-sync)
+      SKIP_WIKI_SYNC=1
+      ;;
+    --skip-start)
+      SKIP_START=1
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Unknown argument: $1" >&2
+      usage
+      exit 1
+      ;;
+  esac
+  shift
+done
+
+cd "$APP_DIR"
+
+ENV_FILE=".env.production"
+if [ "$LOCAL_ONLY" -eq 1 ] || [ ! -f "$ENV_FILE" ]; then
+  ENV_FILE=".env.local"
+fi
+
+if [ ! -f "$ENV_FILE" ]; then
+  cp .env.example "$ENV_FILE"
+  echo "Created ${ENV_FILE}. Fill in DATABASE_URL and MODEL_API_KEY, then rerun this script."
+  exit 1
+fi
+
+set -a
+# shellcheck disable=SC1090
+. "$ENV_FILE"
+set +a
+
+export NEXT_TELEMETRY_DISABLED=1
+export NEXT_PUBLIC_BASE_PATH="${NEXT_PUBLIC_BASE_PATH:-$BASE_PATH}"
+export PORT
 
 echo "=========================================="
-echo "开始部署项目: $(date '+%Y-%m-%d %H:%M:%S')"
+echo "Deploy started: $(date '+%Y-%m-%d %H:%M:%S')"
+echo "App directory: $APP_DIR"
+echo "Base path: ${NEXT_PUBLIC_BASE_PATH}"
 echo "=========================================="
 
-# 1. 进入项目目录
-echo "[1/4] 进入项目目录..."
-cd "$PROJECT_DIR" || exit 1
-
-# 2. 停止当前运行的 Next.js 进程
-echo "[2/4] 停止当前运行的 Next.js 进程..."
-
-# 停止所有相关的 node 进程（next-server 和 run-next-command）
-NEXT_PIDS=$(ps aux | grep -E 'next-server|run-next-command.mjs' | grep -v grep | awk '{print $2}' || true)
-
-if [ -n "$NEXT_PIDS" ]; then
-    echo "查找到 Next.js 相关进程: $NEXT_PIDS"
-    echo "$NEXT_PIDS" | xargs kill 2>/dev/null || true
-    sleep 3
-    
-    # 强制停止仍未退出的进程
-    REMAIN_PIDS=$(ps aux | grep -E 'next-server|run-next-command.mjs' | grep -v grep | awk '{print $2}' || true)
-    if [ -n "$REMAIN_PIDS" ]; then
-        echo "强制停止进程: $REMAIN_PIDS"
-        echo "$REMAIN_PIDS" | xargs kill -9 2>/dev/null || true
-        sleep 2
-    fi
+echo "[1/7] Installing dependencies..."
+if [ -f package-lock.json ]; then
+  npm ci
 else
-    echo "未找到运行中的 Next.js 进程"
+  npm install
 fi
 
-# 确保端口 3000 已释放
-if lsof -ti:3000 >/dev/null 2>&1; then
-    echo "端口 3000 仍被占用，强制释放..."
-    lsof -ti:3000 | xargs kill -9 2>/dev/null || true
-    sleep 2
+if [ "$SKIP_MIGRATE" -eq 0 ]; then
+  echo "[2/7] Applying PostgreSQL schema..."
+  if [ -n "${DATABASE_URL:-}" ] && command -v psql >/dev/null 2>&1; then
+    psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/schema.sql
+  else
+    echo "Skipping schema migration. Install psql and set DATABASE_URL to enable it."
+  fi
+else
+  echo "[2/7] Skipping PostgreSQL schema migration."
 fi
 
-# 清理 PID 文件
-rm -f "$PID_FILE"
+if [ "$SKIP_WIKI_SYNC" -eq 0 ]; then
+  echo "[3/7] Building LLM Wiki from knowledge/raw..."
+  npm run wiki:build
+  echo "[4/7] Checking fixed topic RAG routing..."
+  npm run wiki:check-routing
+  if [ -n "${DATABASE_URL:-}" ]; then
+    echo "[5/7] Syncing LLM Wiki into PostgreSQL RAG tables..."
+    npm run wiki:sync
+  else
+    echo "[5/7] DATABASE_URL is not set; LLM Wiki will use local fallback mode only."
+  fi
+else
+  echo "[3/7] Skipping LLM Wiki build and PostgreSQL RAG sync."
+  echo "[4/7] Skipping fixed topic RAG routing check."
+  echo "[5/7] Skipping PostgreSQL RAG sync."
+fi
 
-echo "当前 Next.js 进程已停止"
-
-# 3. 重新构建项目
-echo "[3/4] 重新构建项目..."
+echo "[6/7] Building Next.js app..."
 npm run build
-if [ $? -eq 0 ]; then
-    echo "项目构建成功"
-else
-    echo "项目构建失败，退出部署"
-    exit 1
+
+mkdir -p deploy
+cat > deploy/nginx-agarwood.conf <<EOF
+server {
+  listen 80;
+  server_name ${DOMAIN} www.${DOMAIN};
+
+  client_max_body_size 25m;
+
+  location = ${NEXT_PUBLIC_BASE_PATH} {
+    proxy_pass http://127.0.0.1:${PORT};
+    proxy_http_version 1.1;
+    proxy_set_header Host \$host;
+    proxy_set_header X-Real-IP \$remote_addr;
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto \$scheme;
+    proxy_set_header Upgrade \$http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_buffering off;
+  }
+
+  location ${NEXT_PUBLIC_BASE_PATH}/ {
+    proxy_pass http://127.0.0.1:${PORT};
+    proxy_http_version 1.1;
+    proxy_set_header Host \$host;
+    proxy_set_header X-Real-IP \$remote_addr;
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto \$scheme;
+    proxy_set_header Upgrade \$http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_buffering off;
+  }
+}
+EOF
+
+if [ "$SKIP_START" -eq 1 ] || [ "$LOCAL_ONLY" -eq 1 ]; then
+  echo "Build complete. Start manually with: PORT=${PORT} npm run start"
+  echo "Nginx config written to deploy/nginx-agarwood.conf"
+  exit 0
 fi
 
-# 4. 重新启动项目
-echo "[4/4] 启动项目..."
-nohup npm run start > "$LOG_FILE" 2>&1 &
-NEW_PID=$!
-echo "$NEW_PID" > "$PID_FILE"
-
-echo "项目已启动，PID: $NEW_PID"
-echo "日志文件: $LOG_FILE"
-
-# 等待服务启动
-sleep 3
-
-# 验证服务状态
-echo "=========================================="
-echo "验证服务状态..."
-if curl -s http://localhost:3000/api/health > /dev/null 2>&1; then
-    echo "✅ 服务健康检查通过"
+echo "[7/7] Starting app..."
+if command -v pm2 >/dev/null 2>&1; then
+  pm2 start npm --name "$APP_NAME" -- run start --update-env || pm2 reload "$APP_NAME" --update-env
+  pm2 save
 else
-    echo "⚠️  服务健康检查失败，请检查日志"
+  echo "pm2 is not installed; using nohup fallback."
+  if [ -f "$PID_FILE" ]; then
+    OLD_PID="$(cat "$PID_FILE" || true)"
+    if [ -n "$OLD_PID" ]; then
+      kill "$OLD_PID" 2>/dev/null || true
+      sleep 2
+    fi
+  fi
+  nohup npm run start > "$LOG_FILE" 2>&1 &
+  echo "$!" > "$PID_FILE"
 fi
 
-# 显示端口监听状态
-echo ""
-echo "端口监听状态:"
-ss -tlnp | grep 3000 || echo "端口 3000 未监听"
-
-echo ""
-echo "=========================================="
-echo "部署完成: $(date '+%Y-%m-%d %H:%M:%S')"
-echo "=========================================="
-echo ""
-echo "查看日志: tail -f $LOG_FILE"
-echo "停止服务: kill \$(cat $PID_FILE)"
+echo "Deploy complete:"
+echo "  App:    http://127.0.0.1:${PORT}${NEXT_PUBLIC_BASE_PATH}"
+echo "  Health: http://127.0.0.1:${PORT}${NEXT_PUBLIC_BASE_PATH}/api/health"
+echo "  Nginx:  deploy/nginx-agarwood.conf"

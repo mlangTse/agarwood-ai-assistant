@@ -125,14 +125,18 @@ export async function retrieveKnowledge(question: string, matchCount = 5): Promi
   const db = await getDatabase();
   const normalizedQuestion = normalizeKnowledgeQuestion(question);
   const fixedTopic = extractFixedTopic(question);
+  const exactChunk = fixedTopic ? await readFixedTopicChunk(fixedTopic) : undefined;
+
+  if (fixedTopic && !exactChunk) return [missingFixedTopicChunk(fixedTopic)];
 
   if (!db) {
-    const exactChunk = fixedTopic ? await readFixedTopicChunk(fixedTopic) : undefined;
-    if (fixedTopic && !exactChunk) return [missingFixedTopicChunk(fixedTopic)];
     const searchLimit = exactChunk ? Math.max(matchCount - 1, 0) : matchCount;
     const searchResults = searchLimit > 0 ? await localKnowledgeSearch(normalizedQuestion, searchLimit, exactChunk?.metadata?.wikiPath) : [];
     return exactChunk ? [exactChunk, ...searchResults].slice(0, matchCount) : searchResults;
   }
+
+  const dbMatchCount = exactChunk ? Math.max(matchCount - 1, 0) : matchCount;
+  if (dbMatchCount === 0) return exactChunk ? [exactChunk] : [];
 
   const queryEmbedding = await embedText(normalizedQuestion);
   const keywordTerms = buildSearchTerms(normalizedQuestion);
@@ -236,13 +240,13 @@ export async function retrieveKnowledge(question: string, matchCount = 5): Promi
       where duplicate_rank = 1
       order by rank_score desc
       limit $2`,
-      [vectorLiteral(queryEmbedding), matchCount, keywordPatterns, Math.max(matchCount * 4, 24), fixedWikiPath]
+      [vectorLiteral(queryEmbedding), dbMatchCount, keywordPatterns, Math.max(matchCount * 4, 24), fixedWikiPath]
     ),
     RAG_TIMEOUT_MS,
     "知识库检索超时"
   );
 
-  const chunks = rows.slice(0, matchCount).map((row) => ({
+  const chunks = rows.slice(0, dbMatchCount).map((row) => ({
     id: row.id,
     documentId: row.document_id,
     title: row.title ?? "知识片段",
@@ -250,10 +254,8 @@ export async function retrieveKnowledge(question: string, matchCount = 5): Promi
     similarity: row.similarity ?? undefined,
     metadata: row.metadata ?? undefined
   }));
-  if (fixedTopic && fixedWikiPath && !isFixedTopicChunk(chunks[0], fixedWikiPath)) {
-    return [missingFixedTopicChunk(fixedTopic)];
-  }
-  return chunks;
+  if (!exactChunk) return chunks;
+  return [exactChunk, ...chunks.filter((chunk) => !isFixedTopicChunk(chunk, fixedWikiPath ?? ""))].slice(0, matchCount);
 }
 
 export async function listKnowledgeDocuments() {
