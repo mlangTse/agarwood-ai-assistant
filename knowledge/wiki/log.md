@@ -10,7 +10,7 @@ sources: []
 
 ## [2026-06-12] ingest | 重建 LLM Wiki
 
-- 扫描 `knowledge/raw/` 当前 20 个 Markdown 源文件。
+- 扫描 `knowledge/raw/` 当前 26 个 Markdown 源文件。
 - 为每个源文件重建 `wiki/sources/` 摘要页。
 - 重建 24 个概念页和 10 个实体页。
 - 约定：即使源文件为英文，RAG 和 AI Agent 也必须使用中文回答。

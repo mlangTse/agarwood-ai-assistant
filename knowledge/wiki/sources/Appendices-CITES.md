@@ -4,23 +4,23 @@ tags:
 date: 2026-06-12
 source_type: "raw-summary"
 sources:
-  - "Appendices  CITES.md"
+  - "Appendices CITES.md"
 ---
 
-# CITES 附录
+# Appendices CITES
 
-CITES 附录解释国际濒危物种贸易管理框架，是判断沉香属、拟沉香属材料跨境合规的重要背景。
+该原始资料尚未人工细分摘要，已纳入 RAG，可在后续摄入中继续整理为概念页或实体页。
 
 ## 资料边界
 
-- 原始文件：`Appendices  CITES.md`
+- 原始文件：`Appendices CITES.md`
 - 该页是来源摘要，不替代原文。
 - 若源文件为英文，AI Agent 必须用中文解释、转述和回答。
 - 涉及保护等级、贸易规则、药用或法律问题时，应回到原文和最新官方资料核对。
 
 ## 关键关联
 
-[[CITES]]、[[合规表达]]、[[沉香贸易]]
+[[资料边界]]
 
 ## 原文摘录
 
