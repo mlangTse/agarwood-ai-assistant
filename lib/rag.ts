@@ -361,7 +361,7 @@ function withTimeout<T>(promise: PromiseLike<T>, timeoutMs: number, message: str
 
 async function localKnowledgeSearch(question: string, limit: number, excludeWikiPath?: unknown): Promise<KnowledgeChunk[]> {
   const wikiDocuments = await readWikiKnowledgeDocuments();
-  const uploadedChunks = wikiDocuments.flatMap((document) =>
+  const uploadedChunks: KnowledgeChunk[] = wikiDocuments.flatMap((document) =>
     document.chunks.map((chunk) => ({
       ...chunk,
       title: document.title,

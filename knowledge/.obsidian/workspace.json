@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "CODEX.md",
+                "file": "wiki/concepts/产区对比.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "CODEX"
+              "title": "产区对比"
             }
           }
         ]
@@ -182,11 +182,12 @@
   },
   "active": "bae7164adbb373be",
   "lastOpenFiles": [
+    "wiki/concepts/产品形态.md",
+    "CODEX.md",
     "wiki/concepts/真假鉴别.md",
     "wiki/concepts/价格等级.md",
     "wiki/concepts/购买偏好.md",
     "wiki/concepts/预算层级.md",
-    "wiki/concepts/产品形态.md",
     "wiki/concepts/工艺保养.md",
     "wiki/concepts/气味强度.md",
     "wiki/concepts/熏闻方式.md",
@@ -208,7 +209,6 @@
     "raw/土沉香 - 维基百科，自由的百科全书 1.md",
     "raw/茂名市 - 维基百科，自由的百科全书.md",
     "raw/Gyrinops.md",
-    "raw/History of Use and Trade of Agarwood - Ethnobotany and Economic Botany.md",
     "Clippings",
     "outputs",
     "CODEX.md.txt",
