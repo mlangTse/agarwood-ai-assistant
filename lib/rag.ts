@@ -175,7 +175,6 @@ export async function retrieveKnowledge(question: string, matchCount = 5): Promi
           case
             when d.source_name like 'knowledge/wiki/concepts/%' then 0.45
             when d.source_name like 'knowledge/wiki/entities/%' then 0.30
-            when d.source_name like 'knowledge/wiki/sources/%' then -0.20
             else 0
           end as page_score
         from embeddings e
@@ -200,7 +199,6 @@ export async function retrieveKnowledge(question: string, matchCount = 5): Promi
           case
             when d.source_name like 'knowledge/wiki/concepts/%' then 0.45
             when d.source_name like 'knowledge/wiki/entities/%' then 0.30
-            when d.source_name like 'knowledge/wiki/sources/%' then -0.20
             else 0
           end as page_score
         from embeddings e
@@ -632,7 +630,6 @@ function missingFixedTopicChunk(topic: string): KnowledgeChunk {
 function wikiPageType(relativePath: string) {
   if (relativePath.startsWith("concepts/")) return "concept";
   if (relativePath.startsWith("entities/")) return "entity";
-  if (relativePath.startsWith("sources/")) return "source";
   return "wiki";
 }
 
@@ -649,7 +646,7 @@ function pagePriorityScore(chunk: KnowledgeChunk) {
 function titleIntentBoost(question: string, chunk: KnowledgeChunk) {
   const normalized = normalizeKnowledgeQuestion(question);
   const title = chunk.title;
-  const topicTitles = ["产区对比", "香韵解释", "真假鉴别", "价格等级", "工艺保养"];
+  const topicTitles = ["产区对比", "莞香系", "惠安系", "星洲系", "产区误区", "香韵解释", "真假鉴别", "价格等级", "工艺保养"];
   return topicTitles.some((topic) => normalized.includes(topic) && title.includes(topic)) ? 0.8 : 0;
 }
 

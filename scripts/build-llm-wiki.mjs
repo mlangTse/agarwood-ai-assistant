@@ -6,109 +6,6 @@ const rawRoot = path.join(root, "knowledge", "raw");
 const wikiRoot = path.join(root, "knowledge", "wiki");
 const today = new Date().toISOString().slice(0, 10);
 
-const sourceSummaryByFile = {
-  "沉香 - 维基百科，自由的百科全书.md": {
-    title: "沉香",
-    summary: "中文资料介绍沉香的种类、结香机理、鉴别、致香成分、香料、传统药用语境与投资骗局风险。",
-    links: ["沉香", "结香", "真假鉴别", "合规表达"]
-  },
-  "沉香属 - 维基百科，自由的百科全书.md": {
-    title: "沉香属",
-    summary: "中文资料介绍沉香属物种和保育状况，可与 Kew、CITES、IUCN 资料互相校验。",
-    links: ["沉香树种", "Aquilaria", "濒危保护"]
-  },
-  "沉香树 - 维基百科，自由的百科全书.md": {
-    title: "沉香树",
-    summary: "中文资料介绍沉香树用途、类似品种和参考文献，可用于解释树、树脂与香材的关系。",
-    links: ["沉香", "沉香树种", "结香"]
-  },
-  "土沉香 - 维基百科，自由的百科全书.md": {
-    title: "土沉香",
-    summary: "中文资料介绍土沉香的异名、特征、用途、保护情况和类似品种，是 A. sinensis 中文口径的重要来源。",
-    links: ["土沉香", "Aquilaria sinensis", "濒危保护"]
-  },
-  "电白区 - 维基百科，自由的百科全书.md": {
-    title: "电白区",
-    summary: "电白区资料用于补充电白、茂名地域背景，可服务地方产区、礼赠和文旅展陈口径；具体沉香产业事实仍需地方产业资料佐证。",
-    links: ["产区对比", "闻香场景", "合规表达"]
-  },
-  "茂名市 - 维基百科，自由的百科全书.md": {
-    title: "茂名市",
-    summary: "茂名市资料用于补充广东西部地域背景。用于沉香产区表达时，应区分行政区资料与沉香产业资料。",
-    links: ["产区对比", "资料边界"]
-  },
-  "Agarwood.md": {
-    title: "Agarwood 沉香总论",
-    summary: "英文资料介绍 agarwood/oud 的形成、用途、香气、价格、贸易、CITES 和文化背景，适合补充香韵、价格等级、工艺和合规边界。",
-    links: ["沉香", "香韵解释", "价格等级", "沉香贸易", "CITES"]
-  },
-  "Appendices  CITES.md": {
-    title: "CITES 附录",
-    summary: "CITES 附录解释国际濒危物种贸易管理框架，是判断沉香属、拟沉香属材料跨境合规的重要背景。",
-    links: ["CITES", "合规表达", "沉香贸易"]
-  },
-  "Checklist of CITES species.md": {
-    title: "CITES 物种清单",
-    summary: "CITES 物种清单用于核对受管制物种；使用时应结合 Aquilaria、Gyrinops 专门条目检索。",
-    links: ["CITES", "合规表达"]
-  },
-  "The IUCN Red List of Threatened Species.md": {
-    title: "IUCN 红色名录检索",
-    summary: "IUCN 红色名录检索结果用于核对沉香相关物种保护状态，具体结论需回到对应物种页面。",
-    links: ["IUCN", "濒危保护", "沉香树种"]
-  },
-  "Kew Science.md": {
-    title: "Kew Science: Aquilaria",
-    summary: "Kew POWO 的 Aquilaria 检索结果和分类资料，适合核对沉香属物种、异名和植物分类口径。",
-    links: ["Kew POWO", "Aquilaria", "沉香树种"]
-  },
-  "Kew Science 1.md": {
-    title: "Kew Science: Gyrinops",
-    summary: "Kew POWO 的 Gyrinops 检索结果，适合核对拟沉香属物种和分类口径。",
-    links: ["Kew POWO", "Gyrinops", "Aquilaria"]
-  },
-  "Aquilaria.md": {
-    title: "Aquilaria 沉香属",
-    summary: "Aquilaria 是沉香主要基原类群之一，与 Gyrinops 共同构成香料级沉香的重要植物来源。",
-    links: ["Aquilaria", "沉香属", "Gyrinops", "沉香树种"]
-  },
-  "Gyrinops.md": {
-    title: "Gyrinops 拟沉香属",
-    summary: "拟沉香属与沉香属同为沉香重要来源类群，资料涉及沉香生产和物种列表。",
-    links: ["Gyrinops", "沉香树种", "Aquilaria"]
-  },
-  "Aquilaria sinensis.md": {
-    title: "Aquilaria sinensis 土沉香/白木香",
-    summary: "A. sinensis 是中国语境中的土沉香、白木香，资料涉及香港、传统用途、树脂采集、保护与 CITES 附录 II 管理。",
-    links: ["Aquilaria sinensis", "土沉香", "香港沉香树", "CITES"]
-  },
-  "Aquilaria malaccensis.md": {
-    title: "Aquilaria malaccensis",
-    summary: "A. malaccensis 是沉香贸易中极重要的树种，资料涉及用途、威胁、保护和过度采伐问题。",
-    links: ["Aquilaria malaccensis", "沉香树种", "濒危保护", "沉香贸易"]
-  },
-  "Aquilaria crassna.md": {
-    title: "Aquilaria crassna",
-    summary: "A. crassna 是东南亚沉香来源树种之一，资料强调濒危状态、树脂心材用途与人工诱导或感染形成沉香的背景。",
-    links: ["Aquilaria crassna", "沉香树种", "结香"]
-  },
-  "Trees That Gave Hong Kong Its Name Are Nearing Extinction.md": {
-    title: "香港沉香树濒危报道",
-    summary: "报道指出给香港带来名称联想的沉香树正接近灭绝，强调非法砍伐、保护压力和本地生态文化价值。",
-    links: ["香港沉香树", "Aquilaria sinensis", "濒危保护"]
-  },
-  "History of Use and Trade of Agarwood - Ethnobotany and Economic Botany.md": {
-    title: "沉香使用与贸易史",
-    summary: "资料从民族植物学和经济植物学角度讨论 agarwood 的使用、贸易、历史流通和经济价值。",
-    links: ["沉香贸易", "沉香使用史", "合规表达"]
-  },
-  "Kōdō.md": {
-    title: "Kōdō 香道",
-    summary: "香道资料适合补充闻香场景、隔火体验、香席文化、香材等级和审美表达，但不能转写成疗效承诺。",
-    links: ["闻香场景", "熏闻方式", "沉香使用史", "合规表达"]
-  }
-};
-
 const conceptDefinitions = [
   {
     file: "concepts/沉香.md",
@@ -187,6 +84,89 @@ const conceptDefinitions = [
 - 产区只是线索，不是鉴定结论。
 - 野生、沉水、奇楠、老料、顶级产区等市场词不能单独作为证据。
 - 涉及跨境、野生来源或高价藏品时，应结合 [[CITES]]、[[IUCN]]、来源凭证和检测资料。`
+  },
+  {
+    file: "concepts/莞香系.md",
+    tags: ["concept", "产区", "中国系"],
+    index: "[[莞香系]] - 中国系/莞香系沉香的地域口径、常见香气表达和证据边界。",
+    body: `# 莞香系
+
+莞香系也可理解为中国系沉香表达入口，常连接广东、海南、广西、云南、香港土沉香/白木香等地域口径。知识库里应把它当作产区风格线索，而不是品质、真伪或价格结论。
+
+## 适合怎么讲
+
+- 地域线索：广东、电白、茂名、海南、香港等资料可作为地方背景，但地方行政资料不能自动证明具体香材来源。
+- 树种线索：中文语境常关联 [[Aquilaria sinensis]]、土沉香、白木香。
+- 香气表达：可用清甜、花蜜、温润、雅净、书房感、茶席感等词，但要以实物复闻为准。
+- 产品场景：适合新手试香、茶室、书房、礼赠说明和地方文化讲解。
+
+## 不能怎么讲
+
+- 不能说中国系一定比惠安系或星洲系更高级。
+- 不能用“莞香”“海南”“香港”等地名直接证明真货。
+- 不能把土沉香传统用途转成现代疗效承诺。`
+  },
+  {
+    file: "concepts/惠安系.md",
+    tags: ["concept", "产区", "惠安系"],
+    index: "[[惠安系]] - 越南、芽庄、柬埔寨、老挝、泰国等惠安系口径的香气和风险边界。",
+    body: `# 惠安系
+
+惠安系是市场中常见的东南亚沉香风格口径，常被用来描述越南、芽庄、柬埔寨、老挝、泰国等区域相关香材。它适合解释风格，不适合作为单独鉴定证据。
+
+## 适合怎么讲
+
+- 地域线索：越南、芽庄、柬埔寨、老挝、泰国等可作为市场口径。
+- 树种线索：资料中可与 [[Aquilaria crassna]] 等东南亚树种关联。
+- 香气表达：常用花果、蜜甜、清雅、柔和、层次细、前段轻扬等词。
+- 产品场景：适合线香、香粉、隔火体验、小样试闻和进阶闻香对比。
+
+## 风险边界
+
+- “芽庄”“红土”“老惠安”等市场词需要来源记录和实物复闻支撑。
+- 不能仅凭甜味、花香或颜色判断产区。
+- 高价惠安系材料要看检测资料、交易记录和合法来源证明。`
+  },
+  {
+    file: "concepts/星洲系.md",
+    tags: ["concept", "产区", "星洲系"],
+    index: "[[星洲系]] - 马来西亚、印尼、达拉干、马泥涝、加里曼丹等星洲系口径。",
+    body: `# 星洲系
+
+星洲系常用于描述马来西亚、印尼、达拉干、马泥涝、加里曼丹、文莱等区域相关沉香。它适合讲空间扩散、凉感和木质骨架，也要避免把产区词说成鉴定结论。
+
+## 适合怎么讲
+
+- 地域线索：马来西亚、印尼、达拉干、马泥涝、加里曼丹、文莱等常见于星洲系表达。
+- 树种线索：可与 [[Aquilaria malaccensis]]、小果沉香和 [[Gyrinops]] 等资料关联。
+- 香气表达：可用凉意、乳香、木质、辛凉、穿透力、扩散感、空间感等词。
+- 产品场景：适合空间熏闻、商务空间、偏强存在感用户和产区对比教学。
+
+## 风险边界
+
+- 穿透力强不等于等级高。
+- “达拉干”“马泥涝”等名字不能单独证明来源。
+- 星洲系常涉及跨境贸易语境，高价或野生口径要结合 [[CITES]] 和合法来源证明。`
+  },
+  {
+    file: "concepts/产区误区.md",
+    tags: ["concept", "产区", "鉴别"],
+    index: "[[产区误区]] - 产区名、沉水、野生、奇楠、老料等市场词的常见误判。",
+    body: `# 产区误区
+
+产区误区用于处理导购和鉴别中的高频混淆：产区名可以帮助描述风格，但不能直接证明真伪、等级、价格或收藏价值。
+
+## 高频误区
+
+- 产区名不等于证据：海南、芽庄、达拉干、马泥涝等只能作为线索。
+- 沉水不等于真：重量、含油、泡油、压油、处理方式都会影响沉水表现。
+- 野生不等于好：野生口径往往伴随合规、濒危和来源证明风险。
+- 奇楠不等于万能：奇楠是高风险高溢价词，不能只凭香气故事判断。
+- 老料不等于高价合理：仍要看保存状态、香气稳定性、来源记录和检测资料。
+
+## 稳妥回答方式
+
+回答产区问题时，应按“风格线索、树种线索、香气表达、证据边界”四步讲；用户要购买或鉴别时，再要求实物复闻、来源记录、检测资料和合法来源证明。`
   },
   {
     file: "concepts/香韵解释.md",
@@ -625,43 +605,6 @@ function frontmatter(tags, sources = [], extra = {}) {
   return `${lines.join("\n")}\n`;
 }
 
-function slugFileName(name) {
-  return name
-    .replace(/\.md$/i, "")
-    .replace(/[\\/:*?"<>|]/g, " ")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "")
-    .slice(0, 120);
-}
-
-function stripFrontmatter(content) {
-  return content.replace(/^---\n[\s\S]*?\n---\n/, "");
-}
-
-function extractFrontmatterTitle(content) {
-  const match = content.match(/^---\n[\s\S]*?\ntitle:\s*["']?(.+?)["']?\s*\n[\s\S]*?\n---\n/);
-  return match?.[1]?.trim();
-}
-
-function extractFirstHeading(content) {
-  const match = stripFrontmatter(content).match(/^#\s+(.+)$/m);
-  return match?.[1]?.trim();
-}
-
-function cleanText(content) {
-  return stripFrontmatter(content)
-    .replace(/!\[[^\]]*]\([^)]+\)/g, "")
-    .replace(/\[([^\]]+)]\([^)]+\)/g, "$1")
-    .replace(/\[\^[^\]]+]:.*$/gm, "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function excerpt(content, length = 700) {
-  return cleanText(content).slice(0, length).trimEnd();
-}
-
 function linkList(items) {
   return items.map((item) => `[[${item}]]`).join("、");
 }
@@ -684,42 +627,11 @@ async function writeManagedPage(relativePath, content) {
   await writeFile(fullPath, ensureTrailingNewline(content), "utf8");
 }
 
-function sourcePage(rawFile, content) {
-  const known = sourceSummaryByFile[rawFile];
-  const title = known?.title ?? extractFrontmatterTitle(content) ?? extractFirstHeading(content) ?? rawFile.replace(/\.md$/i, "");
-  const links = known?.links ?? ["资料边界"];
-  const summary = known?.summary ?? "该原始资料尚未人工细分摘要，已纳入 RAG，可在后续摄入中继续整理为概念页或实体页。";
-  return {
-    title,
-    wikiName: slugFileName(rawFile),
-    summary,
-    content:
-      frontmatter(["source"], [rawFile], { source_type: "raw-summary" }) +
-      `# ${title}
-
-${summary}
-
-## 资料边界
-
-- 原始文件：\`${rawFile}\`
-- 该页是来源摘要，不替代原文。
-- 若源文件为英文，AI Agent 必须用中文解释、转述和回答。
-- 涉及保护等级、贸易规则、药用或法律问题时，应回到原文和最新官方资料核对。
-
-## 关键关联
-
-${linkList(links)}
-
-## 原文摘录
-
-> ${excerpt(content)}
-`
-  };
-}
-
 function relatedLinksFor(pageFile) {
   if (pageFile.includes("香韵")) return ["闻香场景", "熏闻方式", "气味强度", "真假鉴别"];
-  if (pageFile.includes("产区")) return ["沉香树种", "Aquilaria sinensis", "Aquilaria malaccensis", "Gyrinops", "真假鉴别"];
+  if (pageFile.includes("莞香") || pageFile.includes("惠安") || pageFile.includes("星洲") || pageFile.includes("产区")) {
+    return ["产区对比", "莞香系", "惠安系", "星洲系", "产区误区", "沉香树种", "真假鉴别"];
+  }
   if (pageFile.includes("价格") || pageFile.includes("预算") || pageFile.includes("购买")) return ["产品形态", "真假鉴别", "合规表达", "沉香贸易"];
   if (pageFile.includes("真假") || pageFile.includes("鉴别")) return ["鉴别风险", "价格等级", "产品形态", "合规表达"];
   if (pageFile.includes("CITES") || pageFile.includes("合规")) return ["濒危保护", "沉香贸易", "Aquilaria", "Gyrinops"];
@@ -819,14 +731,6 @@ async function main() {
   }
   await mkdir(path.join(wikiRoot, "outputs"), { recursive: true });
 
-  const sourcePages = [];
-  for (const rawFile of rawFiles) {
-    const content = await readFile(path.join(rawRoot, rawFile), "utf8");
-    const page = sourcePage(rawFile, content);
-    sourcePages.push({ ...page, rawFile });
-    await writeManagedPage(`sources/${page.wikiName}.md`, page.content);
-  }
-
   const concepts = conceptPages(rawFiles);
   const entities = entityPages(rawFiles);
   for (const page of [...concepts, ...entities]) {
@@ -836,10 +740,6 @@ async function main() {
   const index =
     frontmatter(["index"], [], { page_type: "index" }) +
     `# Index
-
-## Sources
-
-${sourcePages.map((page) => `- [[${page.wikiName}]] - ${page.summary}`).join("\n")}
 
 ## Concepts
 
@@ -852,8 +752,8 @@ ${entities.map((page) => `- ${page.index}`).join("\n")}
 ## Knowledge Base Rules
 
 - raw 原文只存放在 \`knowledge/raw/\`。
-- \`knowledge/wiki/\` 只放面向 RAG 的中文整理页。
-- AI Agent 应优先引用 wiki 概念页、实体页和来源摘要页，不直接拼接 raw 片段。
+- \`knowledge/wiki/\` 只放面向 RAG 的中文概念页和实体页。
+- AI Agent 应优先引用 wiki 概念页和实体页，不直接拼接 raw 片段。
 - 缺资料时明确说知识库未命中，并指出需要补充哪类资料。
 
 ## Outputs
@@ -866,7 +766,6 @@ ${entities.map((page) => `- ${page.index}`).join("\n")}
 ## [${today}] ingest | 重建 LLM Wiki
 
 - 扫描 \`knowledge/raw/\` 当前 ${rawFiles.length} 个 Markdown 源文件。
-- 为每个源文件重建 \`wiki/sources/\` 摘要页。
 - 重建 ${concepts.length} 个概念页和 ${entities.length} 个实体页。
 - 约定：即使源文件为英文，RAG 和 AI Agent 也必须使用中文回答。
 - 约定：选项类问题依靠 wiki 页召回，不在聊天接口里硬编码答案。
@@ -880,10 +779,10 @@ ${entities.map((page) => `- ${page.index}`).join("\n")}
     JSON.stringify(
       {
         rawFiles: rawFiles.length,
-        sourcePages: sourcePages.length,
+        sourcePages: 0,
         conceptPages: concepts.length,
         entityPages: entities.length,
-        totalPages: sourcePages.length + concepts.length + entities.length + 2
+        totalPages: concepts.length + entities.length + 2
       },
       null,
       2

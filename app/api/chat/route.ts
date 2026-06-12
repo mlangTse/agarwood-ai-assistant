@@ -246,16 +246,13 @@ function buildKnowledgeFallbackText(message: string, chunks: KnowledgeChunk[]) {
   }
 
   const primary = cleanedChunks[0];
-  const sourceLine = cleanedChunks.map((chunk) => chunk.title).join("、");
 
   return [
-    `按知识库《${primary.title}》页面，“${message}”应先这样理解：`,
+    `《${primary.title}》`,
     "",
     excerptKnowledgeContent(primary.content),
     "",
-    "这不是鉴定结论，而是基于已上传资料的整理。真正用于购买、鉴定或对外宣传时，还要结合实物复闻、来源记录、检测资料和合法来源证明。",
-    "",
-    `参考页面：${sourceLine}。`
+    "用于购买、鉴定或对外宣传时，还要结合实物复闻、来源记录、检测资料和合法来源证明。"
   ].join("\n");
 }
 
