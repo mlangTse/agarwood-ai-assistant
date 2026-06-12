@@ -116,13 +116,14 @@ export async function ingestKnowledgeDocument(input: {
 
 export async function retrieveKnowledge(question: string, matchCount = 5): Promise<KnowledgeChunk[]> {
   const db = await getDatabase();
+  const normalizedQuestion = normalizeKnowledgeQuestion(question);
 
   if (!db) {
-    return localKnowledgeSearch(question, matchCount);
+    return localKnowledgeSearch(normalizedQuestion, matchCount);
   }
 
-  const queryEmbedding = await embedText(question);
-  const keywordTerms = buildSearchTerms(question);
+  const queryEmbedding = await embedText(normalizedQuestion);
+  const keywordTerms = buildSearchTerms(normalizedQuestion);
   const keywordPatterns = keywordTerms.map((term) => `%${escapeLike(term)}%`);
 
   const { rows } = await withTimeout(
@@ -135,12 +136,18 @@ export async function retrieveKnowledge(question: string, matchCount = 5): Promi
           e.content,
           e.metadata,
           1 - (e.embedding <=> $1::vector) as similarity,
-          0 as keyword_score
+          0 as keyword_score,
+          case
+            when d.source_name like 'knowledge/wiki/concepts/%' then 0.45
+            when d.source_name like 'knowledge/wiki/entities/%' then 0.30
+            when d.source_name like 'knowledge/wiki/sources/%' then -0.20
+            else 0
+          end as page_score
         from embeddings e
         join knowledge_documents d on d.id = e.document_id
         where d.source_name like 'knowledge/wiki/%'
         order by e.embedding <=> $1::vector
-        limit $2
+        limit $4
       ),
       keyword_matches as (
         select
@@ -154,7 +161,13 @@ export async function retrieveKnowledge(question: string, matchCount = 5): Promi
             select count(*)
             from unnest($3::text[]) term
             where e.content ilike term escape '\\' or d.title ilike term escape '\\'
-          ) as keyword_score
+          ) as keyword_score,
+          case
+            when d.source_name like 'knowledge/wiki/concepts/%' then 0.45
+            when d.source_name like 'knowledge/wiki/entities/%' then 0.30
+            when d.source_name like 'knowledge/wiki/sources/%' then -0.20
+            else 0
+          end as page_score
         from embeddings e
         join knowledge_documents d on d.id = e.document_id
         where cardinality($3::text[]) > 0
@@ -165,7 +178,7 @@ export async function retrieveKnowledge(question: string, matchCount = 5): Promi
             where e.content ilike term escape '\\' or d.title ilike term escape '\\'
           )
         order by keyword_score desc, e.created_at desc
-        limit $2
+        limit $4
       )
       select
         id,
@@ -179,17 +192,17 @@ export async function retrieveKnowledge(question: string, matchCount = 5): Promi
           *,
           row_number() over (partition by id order by rank_score desc) as duplicate_rank
         from (
-          select *, coalesce(similarity, 0) + keyword_score * 0.08 as rank_score
+          select *, coalesce(similarity, 0) + keyword_score * 0.10 + page_score as rank_score
           from vector_matches
           union all
-          select *, coalesce(similarity, 0) + keyword_score * 0.08 as rank_score
+          select *, coalesce(similarity, 0) + keyword_score * 0.10 + page_score as rank_score
           from keyword_matches
         ) ranked
       ) deduped
       where duplicate_rank = 1
       order by rank_score desc
       limit $2`,
-      [vectorLiteral(queryEmbedding), Math.max(matchCount, 8), keywordPatterns]
+      [vectorLiteral(queryEmbedding), matchCount, keywordPatterns, Math.max(matchCount * 4, 24)]
     ),
     RAG_TIMEOUT_MS,
     "知识库检索超时"
@@ -323,38 +336,18 @@ async function localKnowledgeSearch(question: string, limit: number): Promise<Kn
     }))
   );
 
-  const seed: KnowledgeChunk[] = [
-    {
-      title: "星洲系与惠安系基础差异",
-      content:
-        "星洲系常以木质、凉感、穿透力和空间扩散见长；惠安系常以甜润、蜜韵、花香和细腻层次被讨论。具体仍需结合实物、结香状态和熏闻温度判断。"
-    },
-    {
-      title: "奇楠说明",
-      content:
-        "奇楠通常指香气变化强、穿透力高、常带凉韵或乳韵且质地特殊的一类高阶沉香。市场使用该词较复杂，必须结合来源、实物复闻与专业鉴别。"
-    },
-    {
-      title: "沉水与价格",
-      content:
-        "沉水代表密度达到可沉入水中的状态，常与油脂含量相关，但沉水不是价值的唯一条件。香气品质、产区、结香方式、稀缺性和来源记录都会影响价格。"
-    },
-    {
-      title: "电熏与炭熏",
-      content:
-        "电熏控温稳定，适合新手和产区对比；炭熏仪式感强、变化丰富，但温度控制更难，容易把甜韵烤焦或放大香材缺点。"
-    }
-  ];
+  if (uploadedChunks.length === 0) return [];
 
-  const candidates = uploadedChunks.length > 0 ? uploadedChunks : seed;
   const queryVector = fallbackEmbedding(question, 256);
   const queryTerms = tokenize(question);
-  return candidates
+  return uploadedChunks
     .map((chunk) => {
       const vector = fallbackEmbedding(chunk.content, 256);
       const keywordScore = keywordSimilarity(queryTerms, tokenize(`${chunk.title}\n${chunk.content}`));
       const vectorScore = cosineSimilarity(queryVector, vector);
-      return { ...chunk, similarity: keywordScore * 0.7 + vectorScore * 0.3 };
+      const pageScore = pagePriorityScore(chunk);
+      const titleBoost = titleIntentBoost(question, chunk);
+      return { ...chunk, similarity: keywordScore * 0.7 + vectorScore * 0.3 + pageScore + titleBoost };
     })
     .sort((a, b) => Number(b.similarity) - Number(a.similarity))
     .slice(0, limit);
@@ -423,6 +416,7 @@ async function readWikiKnowledgeDocuments(): Promise<KnowledgeDocumentRecord[]> 
         const title = extractMarkdownTitle(content) ?? path.basename(file, path.extname(file));
         const chunks = chunkText(content);
         const id = `wiki:${relativePath}`;
+        const pageType = wikiPageType(relativePath);
 
         return {
           id,
@@ -439,7 +433,8 @@ async function readWikiKnowledgeDocuments(): Promise<KnowledgeDocumentRecord[]> 
             metadata: {
               sourceName: `knowledge/wiki/${relativePath}`,
               chunkIndex: index,
-              wikiPath: relativePath
+              wikiPath: relativePath,
+              pageType
             }
           }))
         } satisfies KnowledgeDocumentRecord;
@@ -481,7 +476,7 @@ async function writeLocalKnowledgeDocuments(documents: KnowledgeDocumentRecord[]
 }
 
 function buildSearchTerms(text: string) {
-  const expanded = expandQuery(text);
+  const expanded = expandQuery(normalizeKnowledgeQuestion(text));
   return Array.from(tokenize(expanded))
     .filter((term) => term.length >= 2)
     .slice(0, 32);
@@ -489,17 +484,17 @@ function buildSearchTerms(text: string) {
 
 function expandQuery(text: string) {
   const expansions: string[] = [text];
-  if (/产区|地区|对比|比较|区别/.test(text)) {
-    expansions.push("产区 对比 海南 电白 越南 芽庄 印尼 马来西亚 星洲 惠安 国外 香韵 场景");
+  if (/产区|地区|对比|比较|区别|莞香|惠安|星洲/.test(text)) {
+    expansions.push("产区对比 产区 地区 莞香 中国系 惠安系 星洲系 海南 广东 电白 茂名 越南 芽庄 印尼 马来西亚 达拉干 马泥涝 Aquilaria Gyrinops");
   }
   if (/种植|野生|人工/.test(text)) {
-    expansions.push("人工种植 野生沉香 诱导结香 来源证明 合规");
+    expansions.push("人工种植沉香 野生沉香 诱导结香 来源证明 合规 结香");
   }
   if (/奇楠/.test(text)) {
-    expansions.push("奇楠 凉韵 乳韵 蜜韵 高阶沉香");
+    expansions.push("奇楠 凉韵 奶韵 蜜韵 高阶沉香 真假鉴别 价格等级");
   }
   if (/沉水|半沉|浮水/.test(text)) {
-    expansions.push("沉水 半沉 浮水 油脂 密度 价格");
+    expansions.push("沉水 半沉 浮水 油脂 密度 价格等级 真假鉴别");
   }
   if (/香韵|香气|清甜|凉意|奶韵|药感|木质|花蜜|清雅/.test(text)) {
     expansions.push("香韵解释 闻香体验 清甜 凉意 奶韵 药感 木质 花蜜 清雅 气味强度");
@@ -520,6 +515,40 @@ function expandQuery(text: string) {
     expansions.push("产品形态 香材 手串 香粉 线香 摆件 收藏藏品");
   }
   return expansions.join(" ");
+}
+
+function normalizeKnowledgeQuestion(text: string) {
+  const selectedTopic = text.match(/主题[：:]\s*([^；;\n]+)/)?.[1]?.trim();
+  if (selectedTopic) return `${selectedTopic} ${text}`;
+
+  const selectedPreference = text.match(/偏好[：:]\s*([^；;\n]+)/)?.[1]?.trim();
+  if (selectedPreference) return `${selectedPreference} ${text}`;
+
+  return text;
+}
+
+function wikiPageType(relativePath: string) {
+  if (relativePath.startsWith("concepts/")) return "concept";
+  if (relativePath.startsWith("entities/")) return "entity";
+  if (relativePath.startsWith("sources/")) return "source";
+  return "wiki";
+}
+
+function pagePriorityScore(chunk: KnowledgeChunk) {
+  const sourceName = typeof chunk.metadata?.sourceName === "string" ? chunk.metadata.sourceName : "";
+  const wikiPath = typeof chunk.metadata?.wikiPath === "string" ? chunk.metadata.wikiPath : "";
+  const pathText = `${sourceName}\n${wikiPath}`;
+  if (/knowledge\/wiki\/concepts\//.test(pathText) || /^concepts\//.test(pathText)) return 0.45;
+  if (/knowledge\/wiki\/entities\//.test(pathText) || /^entities\//.test(pathText)) return 0.3;
+  if (/knowledge\/wiki\/sources\//.test(pathText) || /^sources\//.test(pathText)) return -0.2;
+  return 0;
+}
+
+function titleIntentBoost(question: string, chunk: KnowledgeChunk) {
+  const normalized = normalizeKnowledgeQuestion(question);
+  const title = chunk.title;
+  const topicTitles = ["产区对比", "香韵解释", "真假鉴别", "价格等级", "工艺保养"];
+  return topicTitles.some((topic) => normalized.includes(topic) && title.includes(topic)) ? 0.8 : 0;
 }
 
 function escapeLike(term: string) {

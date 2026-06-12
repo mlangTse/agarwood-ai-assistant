@@ -6,7 +6,7 @@ import { recommendProducts, inferUserPreference } from "@/lib/recommendation";
 import { listProducts } from "@/lib/products";
 import { retrieveKnowledge } from "@/lib/rag";
 import { sampleProducts } from "@/lib/sample-data";
-import type { AssistantModule, Product, Recommendation } from "@/lib/types";
+import type { AssistantModule, KnowledgeChunk, Product, Recommendation } from "@/lib/types";
 
 export const runtime = "nodejs";
 export const maxDuration = 40;
@@ -123,7 +123,11 @@ async function buildContext(module: AssistantModule, message: string) {
       fallbackText: buildKnowledgeFallbackText(message, chunks),
       meta: {
         scentTags: ["知识库", "RAG", "谨慎回答"],
-        sources: chunks.map((chunk) => ({ title: chunk.title, similarity: chunk.similarity }))
+        sources: chunks.map((chunk) => ({
+          title: chunk.title,
+          similarity: chunk.similarity,
+          sourceName: chunk.metadata?.sourceName
+        }))
       }
     };
   }
@@ -207,41 +211,52 @@ function streamFallback(
   });
 }
 
-function buildKnowledgeFallbackText(message: string, chunks: { title: string; content: string }[]) {
+function buildKnowledgeFallbackText(message: string, chunks: KnowledgeChunk[]) {
   if (chunks.length === 0) {
-    return `我没有在当前知识库里找到足够贴合“${message}”的资料。建议先补充产区来源、树种、结香方式、检测或合法来源证明等材料；补充后我会按知识库片段回答，并在侧栏展示引用来源。`;
+    return `我没有在当前知识库里找到足够贴合“${message}”的资料。建议先补充产区来源、树种、结香方式、检测或合法来源证明等材料；补充后我会按知识库概念页回答，并在侧栏展示引用来源。`;
   }
 
-  const cleanedChunks = uniqueKnowledgeChunks(chunks)
+  const uniqueChunks = uniqueKnowledgeChunks(chunks);
+  const topChunk = uniqueChunks[0];
+  const primaryChunks = uniqueChunks.filter((chunk) => isPrimaryWikiPage(chunk));
+
+  if (!topChunk || !isPrimaryWikiPage(topChunk) || primaryChunks.length === 0) {
+    return [
+      `当前知识库没有为“${message}”命中足够可靠的概念页或实体页。`,
+      "",
+      "我不会把 source 摘录、物种列表或零散片段硬拼成答案。请先补充或整理对应的概念页，例如产区对比、香韵解释、真假鉴别、价格等级，或补充可核对的来源记录、检测资料和合法来源证明。"
+    ].join("\n");
+  }
+
+  const cleanedChunks = primaryChunks
     .map((chunk) => ({
       title: cleanKnowledgeTitle(chunk.title),
       content: cleanKnowledgeContent(chunk.content)
     }))
     .filter((chunk) => chunk.content.length >= 20)
-    .slice(0, 4);
+    .slice(0, 3);
 
   if (cleanedChunks.length === 0) {
-    return `我在知识库里找到了相关页面，但片段内容不足以组成可靠回答。建议补充更完整的原文，或换一个更具体的问题，例如产区、树种、香韵、结香方式、保护状态或购买风险。`;
+    return `我在知识库里找到了相关概念页，但片段内容不足以组成可靠回答。建议补充更完整的中文整理页，或换一个更具体的问题，例如产区、树种、香韵、结香方式、保护状态或购买风险。`;
   }
 
-  const summary = cleanedChunks
-    .map((chunk) => firstSentence(chunk.content))
-    .filter(Boolean)
-    .slice(0, 3);
+  const primary = cleanedChunks[0];
   const sourceLine = cleanedChunks.map((chunk) => chunk.title).join("、");
 
   return [
-    `按当前知识库，“${message}”可以先这样理解：${summary.join("；")}。`,
+    `按知识库《${primary.title}》页面，“${message}”应先这样理解：`,
     "",
-    `这不是鉴定结论，而是基于已上传资料的整理。真正用于购买、鉴定或对外宣传时，还要结合实物复闻、来源记录、检测资料和合法来源证明。`,
+    excerptKnowledgeContent(primary.content),
+    "",
+    "这不是鉴定结论，而是基于已上传资料的整理。真正用于购买、鉴定或对外宣传时，还要结合实物复闻、来源记录、检测资料和合法来源证明。",
     "",
     `参考页面：${sourceLine}。`
   ].join("\n");
 }
 
-function uniqueKnowledgeChunks(chunks: { title: string; content: string }[]) {
+function uniqueKnowledgeChunks(chunks: KnowledgeChunk[]) {
   const seen = new Set<string>();
-  const unique: { title: string; content: string }[] = [];
+  const unique: KnowledgeChunk[] = [];
   for (const chunk of chunks) {
     const key = `${cleanKnowledgeTitle(chunk.title)}\n${cleanKnowledgeContent(chunk.content).slice(0, 120)}`;
     if (seen.has(key)) continue;
@@ -249,6 +264,13 @@ function uniqueKnowledgeChunks(chunks: { title: string; content: string }[]) {
     unique.push(chunk);
   }
   return unique;
+}
+
+function isPrimaryWikiPage(chunk: KnowledgeChunk) {
+  const sourceName = typeof chunk.metadata?.sourceName === "string" ? chunk.metadata.sourceName : "";
+  const wikiPath = typeof chunk.metadata?.wikiPath === "string" ? chunk.metadata.wikiPath : "";
+  const pathText = `${sourceName}\n${wikiPath}`;
+  return /knowledge\/wiki\/(concepts|entities)\//.test(pathText) || /^(concepts|entities)\//.test(pathText);
 }
 
 function cleanKnowledgeTitle(title: string) {
@@ -277,10 +299,10 @@ function cleanKnowledgeContent(content: string) {
     .trim();
 }
 
-function firstSentence(content: string) {
+function excerptKnowledgeContent(content: string) {
   const normalized = content.replace(/\s+/g, " ").trim();
-  const sentence = normalized.match(/^.{24,220}?[。！？.!?；;]/)?.[0] ?? normalized.slice(0, 160);
-  return sentence.replace(/[，,;；:：\s]+$/, "");
+  if (normalized.length <= 520) return normalized;
+  return `${normalized.slice(0, 520).replace(/[，,；;：:\s]+$/, "")}。`;
 }
 
 function buildFallbackText(module: AssistantModule, message: string, recommendations: Recommendation[]) {
@@ -289,23 +311,21 @@ function buildFallbackText(module: AssistantModule, message: string, recommendat
   }
 
   if (module === "mentor") {
-    return `从你的描述“${message}”来看，建议先从低风险的单品闻香开始，不急着追求强烈或高价。可以用电熏从 80-110 摄氏度缓慢升温，观察甜韵、凉感、木质感和烟感的变化。如果是茶席或日常空间，先选清甜、温润、烟感低的香材；如果是展厅或商务空间，再考虑扩散感更强的口径。`;
+    return `我会先给一个低风险闻香方案。围绕“${message}”，建议从清甜、木质或轻柔扩散的单品开始，用电熏低温慢慢试闻，再根据是否喜欢凉意、奶韵、药感或花蜜感继续细分。涉及产区、等级或高价材料时，需要结合实物复闻、来源记录和检测资料判断。`;
   }
 
   if (recommendations.length === 0) {
-    return `我还没有足够的商品候选来做精准推荐。你可以先告诉我预算、用途、喜欢甜韵还是凉韵、想要线香/香粉/手串/香材哪一类，我会按风险更低的顺序给你建议。`;
+    return `我还没有足够的商品候选来做精准推荐。你可以先补充预算、用途、喜欢甜韵还是凉韵，以及想要线香、香粉、手串还是香材；我会按风险更低的顺序给你建议。`;
   }
 
   const lines = recommendations
-    .map(
-      (item, index) =>
-        `${index + 1}. ${item.product.name}：${item.why} 适合 ${item.suitableFor}。风险点是 ${item.risk}。${
-          item.beginnerFriendly ? "新手可以少量试香。" : "不建议新手直接重仓。"
-        }${item.upgradeAdvice}`
-    )
+    .map((item, index) => {
+      const beginnerNote = item.beginnerFriendly ? "新手可以少量试香。" : "不建议新手直接重仓。";
+      return `${index + 1}. ${item.product.name}：${item.why} 适合 ${item.suitableFor}。风险点是 ${item.risk}。${beginnerNote}${item.upgradeAdvice}`;
+    })
     .join("\n");
 
-  return `我不会建议你为了预算压力硬买贵货。按“${message}”来看，可以这样判断：\n${lines}`;
+  return `我不建议为了预算压力硬买贵货。按“${message}”来看，可以这样判断：\n${lines}`;
 }
 
 function withTimeout<T>(promise: Promise<T>, timeoutMs: number, message: string): Promise<T> {
