@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP_NAME="${APP_NAME:-agarwood-ai}"
 APP_DIR="${APP_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
 PORT="${PORT:-3000}"
 BASE_PATH="${NEXT_PUBLIC_BASE_PATH:-/agarwood}"
@@ -24,7 +23,7 @@ Required for PostgreSQL RAG sync:
   DATABASE_URL
 
 Options:
-  --local          Use .env.local and skip pm2/nohup start.
+  --local          Use .env.local and skip nohup start.
   --skip-migrate  Do not run db/schema.sql.
   --skip-wiki-sync
                    Do not rebuild knowledge/wiki or sync it to PostgreSQL RAG tables.
@@ -168,39 +167,34 @@ if [ "$SKIP_START" -eq 1 ] || [ "$LOCAL_ONLY" -eq 1 ]; then
   exit 0
 fi
 
-echo "[8/8] Starting app..."
-if command -v pm2 >/dev/null 2>&1; then
-  pm2 start npm --name "$APP_NAME" -- run start --update-env || pm2 reload "$APP_NAME" --update-env
-  pm2 save
-else
-  echo "pm2 is not installed; using nohup fallback."
-  if [ -f "$PID_FILE" ]; then
-    OLD_PID="$(cat "$PID_FILE" || true)"
-    if [ -n "$OLD_PID" ]; then
-      kill "$OLD_PID" 2>/dev/null || true
-      sleep 2
-    fi
-    rm -f "$PID_FILE"
+echo "[8/8] Starting app with nohup..."
+if [ -f "$PID_FILE" ]; then
+  OLD_PID="$(cat "$PID_FILE" || true)"
+  if [ -n "$OLD_PID" ]; then
+    kill "$OLD_PID" 2>/dev/null || true
+    sleep 2
   fi
-
-  if command -v lsof >/dev/null 2>&1; then
-    PORT_PIDS="$(lsof -ti:"$PORT" 2>/dev/null || true)"
-    if [ -n "$PORT_PIDS" ]; then
-      echo "Stopping processes listening on port ${PORT}: ${PORT_PIDS}"
-      echo "$PORT_PIDS" | xargs kill 2>/dev/null || true
-      sleep 2
-    fi
-  elif command -v fuser >/dev/null 2>&1; then
-    PORT_PIDS="$(fuser "${PORT}/tcp" 2>/dev/null || true)"
-    if [ -n "$PORT_PIDS" ]; then
-      echo "Stopping processes listening on port ${PORT}: ${PORT_PIDS}"
-      fuser -k "${PORT}/tcp" 2>/dev/null || true
-      sleep 2
-    fi
-  fi
-  nohup npm run start > "$LOG_FILE" 2>&1 &
-  echo "$!" > "$PID_FILE"
+  rm -f "$PID_FILE"
 fi
+
+if command -v lsof >/dev/null 2>&1; then
+  PORT_PIDS="$(lsof -ti:"$PORT" 2>/dev/null || true)"
+  if [ -n "$PORT_PIDS" ]; then
+    echo "Stopping processes listening on port ${PORT}: ${PORT_PIDS}"
+    echo "$PORT_PIDS" | xargs kill 2>/dev/null || true
+    sleep 2
+  fi
+elif command -v fuser >/dev/null 2>&1; then
+  PORT_PIDS="$(fuser "${PORT}/tcp" 2>/dev/null || true)"
+  if [ -n "$PORT_PIDS" ]; then
+    echo "Stopping processes listening on port ${PORT}: ${PORT_PIDS}"
+    fuser -k "${PORT}/tcp" 2>/dev/null || true
+    sleep 2
+  fi
+fi
+
+nohup npm run start > "$LOG_FILE" 2>&1 &
+echo "$!" > "$PID_FILE"
 
 echo "Deploy complete:"
 echo "  App:    http://127.0.0.1:${PORT}${NEXT_PUBLIC_BASE_PATH}"
