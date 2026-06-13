@@ -302,6 +302,7 @@ function cleanKnowledgeContent(content: string) {
     .replace(/^tags:\s*[\s\S]*?(?=\n#|\n##|$)/im, "")
     .replace(/^sources:\s*[\s\S]*?(?=\n#|\n##|$)/im, "")
     .replace(/^date:\s*.+$/gim, "")
+    .replace(/^\s*#\s+.+\n+/, "")
     .replace(/\n##\s*相关[\s\S]*$/m, "")
     .replace(/^#+\s*/gm, "")
     .replace(/!\[[^\]]*]\([^)]*\)/g, "")
@@ -347,7 +348,7 @@ function depthAwareKnowledgeContent(content: string, title: string, depth: Answe
   return [
     excerpt,
     "",
-    `简单说，${title}主要是帮助你先建立方向感，不要一上来就被市场名词带着走。`
+    "简单说，它主要是帮助你先建立方向感，不要一上来就被市场名词带着走。"
   ].join("\n");
 }
 
