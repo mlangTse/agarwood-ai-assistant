@@ -25,6 +25,10 @@ export async function POST(request: NextRequest) {
     buildLocalContext(body.module, body.message)
   );
 
+  if (body.module === "encyclopedia" && isOptionDrivenKnowledgeQuery(body.message)) {
+    return streamFallback(body.module, body.message, context);
+  }
+
   try {
     const modelController = new AbortController();
     request.signal.addEventListener("abort", () => modelController.abort(), { once: true });
@@ -211,6 +215,10 @@ function streamFallback(
   });
 }
 
+function isOptionDrivenKnowledgeQuery(message: string) {
+  return /^主题[：:]\s*/m.test(message) || /^回答深度[：:]\s*/m.test(message);
+}
+
 function buildKnowledgeFallbackText(message: string, chunks: KnowledgeChunk[]) {
   const answerDepth = selectedAnswerDepth(message);
   if (chunks.length === 0) {
@@ -303,7 +311,7 @@ function cleanKnowledgeContent(content: string) {
     .replace(/^sources:\s*[\s\S]*?(?=\n#|\n##|$)/im, "")
     .replace(/^date:\s*.+$/gim, "")
     .replace(/^\s*#\s+.+\n+/, "")
-    .replace(/\n##\s*相关[\s\S]*$/m, "")
+    .replace(/(?:^|\n)##\s*相关[\s\S]*$/m, "")
     .replace(/^#+\s*/gm, "")
     .replace(/!\[[^\]]*]\([^)]*\)/g, "")
     .replace(/\[([^\]]+)]\([^)]*\)/g, "$1")
@@ -317,7 +325,10 @@ function cleanKnowledgeContent(content: string) {
 
 function removeRepeatedTitle(content: string, title: string) {
   const escapedTitle = title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return content.replace(new RegExp(`^${escapedTitle}\\s*`), "").trim();
+  return content
+    .replace(new RegExp(`^《${escapedTitle}》\\s*${escapedTitle}\\s*`), "")
+    .replace(new RegExp(`^${escapedTitle}\\s+${escapedTitle}\\s*`), "")
+    .trim();
 }
 
 function depthAwareKnowledgeContent(content: string, title: string, depth: AnswerDepth) {

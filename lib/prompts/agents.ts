@@ -80,7 +80,7 @@ function cleanRagContent(content: string) {
   return content
     .replace(/^---\n[\s\S]*?\n---\n/, "")
     .replace(/^\s*#\s+.+\n+/, "")
-    .replace(/\n##\s*相关[\s\S]*$/m, "")
+    .replace(/(?:^|\n)##\s*相关[\s\S]*$/m, "")
     .replace(/\[\[([^\]]+)]]/g, "$1")
     .replace(/^sources:\n(?:\s+- .+\n)*/gm, "")
     .trim();
