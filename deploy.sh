@@ -180,6 +180,23 @@ else
       kill "$OLD_PID" 2>/dev/null || true
       sleep 2
     fi
+    rm -f "$PID_FILE"
+  fi
+
+  if command -v lsof >/dev/null 2>&1; then
+    PORT_PIDS="$(lsof -ti:"$PORT" 2>/dev/null || true)"
+    if [ -n "$PORT_PIDS" ]; then
+      echo "Stopping processes listening on port ${PORT}: ${PORT_PIDS}"
+      echo "$PORT_PIDS" | xargs kill 2>/dev/null || true
+      sleep 2
+    fi
+  elif command -v fuser >/dev/null 2>&1; then
+    PORT_PIDS="$(fuser "${PORT}/tcp" 2>/dev/null || true)"
+    if [ -n "$PORT_PIDS" ]; then
+      echo "Stopping processes listening on port ${PORT}: ${PORT_PIDS}"
+      fuser -k "${PORT}/tcp" 2>/dev/null || true
+      sleep 2
+    fi
   fi
   nohup npm run start > "$LOG_FILE" 2>&1 &
   echo "$!" > "$PID_FILE"
