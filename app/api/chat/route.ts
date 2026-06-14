@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     request.signal.addEventListener("abort", () => modelController.abort(), { once: true });
 
     const stream = await streamChatCompletion({
-      temperature: body.module === "encyclopedia" ? 0.25 : 0.68,
+      temperature: 0.68,
       signal: modelController.signal,
       messages: [
         { role: "system", content: systemPrompt(body.module) },
