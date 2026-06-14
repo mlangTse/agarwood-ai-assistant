@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     buildLocalContext(body.module, body.message)
   );
 
-  if (body.module === "encyclopedia" && isOptionDrivenKnowledgeQuery(body.message)) {
+  if (body.module === "encyclopedia") {
     return streamFallback(body.module, body.message, context);
   }
 
@@ -126,6 +126,7 @@ async function buildContext(module: AssistantModule, message: string) {
       recommendations: [] as Recommendation[],
       fallbackText: buildKnowledgeFallbackText(message, chunks),
       meta: {
+        responseMode: "deterministic-rag-v3",
         scentTags: ["知识库", "RAG", "谨慎回答"],
         sources: chunks.map((chunk) => ({
           title: chunk.title,
@@ -157,6 +158,7 @@ async function buildLocalContext(module: AssistantModule, message: string) {
       recommendations: [] as Recommendation[],
       fallbackText: buildKnowledgeFallbackText(message, []),
       meta: {
+        responseMode: "deterministic-rag-v3",
         scentTags: ["本地知识库", "知识库未命中", "谨慎回答"],
         sources: []
       }
@@ -210,13 +212,10 @@ function streamFallback(
     headers: {
       "Content-Type": "text/event-stream; charset=utf-8",
       "Cache-Control": "no-cache, no-transform",
-      Connection: "keep-alive"
+      Connection: "keep-alive",
+      "X-Agarwood-Response-Mode": module === "encyclopedia" ? "deterministic-rag-v3" : "fallback"
     }
   });
-}
-
-function isOptionDrivenKnowledgeQuery(message: string) {
-  return /^主题[：:]\s*/m.test(message) || /^回答深度[：:]\s*/m.test(message);
 }
 
 function buildKnowledgeFallbackText(message: string, chunks: KnowledgeChunk[]) {
